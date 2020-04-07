@@ -1,6 +1,13 @@
 " TO TRY
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
 
+" Indicator for what was yanked
+" Plug 'machakann/vim-highlightedyank'
+
+" Aligning stuff
+" Plug 'junegunn/vim-easy-align'
+
+
 " ABANDONDED - Autocomplete
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Plug 'zchee/deoplete-jedi', { 'for': 'python' }
@@ -117,6 +124,7 @@ call plug#end()
 " [q ]q               cprevious / cnext
 " [f ]f               previous/next file in the current dir
 " [n ]n               previous/next SCM conflict marker or diff/patch hunk. Try d[n inside a conflict.
+" [l ]l               previous/next line error (e.g. CoC completion error.
 " [<space> ]<space>   Add [count] blank lines above/below the cursor.
 " [x{motion}          XML encode, e.g. <foo bar="baz"> => &lt;foo bar=&quot;baz&quot;&gt;
 " ]x{motion}          XML decode

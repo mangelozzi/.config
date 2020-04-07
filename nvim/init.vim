@@ -217,7 +217,7 @@ autocmd FileType scss setlocal omnifunc=csscomplete#CompleteCSS
 source <sfile>:h/init/env.vim
 source <sfile>:h/init/git.vim
 source <sfile>:h/init/myplugins.vim
-" source <sfile>:h/init/coc.vim
+source <sfile>:h/init/coc.vim
 source <sfile>:h/init/visual.vim
 
 " ----------------------------------------

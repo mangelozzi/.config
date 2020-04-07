@@ -43,7 +43,7 @@ function! GitDiff()
   silent execute 'read !git diff '. git_file_path
   1
 endfunction
-:nmap <leader>d :call GitDiff()<cr>
+:nmap <leader>gd1 :call GitDiff()<cr>
 
 
 " <leader>d -> GIT STATUS
@@ -55,7 +55,7 @@ function! GitStatus()
   " Place cursor at first file in list
   normal ggddjjddjddddjwww
 endfunction
-":nmap <leader>s :call GitStatus()<cr>
+:nmap <leader>gs1 :call GitStatus()<cr>
 
 "GIT STATUS
 " Place cursor over file and press gf to go there
@@ -65,7 +65,7 @@ function! GitStatus2()
   call chansend(&channel, "q\r<Esc>")
   normal 7j3w
 endfunction
-:nmap <leader>s :call GitStatus2()<cr>
+:nmap <leader>gs2 :call GitStatus2()<cr>
 
 
 " <leader>d -> GIT STATUS
@@ -75,6 +75,6 @@ function GitDiff2()
   " Place cursor at first file in list
   normal Gaq<Esc>gg
 endfunction
-:nmap <leader>t :call GitDiff2()<cr>
+:nmap <leader>gd2 :call GitDiff2()<cr>
 
 " terminal git diff --word-diff % \| normal Gaq<Esc>gg

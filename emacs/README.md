@@ -54,6 +54,10 @@ install 2 x requirements files
 For postgres pip installation:
 Might be cause had not installed postgresql yet: `sudo apt-get install libpq-dev`
 
+## DEPENDENCIES
+### Emacs
+use-package
+
 ### PIP
 1. `sudo apt -y install python3-pip`
 2. `apt-get install python3-venv` (Ubuntu, for venv/ (supposed to be OOTB))

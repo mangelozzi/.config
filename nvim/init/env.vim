@@ -1,17 +1,27 @@
 "=========================================================
 " ENVIROMENT for current project
 "=========================================================
-"let python_vim = 'C:/Users/Michael/AppData/Local/Programs/Python/Python37/python.exe'
-"let python_project = 'C:/Users/Michael/.virtualenvs/linkcube-CDrGgQjY/Scripts/python.exe'
-"let python_vim = python_project
 
 "let $PYTHONPATH .= 'C:\code\linkcube\src'
 "let $PYTHONPATH .= ';C:\code\linkcube\src\distros\cworld'
 "let $PYTHONPATH .= ';C:\code\linkcube\src\distros\mpact'
 
-let g:loaded_python_provider = 0
 let g:python_host_skip_check=1
-
 let g:python3_host_skip_check=1
-"let g:python_host_prog = 'C:/Users/Michael/.virtualenvs/linkcube-CDrGgQjY/Scripts/python.exe'
-"let g:python3_host_prog = 'C:/Users/Michael/.virtualenvs/linkcube-CDrGgQjY/Scripts/python.exe'
+
+" PYTHON 2
+" Disable python2 support
+let g:loaded_python_provider = 0
+
+" PYTHON3
+" May complain about $VIRTUAL_ENV not set, no problem, just activate required
+" venv before starting NeoVim.
+if has('unix')
+    " echo "Linux Env"
+    let g:python3_host_prog = '/usr/local/bin/python3'
+endif
+
+if has('win32')
+    " echo "Windows Env"
+    let g:python3_host_prog = 'C:/Users/Michael/.virtualenvs/linkcube-CDrGgQjY/Scripts/python.exe'
+endif
