@@ -1,0 +1,15 @@
+{
+    "suggest.detailField" : "preview",
+    "signature.preferShownAbove": true,
+    "python.jediEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": ["--ignore=E1,E2,E3,E402,E501,F403,W2,W391,W503", "--format=default"],
+    "coc.preferences.formatOnSaveFiletypes": [
+        "javascript",
+        "typescript",
+        "json",
+        "typescript.tsx",
+        "graphql"
+    ]
+}

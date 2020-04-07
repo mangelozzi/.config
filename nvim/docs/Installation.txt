@@ -1,0 +1,22 @@
+LINUX
+-----
+Actually ran:
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo apt-get update
+sudo apt-get install neovim
+
+In NeoVim -> In the menu goto Terminal -> Settings -> Colors tab, and change blue and purple
+alias vim="nvim"
+
+ln -s <existing folder> <to new thing>
+
+WINDOWs
+-------
+1. Drop folder anywhere: e.g. C:\Neovim
+2. Rename "C:\Neovim\bin\nvim-qt.exe" to "vim.exe" for easy starting
+3. Get ctags and make sure the ctags.exe accessible by PATH.
+    - Downloaded universal tags (ctags successor) from:
+      https://github.com/universal-ctags/ctags-win32/releases
+    - Already had GCC installed with Cygwin, so dropped ctags.exe into C:\cygwin64\bin
+4. .vimrc file setup:
+    mklink /J C:\Users\Michael\AppData\Local\nvim E:\Dropbox\Software\neovim\nvim

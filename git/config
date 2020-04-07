@@ -1,0 +1,18 @@
+[gui]
+	recentrepo = G:/My Drive/Michael Angelozzi/Projects/2017-02-12 RTE Geyser Bee/GIT/data_collector_hive.git
+[user]
+	name = Michael Angelozzi
+	email = mangelozzi@gmail.com
+[credential]
+	helper = manager
+[core]
+	preloadindex = true
+	fscache = true
+[gc]
+	auto = 256
+[mergetool]
+	keepBackup = false
+[merge]
+	tool = nvim
+[mergetool "nvim"]
+	cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
