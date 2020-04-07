@@ -235,8 +235,8 @@ let g:multi_cursor_quit_key            = '<Esc>'
 
 " Python        coc-python
 " JavaScript    coc-tsserver coc-eslint 
-" Webcoc-html   coc-css
-" Misc Formats  coc-json coc-svg markdownlint
+" Webcoc-html   coc-html coc-css
+" Misc Formats  coc-json coc-svg coc-markdownlint
 " To try        coc-snippets coc-pairs coc-prettier
  
 " Specify with extensions to use
@@ -252,3 +252,6 @@ let g:coc_global_extensions = [
   \ 'coc-markdownlint', 
   \ ]
 
+let g:coc_filetype_map = {
+  \ 'htmldjango': 'html',
+  \ }

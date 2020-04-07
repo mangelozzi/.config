@@ -8,7 +8,10 @@
 "let $PYTHONPATH .= 'C:\code\linkcube\src'
 "let $PYTHONPATH .= ';C:\code\linkcube\src\distros\cworld'
 "let $PYTHONPATH .= ';C:\code\linkcube\src\distros\mpact'
+
+let g:loaded_python_provider = 0
 let g:python_host_skip_check=1
+
 let g:python3_host_skip_check=1
 "let g:python_host_prog = 'C:/Users/Michael/.virtualenvs/linkcube-CDrGgQjY/Scripts/python.exe'
 "let g:python3_host_prog = 'C:/Users/Michael/.virtualenvs/linkcube-CDrGgQjY/Scripts/python.exe'

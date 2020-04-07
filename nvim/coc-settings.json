@@ -11,5 +11,9 @@
         "json",
         "typescript.tsx",
         "graphql"
-    ]
+    ],
+    "eslint.options": { "parserOptions": { "ecmaVersion": 8 } },
+    "html.enable": true,
+    "html.format.enable": true,
+    "html.filetypes": ["html","htmldjango"]
 }
