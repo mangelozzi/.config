@@ -1,2 +1,0 @@
-# Emacs cant parse the theme header if it uses CRLF style.
-michael-theme.el text eol=lf

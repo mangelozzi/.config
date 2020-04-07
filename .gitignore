@@ -3,6 +3,6 @@
 /*/
 !/git/
 !/nvim/
-!/.emacs.d/
+!/emacs/
 !.gitignore
 !README.md
