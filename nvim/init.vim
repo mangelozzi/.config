@@ -130,7 +130,21 @@ cnoremap <S-Insert> <C-r>+
 " Change leader from \ to ;
 let mapleader = " "
 
-" ___ MAP _____________________________________________________________________
+" ___ ALL MODES _______________________________________________________________
+
+" If I hit <F1> it was a mistake because I was reaching for <Esc>
+map  <F1> <Esc>
+map! <F1> <Esc>
+
+" Map ; to : for speed
+map ; :
+map! <M-;> <Esc>:
+
+" CTRL+S to save
+map <C-s> :w<CR>
+map! <C-s> <C-o>:w<CR>
+
+" ___ MAP (NOREMAP)____________________________________________________________
 "   Normal, Visual+Select, and Operator Pending modes
 
 " Map backspace to other buffer
@@ -142,10 +156,29 @@ noremap <BS> <C-^>
 " http://vimdoc.sourceforge.net/htmldoc/pattern.html#pattern (scroll down a page to magic)
 noremap <leader>/ /\v
 
-" ___ MAP! ____________________________________________________________________
-"   Normal incl. replace, Command Line)
+" ___ MAP! (NOREMAP!)__________________________________________________________
+" Map other forms of escape to true <Esc>, e.g. useful for multiline editing
+" requres <Esc>.
+noremap! <C-[> <Esc>
+noremap! <C-Space> <Esc>
+" required for escaping out of the terminal too (especially with FZF)
+tnoremap <C-Space> <Esc>
+
+" Left/Right arrow backspace and delete
+" <C-u> - Natively supports delete to beginning of line
+" <C-h> - Natively is <Backspace>
+noremap! <C-l> <Del>
+noremap! <C-a> <Home>
 
 " ___ VISUAL MODE _____________________________________________________________
+" v = select and visual mode, x = visual, s = select (mouse)
+" s mode = allows one to select with the mouse, then type any printable
+"          character to replace the selection and start typing. Unfortunately
+"          this means any hotkeys setup in v-mode will override which keys
+"          actually perform this behaviour.
+"          DECISION: Ignore select mode, use c to change a selection. Map
+"                    hotkeys in v-mode so same behaviour if using the mouse or
+"                    keyboard to make a selection.
 
 " Move a block of text with SHIFT+arrows
 " https://vim.fandomcom/w.iki/Drag_words_with_Ctrl-left/right
@@ -153,6 +186,32 @@ vnoremap <S-Right>  pgvloxlo
 vnoremap <S-left>   hPgvhxoho
 vnoremap <S-Down>   jPgvjxojo
 vnoremap <S-Up>     xkPgvkoko
+
+" ___ SEARCHING & REPLACING ___________________________________________________
+" https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m48s
+" He uses a plugin to achieve this.
+" Mapped with visual mode so that can use the mouse and press *
+" In visual mode press * to search for the current selected region y = yank visual range into the " buffer 
+"   / = start search
+"   \V = very NO magic
+"   <C-R> = CTRL+R to paste from " buffer
+"   escape = escape the / and \ which are the only none literals in no magic
+vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
+vnoremap # y?\V<C-R>=escape(@",'/\')<CR><CR>
+
+" https://www.youtube.com/watch?v=fP_ckZ30gbs&t=07m36s
+" Press * to search for the term under the cursor or a visual selection and
+" then press a key below to replace all instances of it in the current file.
+noremap <Leader>rr :%s///g<Left><Left>
+noremap <Leader>rc :%s///gc<Left><Left><Left>
+
+" vnoremap <Leader>rc :s///gc<Left><Left><Left>
+" https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m25s
+" Similar to above, but in visual mode search within current selected region
+" for the previously search term. No need to add the '<,'> as it will be auto
+" added.
+vnoremap <Leader>rr :s///g<Left><Left>
+vnoremap <Leader>rc :s///gc<Left><Left><Left>
 
 " ___ TERMINAL MODE ___________________________________________________________
 " <Esc> to exit terminal-mode:

@@ -64,7 +64,7 @@ npm -v
 Download and run installer from [node homepage](https://nodejs.org/en/)
 
 ## DEPENDENCIES
-### Python via PIP (in VENV! NO SUDO!!!!):
+### Python via PIP (in VENV! NO SUDO!!!!)
 ```
 pip install pynvim             # For python hooks into Neovim
 pip install jedi               # Coc Autocomplete
@@ -75,7 +75,7 @@ deprecated: pip install jedi   # For deoplete-jedi - autocomplete
 deprecated: pip install pylint # For Neomake - syntax linting
 ```
 
-### Node.js via NPM:
+### Node.js via NPM
 For Linux prefix with sudo
 ```
 npm install -g Neovim
@@ -83,13 +83,28 @@ npm install -g tern             # for carlitux/deoplete-ternjs
 npm install -g eslint           # Coc
 ```
 
-### Coc:
+### Coc
 ```
 :CocInstall coc-python
 :CocInstall coc-tsserver coc-eslint 
 :CocInstall coc-html coc-css
 :CocInstall coc-json coc-svg coc-markdownlint
 To Try: :CocInstall coc-snippets coc-pairs coc-prettier
+```
+
+## FZF
+Automatically installed by VimPlug.
+
+## Ripgrep
+### Linux
+```
+curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
+sudo dpkg -i ripgrep_11.0.2_amd64.deb
+```
+### Windows
+Requires the scoop package manager.
+```
+scoop install ripgrep
 ```
 
 ### Django

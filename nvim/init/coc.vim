@@ -19,7 +19,8 @@ set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-set signcolumn=yes
+" Mike prefer to see shift if error appears
+" set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -112,7 +113,8 @@ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 nmap <silent> <leader>d <Plug>(coc-definition)
 nmap <silent> <leader>y <Plug>(coc-type-definition)
 nmap <silent> <leader>i <Plug>(coc-implementation)
-nmap <silent> <leader>r <Plug>(coc-references)
+" u = used (r is used for replace)
+nmap <silent> <leader>u <Plug>(coc-references)
 
 
 " Use `[g` and `]g` to navigate diagnostics

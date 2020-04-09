@@ -15,6 +15,13 @@ Recommend installing at least version emacs26.3:
 2. `sudo apt update`
 3. `sudo apt install emacs`
 
+Lastest unstable version
+```
+sudo add-apt-repository ppa:ubuntu-elisp/ppa
+sudo apt-get update
+sudo apt install emacs-snapshot
+```
+
 ### Windows
 1. Run installer for the version WITHOUT -no-deps (no dependencies), e.g. `emacs-27.0.90-2-x86_64.zip`
 2. Add emacs bin dir (e.g. `C:\utils\emacs\bin`) to Windows `Path` environment variable.

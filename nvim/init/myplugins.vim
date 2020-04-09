@@ -178,19 +178,44 @@ let g:NERDTreePatternMatchHighlightFullName = 1
 " ==============================================================================
 " FZF
 " ==============================================================================
-" nnoremap <silent> <leader>f :FZF<cr>
+" https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
+" To search within a dir `:FZF [dir] <CR>`
 
-" Files under current home
-" nnoremap <silent> <leader>F :FZF ~<cr>
+" https://www.youtube.com/watch?v=fP_ckZ30gbs&t=21m42s
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit',
+  \ 'ctrl-y': {lines -> setreg('*', join(lines, "\n"))}}
+
+" When aborting fzf in Neovim, <Esc> does not work, so fix it:
+tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
+
+" Allow passing optional flags into the Rg command.
+"   Example: :Rg foo -g '*.py'
+command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case " . <q-args>, 1, <bang>0)
+
+" FZF in Open buffers
+nnoremap <silent> <leader><leader> :Buffers<cr>
 
 " Files
+" FZF in Open buffers
+nnoremap <silent> <leader><leader> :Buffers<cr>
+
+" FZF Search for Files
 nnoremap <silent> <leader>f :Files<cr>
 
 " FZF in Git files
 nnoremap <silent> <leader>g :GFiles<cr>
 
-" FZF in Open buffers
-nnoremap <silent> <leader><leader> :Buffers<cr>
+" Map to FZF command, so one can type commands interactively before enter.
+nnoremap <leader>zz :FZF<Space>
+
+" Map to Rg command, so one can type commands interactively before enter.
+nnoremap <leader>zr :Rg<Space>
+
+" Files under current home
+nnoremap <silent> <leader>zh :FZF ~<cr>
 
 " FZF in Lines in loaded buffers
 nnoremap <silent> <leader>zl :Lines<cr>
@@ -200,8 +225,6 @@ nnoremap <silent> <leader>zb :BLines<cr>
 
 " Normal mode mappings
 nnoremap <silent> <leader>zm :Maps<cr>
-
-
 
 
 " ______________________________________________________________________________
