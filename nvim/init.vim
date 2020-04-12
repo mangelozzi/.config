@@ -65,7 +65,6 @@ set hlsearch                " Highlight searches, use :noh to turn off residual 
 
 
 " WRAPPED LINES
-set wrap                    " display long lines as wrapped
 set linebreak               " wrap at word breaks
 set showbreak=↪             " show an ellipsis at the start of wrapped lines
 
@@ -84,10 +83,6 @@ set expandtab
 " FINDING FILES
 set path+=**
 set wildmenu                " Display all matching files when we tab complete
-
-" DATETIME
-map <F3> :echo 'Current time is ' . strftime('%c')<CR>
-map! <F4> <C-R>=strftime('%c')<CR>
 
 "==============================================================================
 " SETTINGS - GUI computer
@@ -132,9 +127,6 @@ let mapleader = " "
 
 " ___ ALL MODES _______________________________________________________________
 
-" If I hit <F1> it was a mistake because I was reaching for <Esc>
-map  <F1> <Esc>
-map! <F1> <Esc>
 
 " Map ; to : for speed
 map ; :
@@ -170,6 +162,47 @@ tnoremap <C-Space> <Esc>
 noremap! <C-l> <Del>
 noremap! <C-a> <Home>
 
+" ___ FUNCTION KEYS ___________________________________________________________
+
+" <F1> to <F4> COMMON ACTIONS -------------------------------------------------
+" <F1> ESCAPE If I hit <F1> it was a mistake because I was reaching for <Esc>
+map  <F1> <Esc>
+map! <F1> <Esc>
+
+" <F2> is reseved for auto completion rename
+
+" <F3> Open VIM RC file and change pwd to it
+map  <F3> :e $MYVIMRC<CR> :cd %:p:h<CR>
+map! <F3> <Esc>:e $MYVIMRC<CR> :cd %:p:h<CR>
+
+" <F4> CLOSE BUFFER
+" Same as buffer delete, however if its the last none help or empty buffer,
+" then quit.
+function! QuitIfLastBuffer()
+    let cnt = 0
+    for nr in range(1,bufnr("$"))
+        if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
+            let cnt += 1
+        endif
+    endfor
+    if cnt <= 1
+        :q
+    else
+        :bd
+    endif
+endfunction
+map  <F4>      :call QuitIfLastBuffer()<CR>
+map! <F4> <C-o>:call QuitIfLastBuffer()<CR>
+
+" <F5> to <F8> SETTINGS -------------------------------------------------------
+
+" <F9> to <F12> QUICK INSERTS -------------------------------------------------
+" To paste the current filename, use "%p
+
+" DATETIME - Echo it in normal mode, insert it in insert mode.
+map  <F9> :echo 'Current date/time is ' . strftime('%Y-%m-%d %T')<CR>
+map! <F9> <C-R>=strftime('%Y-%m-%d %T')<CR>
+
 " ___ VISUAL MODE _____________________________________________________________
 " v = select and visual mode, x = visual, s = select (mouse)
 " s mode = allows one to select with the mouse, then type any printable
@@ -191,7 +224,7 @@ vnoremap <S-Up>     xkPgvkoko
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m48s
 " He uses a plugin to achieve this.
 " Mapped with visual mode so that can use the mouse and press *
-" In visual mode press * to search for the current selected region y = yank visual range into the " buffer 
+" In visual mode press * to search for the current selected region y = yank visual range into the " buffer
 "   / = start search
 "   \V = very NO magic
 "   <C-R> = CTRL+R to paste from " buffer
@@ -260,7 +293,7 @@ cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 " COMMANDS
 "==============================================================================
 " Change dir to that of Vim config ($MYVIMRC head)
-" Not used, rather use more generic solution cd %:p:h 
+" Not used, rather use more generic solution cd %:p:h
 " command! Cdv exe 'cd ' . fnamemodify($MYVIMRC, ':p:h')
 
 "==============================================================================
@@ -316,3 +349,15 @@ endfunction
 "   Meta (M-?) can map lower and upper case words)
 " =============================================================================
 
+" =============================================================================
+" AUTOCOMMANDS
+" =============================================================================
+" Strip trailing whitespace, but preserve cursor position
+function! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+" Using file extension
+autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call <SID>StripTrailingWhitespaces()

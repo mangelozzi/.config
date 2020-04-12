@@ -49,14 +49,24 @@ hi Normal guifg=#ffffff guibg=#192224 guisp=#192224 gui=NONE ctermfg=15 ctermbg=
 "hi CTagsClass -- no settings --
 "hi clear -- no settings --
 
-
-"MICHAEL ADDED/CHANGED
-hi NonText              guifg=#555555 " Hidden characters from set list
-hi wrong_spacing        guibg=#FF0000 " If not a multiple of 4 spaces
-hi trailing_whitespace  guibg=#FF00FF " Highlight trailing whitespace
+" Line Numbers
 hi LineNr               guifg=#00CC00 guibg=#3F3F3F " Line number colour
 hi CursorLineNr         guifg=#4F4F4F guibg=#00CC00 " Cursor line number colour
+
+" Built in visual enhancements
+hi NonText              guifg=#555555 " Hidden characters from set list
 hi ColorColumn          guibg=#333333 " 80 chars wide column
+
+" Search and replace
+hi QuickFixLine         term=reverse ctermbg=52 guifg=#FF0000
+hi IncSearch            guifg=#000000 guibg=#FFFF00 gui=bold " While one is typing search pattern
+hi Search               guifg=#000000 guibg=#CF9F00          " Other search matches
+
+"Whitespace
+hi wrong_spacing        guibg=#FF0000 " If not a multiple of 4 spaces
+hi _TrailingWhitespace  guibg=#880000 " Highlight trailing whitespace
+
+" NERDTree
 hi treeDir              guifg=#FF0000 guibg=#00ff00
 hi NERDTreeFlags        guifg=#dad085
 hi NERDTreeDir          guifg=#dad085
@@ -64,7 +74,6 @@ hi NERDTreeDirSlash     guifg=#6b6220
 hi NERDTreeClosable     guifg=#444444
 hi NERDTreeOpenable     guifg=#444444
 hi NERDTreeCWD          guifg=#FF0000 " NERDTree root dir
-hi QuickFixLine         term=reverse ctermbg=52 guifg=#FF0000
 
 "=========================================================
 "GIT
@@ -92,7 +101,7 @@ hi DiffChanged guifg=yellow guibg=BOLD guisp=#492224 gui=BOLD,UNDERCURL ctermfg=
 hi DiffRemoved guifg=#F00000 guibg=#192224 guisp=#192224 gui=BOLD ctermfg=NONE ctermbg=235 cterm=NONE
 
 "Probably used for side by side diffs:
-"diffOnly 
+"diffOnly
 "diffDiffer
 "diffBDiffer
 "diffIsA
@@ -102,14 +111,19 @@ hi DiffRemoved guifg=#F00000 guibg=#192224 guisp=#192224 gui=BOLD ctermfg=NONE c
 
 
 "Status line normal colour, NC = Non Current
-hi StatusLineNC         guifg=#192224 guibg=#ababab guisp=#ababab gui=bold ctermfg=235 ctermbg=248 cterm=bold
-hi StatusLine           guifg=#000000 guibg=#00c800 guisp=#00c800 gui=bold ctermfg=NONE ctermbg=40 cterm=bold
-hi StatusUnsaved        guifg=black guibg=red
-hi StatusMellow         guifg=gray guibg=black
+hi StatusLine           guifg=#000000 guibg=#00CC00 gui=none " WARNING! By default gui set to reverse, need to overide it with none
+hi StatusLineNC         guifg=#192224 guibg=#ababab " Status line None current
+hi _StatusFileName      guifg=#000000 guibg=#ABABAB gui=bold
+hi _StatusModified      guifg=#FFFFFF guibg=#FF0000 gui=BOLD
+hi _StatusGit           guifg=#009900 guibg=#00CC00
 
+" Current line on
 hi CursorLine                               guibg=#444444 " The current cursor line highlighting, works!
 autocmd InsertLeave * highlight  CursorLine guibg=#4F4F4F " Revert Color to default when leaving Insert Mode, should match colour above
 autocmd InsertEnter * highlight  CursorLine guibg=#550000 " Change Color when entering Insert Mode
+
+" Visual Selection
+hi Visual guibg=#888888
 
 " Change whole screen background color
 "autocmd InsertEnter * highlight Normal guibg=#110000
@@ -129,7 +143,6 @@ hi StorageClass guifg=#FF6991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=
 
 
 hi Typedef guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
-hi IncSearch guifg=#000000 guibg=#ffff00 guisp=#ffff00 gui=NONE ctermfg=NONE ctermbg=11 cterm=NONE
 hi WildMenu guifg=NONE guibg=#A1A6A8 guisp=#A1A6A8 gui=NONE ctermfg=NONE ctermbg=248 cterm=NONE
 hi SignColumn guifg=#192224 guibg=#536991 guisp=#536991 gui=NONE ctermfg=235 ctermbg=60 cterm=NONE
 hi SpecialComment guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
@@ -148,7 +161,6 @@ hi Todo guifg=#F9F9FF guibg=#bd0000 guisp=#bd0000 gui=NONE ctermfg=189 ctermbg=1
 hi Special guifg=#ffbf00 guibg=NONE guisp=NONE gui=NONE ctermfg=214 ctermbg=NONE cterm=NONE
 hi Label guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi PMenuSel guifg=#000000 guibg=#00c800 guisp=#00c800 gui=NONE ctermfg=NONE ctermbg=40 cterm=NONE
-hi Search guifg=#192224 guibg=#ffaa00 guisp=#ffaa00 gui=NONE ctermfg=235 ctermbg=214 cterm=NONE
 hi Delimiter guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Statement guifg=#ff0000 guibg=NONE guisp=NONE gui=bold ctermfg=196 ctermbg=NONE cterm=bold
 hi SpellRare guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
@@ -160,13 +172,11 @@ hi Boolean guifg=#A1A6A8 guibg=NONE guisp=NONE gui=NONE ctermfg=248 ctermbg=NONE
 hi Operator guifg=#00ffdd guibg=NONE guisp=NONE gui=bold ctermfg=50 ctermbg=NONE cterm=bold
 hi TabLineFill guifg=#000000 guibg=#545454 guisp=#545454 gui=bold ctermfg=NONE ctermbg=240 cterm=bold
 hi WarningMsg guifg=#A1A6A8 guibg=#912C00 guisp=#912C00 gui=NONE ctermfg=248 ctermbg=88 cterm=NONE
-hi VisualNOS guifg=#192224 guibg=#F9F9FF guisp=#F9F9FF gui=underline ctermfg=235 ctermbg=189 cterm=underline
 hi ModeMsg guifg=#F9F9F9 guibg=#192224 guisp=#192224 gui=bold ctermfg=15 ctermbg=235 cterm=bold
 hi Define guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Function guifg=#ffbf00 guibg=NONE guisp=NONE gui=bold ctermfg=214 ctermbg=NONE cterm=bold
 hi FoldColumn guifg=#192224 guibg=#A1A6A8 guisp=#A1A6A8 gui=italic ctermfg=235 ctermbg=248 cterm=NONE
 hi PreProc guifg=#ff80ff guibg=NONE guisp=NONE gui=NONE ctermfg=213 ctermbg=NONE cterm=NONE
-hi Visual guifg=#192224 guibg=#F9F9FF guisp=#F9F9FF gui=NONE ctermfg=235 ctermbg=189 cterm=NONE
 hi MoreMsg guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi SpellCap guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi VertSplit guifg=#192224 guibg=#5E6C70 guisp=#5E6C70 gui=bold ctermfg=235 ctermbg=66 cterm=bold
@@ -191,3 +201,4 @@ hi TabLine guifg=#000000 guibg=#ababab guisp=#ababab gui=bold ctermfg=NONE cterm
 hi cursorim guifg=#192224 guibg=#536991 guisp=#536991 gui=NONE ctermfg=235 ctermbg=60 cterm=NONE
 hi Cursor guifg=#192224 guibg=#F9F9F9 guisp=#F9F9F9 gui=NONE ctermfg=235 ctermbg=15 cterm=NONE
 hi CursorColumn guifg=NONE guibg=#222E30 guisp=#222E30 gui=NONE ctermfg=NONE ctermbg=236 cterm=NONE
+hi VisualNOS guifg=#192224 guibg=#19F9FF guisp=#F9F9FF gui=underline ctermfg=235 ctermbg=189 cterm=underline

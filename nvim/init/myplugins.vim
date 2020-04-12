@@ -44,7 +44,10 @@ Plug 'kana/vim-textobj-entire'
 Plug 'tpope/vim-unimpaired'
 Plug 'ap/vim-css-color'
 
-" FZF
+" GIT
+Plug 'tpope/vim-fugitive'
+
+" FZF 
 let fzfdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/fzf"
 Plug 'junegunn/fzf', { 'dir': fzfdir, 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -176,6 +179,12 @@ let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
 
 " ==============================================================================
+" GIT
+" ==============================================================================
+" Git status
+nnoremap <silent> <leader>gs :Git status<cr>
+
+" ==============================================================================
 " FZF
 " ==============================================================================
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
@@ -206,7 +215,7 @@ nnoremap <silent> <leader><leader> :Buffers<cr>
 nnoremap <silent> <leader>f :Files<cr>
 
 " FZF in Git files
-nnoremap <silent> <leader>g :GFiles<cr>
+nnoremap <silent> <leader>zg :GFiles<cr>
 
 " Map to FZF command, so one can type commands interactively before enter.
 nnoremap <leader>zz :FZF<Space>
