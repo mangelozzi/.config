@@ -18,7 +18,7 @@
 "    reverse
 "    italic
 "    none
-" Can be multiple values e.g. 
+" Can be multiple values e.g.
 "    gui=bold,undercurl
 " guifg - GUI Foreground colour
 " guibg - GUI Background colour
@@ -95,7 +95,7 @@ hi diffNewFile guifg=#D0D0D0 gui=BOLD
 hi diffFile guifg=#808080
 hi diffLine guifg=#808080
 hi diffSubname guifg=#D0D0D0
- 
+
 hi DiffAdded guifg=#00C000 guibg=BOLD guisp=#193224 gui=BOLD ctermfg=NONE ctermbg=236 cterm=NONE
 hi DiffChanged guifg=yellow guibg=BOLD guisp=#492224 gui=BOLD,UNDERCURL ctermfg=NONE ctermbg=52 cterm=NONE
 hi DiffRemoved guifg=#F00000 guibg=#192224 guisp=#192224 gui=BOLD ctermfg=NONE ctermbg=235 cterm=NONE
@@ -112,10 +112,12 @@ hi DiffRemoved guifg=#F00000 guibg=#192224 guisp=#192224 gui=BOLD ctermfg=NONE c
 
 "Status line normal colour, NC = Non Current
 hi StatusLine           guifg=#000000 guibg=#00CC00 gui=none " WARNING! By default gui set to reverse, need to overide it with none
-hi StatusLineNC         guifg=#192224 guibg=#ababab " Status line None current
-hi _StatusFileName      guifg=#000000 guibg=#ABABAB gui=bold
+hi StatusLineNC         guifg=#192224 guibg=#ABABAB gui=none " Status line None current
+hi _StatusFileName      guifg=#FFFFFF guibg=#007700 gui=bold
+hi _StatusFileNameNC    guifg=#FFFFFF guibg=#777777 gui=bold
 hi _StatusModified      guifg=#FFFFFF guibg=#FF0000 gui=BOLD
 hi _StatusGit           guifg=#009900 guibg=#00CC00
+hi _StatusGitNC         guifg=#777777 guibg=#ABABAB
 
 " Current line on
 hi CursorLine                               guibg=#444444 " The current cursor line highlighting, works!

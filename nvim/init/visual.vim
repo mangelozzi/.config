@@ -10,82 +10,38 @@ set cursorline      " High lights the line number and cusro line
 set termguicolors   " Uses highlight-guifg and highlight-guibg, hence 24-bit color
 color michael       " Note this resets all highlighting, so much be before others
 
-"==============================================================================
-" STATUS LINE
-
-" Heavily inspired by: https://github.com/junegunn/dotfiles/blob/master/vimrc
-function MyStatusLine(mode)
-    if a:mode == 'Enter'
-        echo "enter"
-    endif
-    let l:s = ''
-    "let l:s .=  g:statusline_winid . "=" . win_getid() ."  END "
-    let l:s .= &l:modifiable ? '%{expand("%:h")}'.'/' : ''  " Show file path head
-    let l:s .= '%#_StatusFileName#'                       " Change to StatusLineNC highlighting
-    let l:s .= ' %t '                                     " filename only no path (Tail)
-    let l:s .= '%*'                                       " Return to default color StatusLine / StatusLineNC
-    if &modified
-        let l:s .= '%#_StatusModified#[+++]%*'            " Modified
-    elseif &l:modifiable
-        let l:s .= ''                                     " Not modified
-    else
-        let s.= '[R]'                                     " Read only file
-    endif
-    let l:s .= ' %= '                                     " Left/Right separator
-    if exists('g:loaded_fugitive')
-        let l:s .= '%#_StatusGit#'.fugitive#statusline().'%*'
-    endif
-    let l:s .= ' %6l'                                     " Current line number
-    let l:s .= ',%-3c'                                    " Current column number, left aligned 3 characters wide
-    let l:s .= ' %P '                                     " Percentage through the file
-    return l:s
-endfunction
-"au WinEnter * setlocal statusline=%!MyStatusLine('Enter')
-"au WinLeave * setlocal statusline=%!MyStatusLine('Leave')
-" au FileType * setlocal statusline=%!MyStatusLine('Enter')
-set statusline=%!MyStatusLine('Enter')
-
-" Note: need to escape space with a backslash
-"set statusline=
-"set statusline+=%{expand('%:h')}\\ " Show file path no filename
-"set statusline+=%#StatusLineNC#
-"set statusline+=%t      "filename only no path (Tail)
-"set statusline+=%*      "Return to default color StatusLine / StatusLineNC
-
-""set statusline+=%-.50F  "displays the full filename of the current buffer, left aligned, 100 characters max.
-""set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
-""set statusline+=%{&ff}] "file format
-""set statusline+=%h      "help file flag
-"set statusline+=%#StatusUnsaved#
-"set statusline+=%m      "modified flag
-"set statusline+=%*      "Return to default color StatusLine / StatusLineNC
-""set statusline+=%r      "read only flag
-""set statusline+=%y      "filetype
-"set statusline+=%=      "left/right separator
-""set statusline+=[%03.b]\ \ " Current character in ASCII 3 min 3 digits
-"" set statusline+= %{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}
-"set statusline+=\ %6l,%-4c " Line number, Column Number
-"set statusline+=\ %P\     "percent through file
-
-"let &statusline = s:statusline_expr()
-
 " -----------------------------------------------------------------------------
 " Status line
 " -----------------------------------------------------------------------------
-
 " Heavily inspired by: https://github.com/junegunn/dotfiles/blob/master/vimrc
-" function! s:statusline_expr()
-"   let mod = "%{&modified ? '[+++] ' : !&modifiable ? '[---] ' : '[   ]'}"
-"   let ro  = "%{&readonly ? '[RO] ' : ''}"
-"   let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-"   let sep = ' %= '
-"   let pos = ' %-12(%l : %c%V%) '
-"   let pct = ' %P'
-
-"   return '[%n] %f %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
-" endfunction
-
-" let &statusline = s:statusline_expr()
+function MyStatusLine(currentWindow)
+    let s = ""
+    let s .= "%{&l:modifiable?expand('%:h').'/':''}"    " Show file path head for modifiable files
+    let s .= "%{(&readonly||!&modifiable)?'[R]':''}"    " If readonly file, show [R] instead of filepath
+    if a:currentWindow
+        let s .= "%#_StatusFileName#"                   " Change to StatusFileName highlighting
+    else
+        let s .= "%#_StatusFileNameNC#"                 " Change to StatusFileNameNC highlighting
+    endif
+    let s .= " %t "                                     " filename only no path (Tail)
+    let s .= "%*"                                       " Return to default color StatusLine / StatusLineNC
+    let s .= "%#_StatusModified#%{&modified?' +++ ':''}%*"
+    let s .= " %= "                                     " Left/Right separator
+    if exists('g:loaded_fugitive')
+        if a:currentWindow
+            let s .= "%*%#_StatusGit#%{&l:modifiable ? fugitive#statusline() : ''}%*"
+        else
+            let s .= "%*%#_StatusGitNC#%{&l:modifiable ? fugitive#statusline() : ''}%*"
+        endif
+    endif
+    let s .= " %6l"                                     " Current line number
+    let s .= ",%-3c"                                    " Current column number, left aligned 3 characters wide
+    let s .= " %P "                                     " Percentage through the file
+    return s
+endfunction
+"set statusline=%!MyStatusLine('Enter')
+autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
+autocmd WinLeave * setlocal statusline=%!MyStatusLine(0)
 
 "==============================================================================
 "HIGHLIGHTING
