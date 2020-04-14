@@ -148,6 +148,8 @@ noremap <BS> <C-^>
 " http://vimdoc.sourceforge.net/htmldoc/pattern.html#pattern (scroll down a page to magic)
 noremap <leader>/ /\v
 
+"noremap <leader>sf :lvimgrep // %<left><left><left>
+
 " ___ MAP! (NOREMAP!)__________________________________________________________
 " Map other forms of escape to true <Esc>, e.g. useful for multiline editing
 " requres <Esc>.

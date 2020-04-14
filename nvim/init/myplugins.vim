@@ -1,5 +1,6 @@
 " TO TRY
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
+" https://github.com/janko/vim-test
 
 " Indicator for what was yanked
 " Plug 'machakann/vim-highlightedyank'
@@ -47,7 +48,7 @@ Plug 'ap/vim-css-color'
 " GIT
 Plug 'tpope/vim-fugitive'
 
-" FZF 
+" FZF
 let fzfdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/fzf"
 Plug 'junegunn/fzf', { 'dir': fzfdir, 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -189,16 +190,40 @@ nnoremap <silent> <leader>gs :Git status<cr>
 " ==============================================================================
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
 " To search within a dir `:FZF [dir] <CR>`
+let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
+
+function! s:_search_in_files()
+    let searchString = input('Search in Files '.getcwd().': ')
+    silent cexpr system('rg --no-heading --column "'.searchString.'" '.getcwd())
+    " Switch to the quickfix window so changes matches apply to it
+    silent copen
+    silent set nowrap
+    silent set norelativenumber
+    silent call clearmatches()
+    silent call matchadd('Search', searchString)
+    " Now leave the quickfix window by going to the first quickfix change (cc)
+    silent cc
+    call search(searchString)
+    " TODO perform incremental search in current buffer
+    " TODO make abortanble
+    echo "Search complete for ".searchString
+endfunction
+command! SearchInFiles call s:_search_in_files()
+nnoremap <silent> <leader>zz :SearchInFiles<CR>
+nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
 
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=21m42s
+" CTRL+P and CTRL+N previous/next file
+" TAB /SHIFT TAB to toggle marking
+" CTRL+A to select all matches
+" <ENTER> open all marked files in a quickfix window
 let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit',
-  \ 'ctrl-y': {lines -> setreg('*', join(lines, "\n"))}}
-
+            \ 'ctrl-t': 'tab split',
+            \ 'ctrl-x': 'split',
+            \ 'ctrl-v': 'vsplit' }
 " When aborting fzf in Neovim, <Esc> does not work, so fix it:
 tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
+
 
 " Allow passing optional flags into the Rg command.
 "   Example: :Rg foo -g '*.py'
@@ -218,10 +243,10 @@ nnoremap <silent> <leader>f :Files<cr>
 nnoremap <silent> <leader>zg :GFiles<cr>
 
 " Map to FZF command, so one can type commands interactively before enter.
-nnoremap <leader>zz :FZF<Space>
+" nnoremap <leader>zz :FZF<Space>
 
 " Map to Rg command, so one can type commands interactively before enter.
-nnoremap <leader>zr :Rg<Space>
+nnoremap <leader>zr :Rg<Space>HighlightSearchTerm<CR>
 
 " Files under current home
 nnoremap <silent> <leader>zh :FZF ~<cr>
@@ -240,17 +265,17 @@ nnoremap <silent> <leader>zm :Maps<cr>
 " PLUGIN: 'Xuyuanp/nerdtree-git-plugin'
 " ●✗
 let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "⚠",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "●",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-    \ }
+            \ "Modified"  : "⚠",
+            \ "Staged"    : "✚",
+            \ "Untracked" : "✭",
+            \ "Renamed"   : "➜",
+            \ "Unmerged"  : "═",
+            \ "Deleted"   : "✖",
+            \ "Dirty"     : "●",
+            \ "Clean"     : "✔︎",
+            \ 'Ignored'   : '☒',
+            \ "Unknown"   : "?"
+            \ }
 
 " ______________________________________________________________________________
 " PLUGIN: vim-multiple-cursors
@@ -274,24 +299,24 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " CocList extensions
 
 " Python        coc-python
-" JavaScript    coc-tsserver coc-eslint 
+" JavaScript    coc-tsserver coc-eslint
 " Webcoc-html   coc-html coc-css
 " Misc Formats  coc-json coc-svg coc-markdownlint
 " To try        coc-snippets coc-pairs coc-prettier
- 
+
 " Specify with extensions to use
 " Can check with :CocList extensions
 let g:coc_global_extensions = [
-  \ 'coc-python', 
-  \ 'coc-tsserver', 
-  \ 'coc-eslint', 
-  \ 'coc-html', 
-  \ 'coc-css', 
-  \ 'coc-json', 
-  \ 'coc-svg', 
-  \ 'coc-markdownlint', 
-  \ ]
+            \ 'coc-python',
+            \ 'coc-tsserver',
+            \ 'coc-eslint',
+            \ 'coc-html',
+            \ 'coc-css',
+            \ 'coc-json',
+            \ 'coc-svg',
+            \ 'coc-markdownlint',
+            \ ]
 
 let g:coc_filetype_map = {
-  \ 'htmldjango': 'html',
-  \ }
+            \ 'htmldjango': 'html',
+            \ }
