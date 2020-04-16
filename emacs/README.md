@@ -36,23 +36,6 @@ sudo apt install emacs-snapshot
 
 
 ## Env Requirements
-### Python 
-#### Ubuntu:
-Building from source [guide](https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/):
-1. Use check install to controll the installation so it can be uninstalled:
-  - `sudo apt-get update && sudo apt-get install checkinstall`
-Install requirements to build from source:
-1. libffi-dev ...c_types for black
-. `sudo apt-get install libffi-dev python3.8-dev`
-Not sure about this list: `sudo apt install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget`
-`sudo apt update`
-1. Download most recent stable version from [python.org](ttps://www.python.org/download/other/)
-2. Extract archive and cd into the dir
-`./configure  --enable-optimizations`
-`make`
-Use check install so it can be uninstalled if required, call package python3.8
-Call make install with `j -4` to use 4 cores.
-`sudo checkinstall make install -j 4` (instead of sudo make install)
 
 ### project prep
 Install python
@@ -61,22 +44,15 @@ install 2 x requirements files
 For postgres pip installation:
 Might be cause had not installed postgresql yet: `sudo apt-get install libpq-dev`
 
-## DEPENDENCIES
-### Emacs
-use-package
+## PLUGIN MANAGERS
+- Emacs, built in package manager and `use-package` macro
 
-### PIP
-1. `sudo apt -y install python3-pip`
-2. `apt-get install python3-venv` (Ubuntu, for venv/ (supposed to be OOTB))
-### Node.js
-Download from [node homepage](https://nodejs.org/en/)
-```
-sudo apt-get install curl
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node -v
-npm -v
-```
+## DEPENDENCIES
+Refer to README.md in project root for installation of the following:
+- Python with PIP3
+- Node with NPM
+
+## PLUGIN DEPENDENCIES
 
 ## Eglot (Language Server for Emacs)
 The lanuage servers must be accessible on the path. e.g. for pyls, if you type pyls and its not found that is a problem.

@@ -41,46 +41,48 @@ Install font `font\RobotoMono NF.ttf`
 Install font `font\RobotoMono NF Windows Compatible.ttf`
 
 ## PLUGIN MANAGER
-### Neovim
-Use [VimPlug](https://github.com/junegunn/vim-plug) as the plug in manager,
-which is already in the config, so no need to install.
-1. Run the command `:PlugInstall` upon first start up
-
-### PIP
-#### Linux
-1. `sudo apt -y install python3-pip`
-2. `apt-get install python3-venv` (Ubuntu, for venv/ (supposed to be OOTB))
-
-### Node.js
-#### Linux
-```
-sudo apt-get install curl
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node -v
-npm -v
-```
-#### Windows
-Download and run installer from [node homepage](https://nodejs.org/en/)
+- Neovim, [VimPlug](https://github.com/junegunn/vim-plug)
+    1 Already in the config, so no need to install.
+    2. Run the command `:PlugInstall` upon first start up
 
 ## DEPENDENCIES
-### Python via PIP (in VENV! NO SUDO!!!!)
+Refer to README.md in project root for installation of the following:
+- Python via PIP3
+- Node via NPM
+
+## PLUGIN DEPENDENCIES
+### Neovim Python
 ```
-pip install pynvim             # For python hooks into Neovim
-pip install jedi               # Coc Autocomplete
-pip install flake8             # Coc Syntax linting
-pip install black              # Coc Autoformatting
-pip install isort              # Coc Sort imports
-deprecated: pip install jedi   # For deoplete-jedi - autocomplete
-deprecated: pip install pylint # For Neomake - syntax linting
+pip3 install pynvim
+```
+### Coc-Python
+In default installation (so common to all), with NO SUDO!!!!
+```
+pip3 install mypy flake8 jedi black isort
+```
+```
+- pynvim             # For python hooks into Neovim
+- mypy               # For flake 8 type checking
+- flake8             # Coc Syntax linting, (Pylint is very whiny)
+- jedi               # Coc Autocomplete
+- black              # Coc Autoformatting
+- isort              # Coc Sort imports
 ```
 
-### Node.js via NPM
+### Neovim Node.js
 For Linux prefix with sudo
 ```
 npm install -g Neovim
-npm install -g tern             # for carlitux/deoplete-ternjs
-npm install -g eslint           # Coc
+```
+
+### carlitux/deoplete-ternjs
+```
+npm install -g tern
+```
+
+### coc-eslint
+```
+npm install -g eslint
 ```
 
 ### Coc
@@ -141,7 +143,6 @@ git config --global mergetool.keepBackup false
 git config --global mergetool.nvim.cmd $'nvim -d $LOCAL $REMOTE $MERGED -c \'$wincmd w\' -c \'wincmd J\''
 ```
 
-
 ## USEFUL ENVIROMENT VARIABLES
 Too see the path of a VIM env variable type, open vim and type:
     :echo $VIM
@@ -156,6 +157,8 @@ Too see the path of a VIM env variable type, open vim and type:
   <br>e.g. C:\Neovim\share\nvim\runtime
 
 See runtimepath --> :set runtimepath?
+
+
 
 ## DEPRICATED: 
 Get ctags and make sure the ctags.exe accessible by PATH.
@@ -172,3 +175,11 @@ then select append the `Target` with `-- -S` to restore any session files. Will 
 
 Within CocConfig:
 "eslint.options": {"configFile": "C:/Users/Michael/.config/nvim/coc-eslint.json"},
+
+
+### deoplete-jedi
+```
+pip install jedi     # For deoplete-jedi - autocomplete
+pip install pylint   # For Neomake - syntax linting
+```
+
