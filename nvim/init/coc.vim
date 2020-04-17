@@ -11,8 +11,8 @@ set nowritebackup
 set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
+" Delays and poor user experience.
+set updatetime=500
 
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
@@ -75,9 +75,9 @@ augroup mygroup
 augroup end
 
 " Remap keys for applying codeAction to the current line.
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>ca  <Plug>(coc-codeaction)
 " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>cq  <Plug>(coc-fix-current)
 
 " Introduce function text object
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -89,7 +89,7 @@ omap af <Plug>(coc-funcobj-a)
 " Use <TAB> for selections ranges.
 " NOTE: Requires 'textDocument/selectionRange' support from the language server.
 " coc-tsserver, coc-python are the examples of servers that support it.
-" !!!!!!!!!!!!!!!MICHAEL 
+" !!!!!!!!!!!!!!!MICHAEL
 " Not supported in python
 " TAB = ^i in Vim, so loose jump to next place
 " nmap <silent> <TAB> <Plug>(coc-range-select)
@@ -110,11 +110,11 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " GoTo code navigation.
-nmap <silent> <leader>d <Plug>(coc-definition)
-nmap <silent> <leader>y <Plug>(coc-type-definition)
-nmap <silent> <leader>i <Plug>(coc-implementation)
+nmap <silent> <leader>cd <Plug>(coc-definition)
+nmap <silent> <leader>ct <Plug>(coc-type-definition)
+nmap <silent> <leader>ci <Plug>(coc-implementation)
 " u = used (r is used for replace)
-nmap <silent> <leader>u <Plug>(coc-references)
+nmap <silent> <leader>cr <Plug>(coc-references)
 
 
 " Use `[g` and `]g` to navigate diagnostics
@@ -129,25 +129,25 @@ nmap <F2> <Plug>(coc-rename)
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
 " Mike: Select python imports, <leader>a then press 3 for sort, hey presto!
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>ca  <Plug>(coc-codeaction-selected)
+nmap <leader>ca  <Plug>(coc-codeaction-selected)
 
 
 " Mappings using CoCList:
 " Show all diagnostics.
-nnoremap <silent> <space>cd  :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <space>clg  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
-nnoremap <silent> <space>ce  :<C-u>CocList extensions<cr>
+nnoremap <silent> <space>cle  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent> <space>cc  :<C-u>CocList commands<cr>
+nnoremap <silent> <space>clc  :<C-u>CocList commands<cr>
 " Find symbol of current document.
-nnoremap <silent> <space>co  :<C-u>CocList outline<cr>
+nnoremap <silent> <space>clo  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-nnoremap <silent> <space>cs  :<C-u>CocList -I symbols<cr>
+nnoremap <silent> <space>cls  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
 nnoremap <silent> <space>cj  :<C-u>CocNext<CR>
 " Do default action for previous item.
 nnoremap <silent> <space>ck  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-nnoremap <silent> <space>cp  :<C-u>CocListResume<CR>
+nnoremap <silent> <space>clp  :<C-u>CocListResume<CR>
 

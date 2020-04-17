@@ -192,24 +192,8 @@ nnoremap <silent> <leader>gs :Git status<cr>
 " To search within a dir `:FZF [dir] <CR>`
 let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
-function! s:_search_in_files()
-    let searchString = input('Search in Files '.getcwd().': ')
-    silent cexpr system('rg --no-heading --column "'.searchString.'" '.getcwd())
-    " Switch to the quickfix window so changes matches apply to it
-    silent copen
-    silent set nowrap
-    silent set norelativenumber
-    silent call clearmatches()
-    silent call matchadd('Search', searchString)
-    " Now leave the quickfix window by going to the first quickfix change (cc)
-    silent cc
-    call search(searchString)
-    " TODO perform incremental search in current buffer
-    " TODO make abortanble
-    echo "Search complete for ".searchString
-endfunction
-command! SearchInFiles call s:_search_in_files()
-nnoremap <silent> <leader>zz :SearchInFiles<CR>
+" Don't abort the function, so if no match is found, its communicates it.
+nnoremap <silent> <leader>zz :call myautoload#SearchInFiles()<CR>
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
 
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=21m42s
@@ -238,6 +222,9 @@ nnoremap <silent> <leader><leader> :Buffers<cr>
 
 " FZF Search for Files
 nnoremap <silent> <leader>f :Files<cr>
+
+" FZF Search for previous opened Files
+nnoremap <silent> <leader>zh :History<cr>
 
 " FZF in Git files
 nnoremap <silent> <leader>zg :GFiles<cr>

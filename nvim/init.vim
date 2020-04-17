@@ -102,7 +102,7 @@ set relativenumber
 
 " Broken current neovim implementation always copies selection to "* and "+
 " Note Linux clipboard for pasting into gedit uses +
-set clipboard+=unnamed     " Use "* for all yank, delete, change and put operations which would normally go to the unnamed register.
+set clipboard=unnamed      " Use "* for all yank, delete, change and put operations which would normally go to the unnamed register.
 set clipboard+=unnamedplus " Use "+ for all yank, delete, change and put operations which would normally go to the unnamed register.
 
 " Left click yank selection to *, then re-select selection, then move left one char. Use middle click to paste, see mousemodel. The neovim default only copies the selection if middle click is pressed (this is required to select text then paste in another OS app).
@@ -150,6 +150,10 @@ noremap <leader>/ /\v
 
 "noremap <leader>sf :lvimgrep // %<left><left><left>
 
+" When pressing star, don't jump to the next match
+nmap <silent> * yiw<Esc>: let @/ = @""<CR>
+nmap <silent> # yiw<Esc>: let @/ = @""<CR>
+
 " ___ MAP! (NOREMAP!)__________________________________________________________
 " Map other forms of escape to true <Esc>, e.g. useful for multiline editing
 " requres <Esc>.
@@ -180,21 +184,8 @@ map! <F3> <Esc>:e $MYVIMRC<CR> :cd %:p:h<CR>
 " <F4> CLOSE BUFFER
 " Same as buffer delete, however if its the last none help or empty buffer,
 " then quit.
-function! QuitIfLastBuffer()
-    let cnt = 0
-    for nr in range(1,bufnr("$"))
-        if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
-            let cnt += 1
-        endif
-    endfor
-    if cnt <= 1
-        :q
-    else
-        :bd
-    endif
-endfunction
-map  <F4>      :call QuitIfLastBuffer()<CR>
-map! <F4> <C-o>:call QuitIfLastBuffer()<CR>
+map  <F4>      :call myautoload#QuitIfLastBuffer()<CR>
+map! <F4> <C-o>:call myautoload#QuitIfLastBuffer()<CR>
 
 " <F5> to <F8> SETTINGS -------------------------------------------------------
 
@@ -247,6 +238,19 @@ noremap <Leader>rc :%s///gc<Left><Left><Left>
 " added.
 vnoremap <Leader>rr :s///g<Left><Left>
 vnoremap <Leader>rc :s///gc<Left><Left><Left>
+
+" ___ COPY & PASTE ____________________________________________________________
+" Copy to system clipboard
+" vnoremap  <leader>y  "+y
+" nnoremap  <leader>Y  "+yg_
+" nnoremap  <leader>y  "+y
+" nnoremap  <leader>yy  "+yy
+
+" " Paste from clipboard
+" nnoremap <leader>p "+p
+" nnoremap <leader>P "+P
+" vnoremap <leader>p "+p
+" vnoremap <leader>P "+P
 
 " ___ TERMINAL MODE ___________________________________________________________
 " <Esc> to exit terminal-mode:
@@ -355,11 +359,6 @@ endfunction
 " AUTOCOMMANDS
 " =============================================================================
 " Strip trailing whitespace, but preserve cursor position
-function! <SID>StripTrailingWhitespaces()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
 " Using file extension
-autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call <SID>StripTrailingWhitespaces()
+autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call myautoload#StripTrailingWhitespace()
+autocmd BufWritePost *.vim source %

@@ -5,6 +5,8 @@
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": ["--ignore=E1,E2,E3,E402,E501,F403,W2,W391,W503", "--format=default"],
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": ["--ignore-missing-imports","--follow-imports=silent","--show-column-numbers"],
     "diagnostic.checkCurrentLine": true,
     "python.formatting.provider": "black",
     "python.formatting.blackArgs" : ["--skip-string-normalization"],

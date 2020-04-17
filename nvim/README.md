@@ -40,6 +40,15 @@ Install font `font\RobotoMono NF.ttf`
 ### Windows
 Install font `font\RobotoMono NF Windows Compatible.ttf`
 
+## CLIP BOARD
+### Ubuntu
+```
+sudo apt install xsel
+```
+### Windows
+Works without it.
+
+
 ## PLUGIN MANAGER
 - Neovim, [VimPlug](https://github.com/junegunn/vim-plug)
     1 Already in the config, so no need to install.
@@ -56,9 +65,11 @@ Refer to README.md in project root for installation of the following:
 pip3 install pynvim
 ```
 ### Coc-Python
-In default installation (so common to all), with NO SUDO!!!!
+In default installation (so common to all), with:
+- NO SUDO!!!!
+- May require --user if fails
 ```
-pip3 install mypy flake8 jedi black isort
+pip3 install black isort mypy flake8 jedi==0.16
 ```
 ```
 - pynvim             # For python hooks into Neovim

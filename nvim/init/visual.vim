@@ -13,27 +13,60 @@ color michael       " Note this resets all highlighting, so much be before other
 " -----------------------------------------------------------------------------
 " Status line
 " -----------------------------------------------------------------------------
-" Heavily inspired by: https://github.com/junegunn/dotfiles/blob/master/vimrc
-function MyStatusLine(currentWindow)
-    let s = ""
-    let s .= "%{&l:modifiable?expand('%:h').'/':''}"    " Show file path head for modifiable files
-    let s .= "%{(&readonly||!&modifiable)?'[R]':''}"    " If readonly file, show [R] instead of filepath
+function MyStatusLine(currentWindow) abort
+    " The only thing which can be dynamically checked, is whether it is the
+    " active window or not, since the status line is recalculated only when
+    " switching windows.
+
     if a:currentWindow
-        let s .= "%#_StatusFileName#"                   " Change to StatusFileName highlighting
-    else
-        let s .= "%#_StatusFileNameNC#"                 " Change to StatusFileNameNC highlighting
-    endif
-    let s .= " %t "                                     " filename only no path (Tail)
-    let s .= "%*"                                       " Return to default color StatusLine / StatusLineNC
-    let s .= "%#_StatusModified#%{&modified?' +++ ':''}%*"
-    let s .= " %= "                                     " Left/Right separator
-    if exists('g:loaded_fugitive')
-        if a:currentWindow
-            let s .= "%*%#_StatusGit#%{&l:modifiable ? fugitive#statusline() : ''}%*"
+        if &buftype == 'quickfix'
+            let col_line   = "%#_qfStatusLine#"
+            let col_file   = "%#_qfStatusFile#"
+            let col_subtle = "%#_qfStatusSubtle#"
+            let col_fade1  = "%#_qfStatusFade1#"
+            let col_fade2  = "%#_qfStatusFade2#"
+            let col_fade3  = "%#_qfStatusFade3#"
+        elseif &buftype ==  'help'
+            let col_line   = "%#_helpStatusLine#"
+            let col_file   = "%#_helpStatusFile#"
+            let col_subtle = "%#_helpStatusSubtle#"
+            let col_fade1  = "%#_helpStatusFade1#"
+            let col_fade2  = "%#_helpStatusFade2#"
+            let col_fade3  = "%#_helpStatusFade3#"
         else
-            let s .= "%*%#_StatusGitNC#%{&l:modifiable ? fugitive#statusline() : ''}%*"
+            let col_line   = "%#StatusLine#"
+            let col_file   = "%#_StatusFile#"
+            let col_subtle = "%#_StatusSubtle#"
+            let col_fade1  = "%#_StatusFade1#"
+            let col_fade2  = "%#_StatusFade2#"
+            let col_fade3  = "%#_StatusFade3#"
         endif
+    else
+        let col_line   = "%#StatusLineNC#"
+        let col_file   = "%#_StatusFileNC#"
+        let col_subtle = "%#_StatusSubtleNC#"
+        let col_fade1  = "%#_StatusFadeNC1#"
+        let col_fade2  = "%#_StatusFadeNC2#"
+        let col_fade3  = "%#_StatusFadeNC3#"
     endif
+    let s = ""
+    "let s .= "%*"                                       " Return to default color StatusLine / StatusLineNC
+    let s .= col_line
+    let s .= " "
+    let s .= "%{(&readonly||!&modifiable)?'[R]':''}"    " If readonly file, show [R] instead of filepath
+    let s .= "%{&l:modifiable?expand('%:h').'/':''}"    " Show file path head for modifiable files
+    let s .= col_fade1."▌".col_fade2."▌".col_fade3."▌"
+    let s .= col_file
+    let s .= " %t "                                     " filename only no path (Tail)
+    let s .= "%#_StatusModified#%{&modified?' +++ ':''}"
+    let s .= col_fade3."%{!&modified?'▐':''}".col_fade2."%{!&modified?'▐':''}".col_fade1."%{!&modified?'▐':''}"
+    let s .= col_line
+    let s .= "%="                                     " Left/Right separator
+    let s .= "%{&buftype} "
+    if exists('g:loaded_fugitive')
+        let s .= col_subtle."%{&l:modifiable ? fugitive#statusline() : ''}"
+    endif
+    let s .= col_line
     let s .= " %6l"                                     " Current line number
     let s .= ",%-3c"                                    " Current column number, left aligned 3 characters wide
     let s .= " %P "                                     " Percentage through the file
@@ -50,8 +83,8 @@ autocmd WinLeave * setlocal statusline=%!MyStatusLine(0)
 " LEADING SPACES NOT %4
 " From the start of line, look for any number of 4 spaces
 " Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
-"match wrong_spacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-autocmd FileType *.py,*.js setlocal match wrong_spacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+"match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 
 " TRAILING WHITESPACE
 " Must escape the plus, match one or more space before the end of line

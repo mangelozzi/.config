@@ -57,13 +57,26 @@ hi CursorLineNr         guifg=#4F4F4F guibg=#00CC00 " Cursor line number colour
 hi NonText              guifg=#555555 " Hidden characters from set list
 hi ColorColumn          guibg=#333333 " 80 chars wide column
 
-" Search and replace
-hi QuickFixLine         term=reverse ctermbg=52 guifg=#FF0000
 hi IncSearch            guifg=#000000 guibg=#FFFF00 gui=bold " While one is typing search pattern
 hi Search               guifg=#000000 guibg=#CF9F00          " Other search matches
 
+" Current line on
+hi CursorLine                               guibg=#444444 " The current cursor line highlighting, works!
+autocmd InsertLeave * highlight  CursorLine guibg=#4F4F4F " Revert Color to default when leaving Insert Mode, should match colour above
+autocmd InsertEnter * highlight  CursorLine guibg=#550000 " Change Color when entering Insert Mode
+
+" Search and replace
+hi _qfNormal            guifg=#ffffff guibg=#333300     " Override default Normal
+hi  QuickFixLine        guifg=#ffff00 gui=bold          " The last quick entry browsed to
+hi _qfCursorLine        guibg=#676700 gui=bold          " The current cursor line highlighting, works!
+hi _qfLineNr            guifg=#ffff00 guibg=#444400     " Line number colour
+hi _qfCursorLineNr      guifg=#000000 guibg=#cccc00     " Cursor line number colour
+hi qfFileName           guifg=#FF0000 gui=bold
+hi qfLineNr             guifg=#FFFF00
+hi qfSeparator          guifg=#000000
+
 "Whitespace
-hi wrong_spacing        guibg=#FF0000 " If not a multiple of 4 spaces
+hi _WrongSpacing        guibg=#FF0000 " If not a multiple of 4 spaces
 hi _TrailingWhitespace  guibg=#880000 " Highlight trailing whitespace
 
 " NERDTree
@@ -74,6 +87,50 @@ hi NERDTreeDirSlash     guifg=#6b6220
 hi NERDTreeClosable     guifg=#444444
 hi NERDTreeOpenable     guifg=#444444
 hi NERDTreeCWD          guifg=#FF0000 " NERDTree root dir
+
+"Status line normal colour, NC = Non Current
+hi _StatusModified      guibg=#FF0000 guifg=#FFFFFF gui=BOLD
+hi qfError              guibg=#FF0000 guifg=#FFFFFF gui=BOLD
+
+hi StatusLine           guibg=#00A000 guifg=#202020 gui=none " WARNING! By default gui set to reverse, need to overide it with none
+hi _StatusFade1         guibg=#00B000 guifg=#00A800
+hi _StatusFade2         guibg=#00C000 guifg=#00B800
+hi _StatusFade3         guibg=#00D000 guifg=#00C800
+hi _StatusFile          guibg=#00FF00 guifg=#000000 gui=bold
+hi _StatusSubtle        guibg=#00A000 guifg=#007700
+
+hi StatusLineNC         guibg=#777777 guifg=#000000 gui=none " Status line None current
+hi _StatusFadeNC1       guibg=#808080 guifg=#7B7B7B
+hi _StatusFadeNC2       guibg=#909090 guifg=#888888
+hi _StatusFadeNC3       guibg=#A0A0A0 guifg=#989898
+hi _StatusFileNC        guibg=#ABABAB guifg=#000000 gui=bold
+hi _StatusSubtleNC      guibg=#777777 guifg=#444444
+
+hi _qfStatusLine        guibg=#C0C000 guifg=#000000 gui=none " WARNING! By default gui set to reverse, need to overide it with none
+hi _qfStatusFade1       guibg=#D0D000 guifg=#C8C800
+hi _qfStatusFade2       guibg=#E0E000 guifg=#D8D800
+hi _qfStatusFade3       guibg=#F0F000 guifg=#E8E800
+hi _qfStatusFile        guibg=#FFFF00 guifg=#000000 gui=bold
+hi _qfStatusLineNC      guibg=#777700 guifg=#ffff00
+hi _qfStatusSublte      guibg=#00A000 guifg=#007700
+
+hi _helpStatusLine      guibg=#A000E0 guifg=#000000
+hi _helpStatusFade1     guibg=#B000E8 guifg=#A800E4
+hi _helpStatusFade2     guibg=#C000F0 guifg=#B800EA
+hi _helpStatusFade3     guibg=#E000F8 guifg=#D000F4
+hi _helpStatusFile      guibg=#FF00FF guifg=#000000 gui=bold
+hi _helpStatusLineNC    guibg=#770077 guifg=#ff00ff
+hi _helpStatusSublte    guibg=#0000A0 guifg=#000077
+
+" Visual Selection
+hi Visual guibg=#888888
+
+" Change whole screen background color
+"autocmd InsertEnter * highlight Normal guibg=#110000
+"autocmd InsertLeave * highlight Normal guibg=black
+
+"Change .CSS attribute font colour
+hi StorageClass guifg=#FF6991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 
 "=========================================================
 "GIT
@@ -109,30 +166,6 @@ hi DiffRemoved guifg=#F00000 guibg=#192224 guisp=#192224 gui=BOLD ctermfg=NONE c
 "diffOldFile
 "diffComment
 
-
-"Status line normal colour, NC = Non Current
-hi StatusLine           guifg=#000000 guibg=#00CC00 gui=none " WARNING! By default gui set to reverse, need to overide it with none
-hi StatusLineNC         guifg=#192224 guibg=#ABABAB gui=none " Status line None current
-hi _StatusFileName      guifg=#FFFFFF guibg=#007700 gui=bold
-hi _StatusFileNameNC    guifg=#FFFFFF guibg=#777777 gui=bold
-hi _StatusModified      guifg=#FFFFFF guibg=#FF0000 gui=BOLD
-hi _StatusGit           guifg=#009900 guibg=#00CC00
-hi _StatusGitNC         guifg=#777777 guibg=#ABABAB
-
-" Current line on
-hi CursorLine                               guibg=#444444 " The current cursor line highlighting, works!
-autocmd InsertLeave * highlight  CursorLine guibg=#4F4F4F " Revert Color to default when leaving Insert Mode, should match colour above
-autocmd InsertEnter * highlight  CursorLine guibg=#550000 " Change Color when entering Insert Mode
-
-" Visual Selection
-hi Visual guibg=#888888
-
-" Change whole screen background color
-"autocmd InsertEnter * highlight Normal guibg=#110000
-"autocmd InsertLeave * highlight Normal guibg=black
-
-"Change .CSS attribute font colour
-hi StorageClass guifg=#FF6991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 
 "DEFAULT NOT USED
 "hi SpecialKey guifg=#5E6C70 guibg=NONE guisp=NONE gui=italic ctermfg=66 ctermbg=NONE cterm=NONE
