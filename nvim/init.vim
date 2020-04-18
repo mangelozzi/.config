@@ -143,6 +143,10 @@ map! <C-s> <C-o>:w<CR>
 noremap <BS> <C-^>
 noremap <BS> <C-^>
 
+" Make x/X not change the registers, i.e. uses the black hole register
+noremap x "_x
+noremap X "_X
+
 " Use Magic version of REGEX searching, i.e. all char expect 0-9a-zA-Z_ are
 " considered regex special chars "very magic".
 " http://vimdoc.sourceforge.net/htmldoc/pattern.html#pattern (scroll down a page to magic)
