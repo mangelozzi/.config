@@ -19,6 +19,7 @@ function MyStatusLine(currentWindow) abort
     " switching windows.
 
     if a:currentWindow
+        " See :h buftype for a full list
         if &buftype == 'quickfix'
             let col_line   = "%#_qfStatusLine#"
             let col_file   = "%#_qfStatusFile#"
@@ -62,19 +63,22 @@ function MyStatusLine(currentWindow) abort
     let s .= col_fade3."%{!&modified?'▐':''}".col_fade2."%{!&modified?'▐':''}".col_fade1."%{!&modified?'▐':''}"
     let s .= col_line
     let s .= "%="                                     " Left/Right separator
-    let s .= "%{&buftype} "
     if exists('g:loaded_fugitive')
-        let s .= col_subtle."%{&l:modifiable ? fugitive#statusline() : ''}"
+        let s .= col_subtle."%{&l:modifiable ? fugitive#statusline().'   ' : ''}"
     endif
     let s .= col_line
-    let s .= " %6l"                                     " Current line number
+    let s .= "%{&filetype} "
+    let s .= "%6l"                                     " Current line number
     let s .= ",%-3c"                                    " Current column number, left aligned 3 characters wide
     let s .= " %P "                                     " Percentage through the file
     return s
 endfunction
 "set statusline=%!MyStatusLine('Enter')
-autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
-autocmd WinLeave * setlocal statusline=%!MyStatusLine(0)
+augroup update_status_line
+    autocmd!
+    autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
+    autocmd BufWinLeave,WinLeave * setlocal statusline=%!MyStatusLine(0)
+augroup END
 
 "==============================================================================
 "HIGHLIGHTING
@@ -84,13 +88,16 @@ autocmd WinLeave * setlocal statusline=%!MyStatusLine(0)
 " From the start of line, look for any number of 4 spaces
 " Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
 "match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 
 " TRAILING WHITESPACE
 " Must escape the plus, match one or more space before the end of line
 " match trailing whitespace, except when typing at the end of a line.
 match _TrailingWhitespace /\s\+\%#\@<!$/
-" autocmd FileType *.py,*.js setlocal 2match trailing_whitespace /\s\+$/
+
+augroup match_whitespace
+    autocmd!
+    autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+augroup END
 
 " https://www.youtube.com/watch?v=aHm36-na4-4
 " If a line goes over 80 char wide highlight it

@@ -45,6 +45,7 @@ set wildignore+=**/spike/**,**/ignore/**,**/temp/static/**
 set wildignore+=**/venv/**,**/node_modules/**,**/.git/**
 set nolist                  " Dont show spaces/tabs/newlines etc
 "set noswapfiles
+set nomodeline              " Modelines are vimscript snippets in normal files which vim interprets, e.g. `ex:`
 "set undofile                " Persistent undo even after you close a file and re-open it
 set undolevels=2000         " Default 1000.
 "set noshowmode              " Do not show mode on command line since vim-airline can show it
@@ -134,7 +135,8 @@ map! <M-;> <Esc>:
 
 " CTRL+S to save
 map <C-s> :w<CR>
-map! <C-s> <C-o>:w<CR>
+" map! <C-s> <C-o>:w<CR>
+map! <C-s> <Esc>:w<CR>
 
 " ___ MAP (NOREMAP)____________________________________________________________
 "   Normal, Visual+Select, and Operator Pending modes
@@ -307,12 +309,6 @@ cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 " command! Cdv exe 'cd ' . fnamemodify($MYVIMRC, ':p:h')
 
 "==============================================================================
-" FILE TYPES
-"==============================================================================
-autocmd FileType css  setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType scss setlocal omnifunc=csscomplete#CompleteCSS
-
-"==============================================================================
 " SPLIT VIMRC files
 "==============================================================================
 "Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
@@ -362,7 +358,16 @@ endfunction
 " =============================================================================
 " AUTOCOMMANDS
 " =============================================================================
-" Strip trailing whitespace, but preserve cursor position
-" Using file extension
-autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call myautoload#StripTrailingWhitespace()
-autocmd BufWritePost *.vim source %
+" https://learnvimscriptthehardway.stevelosh.com/chapters/14.html
+" Autocommands are duplicated everytime the file is sourced.
+" To navigate this issue, place commands within an autocommand group, and
+" always clear the autocmds in the group by placing a autocmd! within the
+" group.
+"
+
+augroup save_programming_file
+    autocmd!
+    " Strips trailing whitespace and auto indents the file
+    autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call myautoload#SaveProgrammingFile()
+augroup END
+

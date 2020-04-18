@@ -62,8 +62,15 @@ hi Search               guifg=#000000 guibg=#CF9F00          " Other search matc
 
 " Current line on
 hi CursorLine                               guibg=#444444 " The current cursor line highlighting, works!
-autocmd InsertLeave * highlight  CursorLine guibg=#4F4F4F " Revert Color to default when leaving Insert Mode, should match colour above
-autocmd InsertEnter * highlight  CursorLine guibg=#550000 " Change Color when entering Insert Mode
+augroup mytheme_insert_enter
+    autocmd!
+    autocmd InsertEnter * hi CursorLine guibg=#550000   " Change Color when entering Insert Mode
+augroup END
+augroup mytheme_insert_leave
+    autocmd!
+    autocmd InsertLeave * hi CursorLine guibg=#4F4F4F   " Revert Color to default when leaving Insert Mode, should match colour above
+augroup END
+
 
 " Search and replace
 hi _qfNormal            guifg=#ffffff guibg=#333300     " Override default Normal

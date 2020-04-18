@@ -15,10 +15,17 @@ function myautoload#QuitIfLastBuffer()
 endfunction
 
 function myautoload#StripTrailingWhitespace()
-    let l = line(".")
-    let c = col(".")
     %s/\s\+$//e
-    call cursor(l, c)
+endfun
+function myautoload#AutoIndentFile()
+    normal gg=G
+endfun
+function myautoload#SaveProgrammingFile()
+    let l:winview = winsaveview()
+    silent call myautoload#StripTrailingWhitespace()
+    silent call myautoload#AutoIndentFile()
+    call winrestview(l:winview)
+    echom "Trailing whitespace stripped & Auto Indented."
 endfun
 
 let g:jump_to_first_match = 0
@@ -27,15 +34,19 @@ function myautoload#SearchInFiles()
     "let foo = input("Which was escaped to: ".shellescape(searchString))
     try
         "silent cexpr system('rg --no-heading --column '.shellescape(searchString).' '.getcwd())
-        "terminal rg -H --no-heading --column call
-        silent cexpr system('rg -H --no-heading --column '.searchString)
+        "silent cexpr system('rg -H --no-heading --column '.searchString)
+        exe 'terminal rg -H --no-heading --column '.searchString. ' '.getcwd()
+
+        let searchString = input('ran terminal buffer: '.bufnr())
+
+        cbuffer
         " Switch to the quickfix window so changes matches apply to it
         silent copen
         silent call clearmatches()
         silent call matchadd('Search', searchString)
         " Now leave the quickfix window
         if g:jump_to_first_match
-        " Going to the first quickfix change (cc)
+            " Going to the first quickfix change (cc)
             silent cc
         else
             " Return cursor position
