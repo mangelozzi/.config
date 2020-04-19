@@ -14,12 +14,12 @@ color michael       " Note this resets all highlighting, so much be before other
 " Status line
 " -----------------------------------------------------------------------------
 function MyStatusLine(currentWindow) abort
+    " To see a list of formatting items, e.g. %l), see :h statusline
     " The only thing which can be dynamically checked, is whether it is the
     " active window or not, since the status line is recalculated only when
     " switching windows.
 
     if a:currentWindow
-        " See :h buftype for a full list
         if &buftype == 'quickfix'
             let col_line   = "%#_qfStatusLine#"
             let col_file   = "%#_qfStatusFile#"
@@ -43,6 +43,7 @@ function MyStatusLine(currentWindow) abort
             let col_fade3  = "%#_StatusFade3#"
         endif
     else
+        " If not the current window, then override the colors with gray
         let col_line   = "%#StatusLineNC#"
         let col_file   = "%#_StatusFileNC#"
         let col_subtle = "%#_StatusSubtleNC#"
@@ -62,6 +63,7 @@ function MyStatusLine(currentWindow) abort
     let s .= "%#_StatusModified#%{&modified?' +++ ':''}"
     let s .= col_fade3."%{!&modified?'▐':''}".col_fade2."%{!&modified?'▐':''}".col_fade1."%{!&modified?'▐':''}"
     let s .= col_line
+    let s .= "%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}"
     let s .= "%="                                     " Left/Right separator
     if exists('g:loaded_fugitive')
         let s .= col_subtle."%{&l:modifiable ? fugitive#statusline().'   ' : ''}"

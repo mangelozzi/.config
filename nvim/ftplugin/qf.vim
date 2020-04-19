@@ -1,5 +1,6 @@
 set nowrap
 set norelativenumber
+set colorcolumn=
 
 nnoremap <Plug>MyDeleteQuickfix       :<C-U>set  opfunc=myautoload#DeleteQuickfixOperator<CR>g@
 nnoremap <Plug>MyDeleteQuickfixLine   :<C-U>call myautoload#DeleteQuickfixOperator('line')<CR>
