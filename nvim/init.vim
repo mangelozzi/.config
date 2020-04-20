@@ -1,3 +1,5 @@
+" TODO : NERD TRee status line, open vs when switch back to it
+"
 " A really good reference: https://github.com/jdhao/nvim-config
 " To create a link which loads a session file with neovim-qt:
 " C:\Neovim\bin\vim.exe -- -S
@@ -23,7 +25,7 @@ let g:is_mac = has('macunix')
 "==============================================================================
 " COLORS
 set background=dark
-set t_Co=256
+set termguicolors
 
 " GENERAL
 set autoindent              " When opening a new line keep indentation
@@ -190,8 +192,8 @@ map! <F3> <Esc>:e $MYVIMRC<CR> :cd %:p:h<CR>
 " <F4> CLOSE BUFFER
 " Same as buffer delete, however if its the last none help or empty buffer,
 " then quit.
-map  <F4>      :call myautoload#QuitIfLastBuffer()<CR>
-map! <F4> <C-o>:call myautoload#QuitIfLastBuffer()<CR>
+map  <F4>      :call myautoload#DeleteCurBufferNotCloseWindow()<CR>
+map! <F4> <Esc>:call myautoload#DeleteCurBufferNotCloseWindow()<CR>
 
 " <F5> to <F8> SETTINGS -------------------------------------------------------
 
@@ -371,3 +373,6 @@ augroup save_programming_file
     autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call myautoload#SaveProgrammingFile()
 augroup END
 
+" prompt = Prompt on line 0 before where one types
+
+" FZF

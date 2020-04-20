@@ -78,6 +78,7 @@ endfunction
 "set statusline=%!MyStatusLine('Enter')
 augroup update_status_line
     autocmd!
+    " autocmd BufWinEnter,WinEnter,BufRead * setlocal statusline=%!MyStatusLine(1)
     autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
     autocmd BufWinLeave,WinLeave * setlocal statusline=%!MyStatusLine(0)
 augroup END
