@@ -1,3 +1,10 @@
+" TODO
+"  run jobstart in background
+"  multi line msg ... then input to get enter press.
+" add back delete lines
+" tab toggles line color
+"  Clean up
+
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 function! myautoload#QuitIfLastBuffer()
