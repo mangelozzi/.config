@@ -7,19 +7,6 @@
 
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
-function! myautoload#QuitIfLastBuffer()
-    let cnt = 0
-    for nr in range(1,bufnr("$"))
-        if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
-            let cnt += 1
-        endif
-    endfor
-    if cnt <= 1
-        :q
-    else
-        :bd
-    endif
-endfunction
 
 function! myautoload#StripTrailingWhitespace()
     %s/\s\+$//e
@@ -119,8 +106,20 @@ function! myautoload#DeleteQuickfixOperator(mode)
     " echom a:mode." Start: ".l:start."  End: ".l:end
     call myautoload#DeleteQuickfix(l:start, l:end)
 endfunction
-nnoremap <Leader>b :call DeleteCurBufferNotCloseWindow()<CR>
 
+function! myautoload#QuitIfLastBuffer()
+    let cnt = 0
+    for nr in range(1,bufnr("$"))
+        if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
+            let cnt += 1
+        endif
+    endfor
+    if cnt <= 1
+        :q
+    else
+        :bd
+    endif
+endfunction
 " from https://stackoverflow.com/a/44950143/5506400
 function! myautoload#DeleteCurBufferNotCloseWindow() abort
     if &modified

@@ -206,7 +206,7 @@ nnoremap <silent> <leader>gs :Git status<cr>
 " ==============================================================================
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
 " To search within a dir `:FZF [dir] <CR>`
-" let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
+let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
 let $FZF_DEFAULT_COMMAND = 'rg --files . 2> nul'
 

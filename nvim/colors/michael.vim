@@ -43,9 +43,6 @@ set t_Co=256
 "hi CTagsMember -- no settings --
 "hi CTagsGlobalConstant -- no settings --
 "hi Ignore -- no settings --
-"hi Normal guifg=#ffffff guibg=#192224 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
-hi Normal guifg=#ffffff guibg=#000000 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
-hi NormalNC guifg=#AAAAAA guibg=#333333 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
 "hi CTagsImport -- no settings --
 "hi CTagsGlobalVariable -- no settings --
 "hi EnumerationValue -- no settings --
@@ -56,6 +53,11 @@ hi NormalNC guifg=#AAAAAA guibg=#333333 guisp=#192224 gui=NONE ctermfg=15 ctermb
 "hi LocalVariable -- no settings --
 "hi CTagsClass -- no settings --
 "hi clear -- no settings --
+
+" Normal
+"hi Normal guifg=#ffffff guibg=#192224 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
+hi Normal guifg=#ffffff guibg=#000000 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
+hi NormalNC guifg=#AAAAAA guibg=#333333 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
 
 " Line Numbers
 hi LineNr               guifg=#00CC00 guibg=#3F3F3F " Line number colour

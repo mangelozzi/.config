@@ -370,9 +370,6 @@ endfunction
 augroup save_programming_file
     autocmd!
     " Strips trailing whitespace and auto indents the file
-    autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call myautoload#SaveProgrammingFile()
+    autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.js :call myautoload#SaveProgrammingFile()
 augroup END
 
-" prompt = Prompt on line 0 before where one types
-
-" FZF

@@ -4,7 +4,8 @@
 [credential "https://github.com"]
 	username = michael-angelozzi
 [credential]
-	helper = store
+	#helper = mananger
+    #helper = store
 [core]
 	preloadindex = true
 	fscache = true

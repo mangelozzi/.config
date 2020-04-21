@@ -10,7 +10,7 @@
     "diagnostic.checkCurrentLine": true,
     "python.formatting.provider": "black",
     "python.formatting.blackArgs" : ["--skip-string-normalization"],
-    "coc.preferences.formatOnSaveFiletypes": [
+    "DISABLEDPythondisater coc.preferences.formatOnSaveFiletypes": [
         "python",
         "javascript",
         "typescript",
