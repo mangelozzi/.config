@@ -32,8 +32,8 @@ set autoindent              " When opening a new line keep indentation
 set hidden                  " Allows one to reuse the same window and switch without saving
 set history=10000           " NeoVim 10000. Number of previous commands remembered.
 set inccommand=split        " Neovim - See a live preview of :substitute as you type.
-set iskeyword+=-            " Add dash to word chars for SASS and CSS files
 set scrolloff=3             " When doing a search etc, always show at least n lines above and below the match
+set numberwidth=4           " Default number column width
 set mousefocus
 set nostartofline           " Stop certain movements going to start of line (more like modern editors)
 set nowrap                  " Disable word wrapping
@@ -52,7 +52,7 @@ set nomodeline              " Modelines are vimscript snippets in normal files w
 set undolevels=2000         " Default 1000.
 "set noshowmode              " Do not show mode on command line since vim-airline can show it
 set shortmess+=c            " Do not show "match xx of xx" and other messages during auto-completion
-set shiftround              " align tabs to std positions: http://vim.1045645.n5.nabble.com/shiftround-option-td5712100.html
+set shiftround              " Round indent to multiple of 'shiftwidth'. Applies to > and < commands. CTRL-T and CTRL-D in insert mode always round to a multiple of shiftwidths.
 set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
@@ -316,11 +316,12 @@ cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 " SPLIT VIMRC files
 "==============================================================================
 "Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
-" source <sfile>:h/init/env.vim
-" source <sfile>:h/init/git.vim
-" source <sfile>:h/init/myplugins.vim
-" source <sfile>:h/init/coc.vim
-" source <sfile>:h/init/visual.vim
+source <sfile>:h/init/env.vim
+source <sfile>:h/init/git.vim
+source <sfile>:h/init/myplugins.vim
+source <sfile>:h/init/coc.vim
+source <sfile>:h/init/visual.vim
+source <sfile>:h/init/talk.vim
 
 " ----------------------------------------
 " Control quick fix windows are handled and :sb
@@ -375,130 +376,4 @@ augroup save_programming_file
     autocmd BufWritePre *.vim :call myautoload#SaveProgrammingFile()
 augroup END
 
-function! MySave()
-    let g:winview = winsaveview()
-    let cmd = ":\<C-u>normal! ggVG\<CR>"
-    if index(['y','='], v:operator) != -1
-        let cmd .= ":silent! call winrestview(g:winview)\<CR>"
-    endif
-    return cmd
-endfun
-onoremap <expr> ZA MySave()
 
-
-" let pos = getpos('.')
-" let startpos = [0,1,0,'off']
-" let endpos   = [0,line("$"),0,'off']
-" echom "Let current".string(pos)
-" echom "Let start  ".string(startpos)
-" call setpos("'[", startpos)
-" call setpos("']", endpos)
-" echom v:operator."getpos start".string(getpos("'["))
-" echom v:operator."getpos end  ".string(getpos("']"))
-" dsfsdfds
-let g:OBA_yank_to_clipboard_always = 1
-function! OperateBufferAll()
-    " Yank in ex mode works with unamed register, i.e. :%y
-    let register = v:register
-    let operator = v:operator
-
-    normal "\<Esc>"
-    if index(['"','+','*'], register) != -1 && index(['y','d','c'], operator) != -1
-        " Common case where one can use fast ex mode copy/del whole file
-        " commands into register ", +, or *. Doesnt work on other registers.
-        " E.g. yank buffer to unamed register  :%y
-        " E.g. delete buffer to + register     :%d+
-        let cmd = ':%'
-        let cmd .= (operator == 'y') ? 'y' : 'd'
-        let cmd .= (register == '"') ? ''  : register
-        let cmd .= (operator == 'c') ? '|:startinsert' : ''
-        exe cmd
-    elseif index(['y','d','c'], operator) != -1
-        " Case where base y/d/c command, but not a common register. Use the
-        " fast ex mode, copy from unnamed register, and then restore unamed
-        " register afterwards.
-        let reg_backup_value = getreg('"')      " Backup the contents of the unnamed register
-        let reg_backup_type = getregtype('"')   " Save the type of the register as well
-
-        let cmd = ':%'
-        let cmd .= (operator == 'y') ? 'y' : 'd'
-        let cmd .= (operator == 'c') ? '|:startinsert' : ''
-        exe cmd
-        exe ':let @'.register.'=@"'
-        call setreg('"', reg_backup_value, reg_backup_value) " Restore register
-    elseif operator == '='
-        " Auto indent whole buffer, preserve cursor location
-        let restore_position = winsaveview()
-        normal gg=G
-        call winrestview(restore_position)
-    else
-        " The default case, i.e. where the operator is not y, d, c, or =
-        " For future and unknown commands
-        let restore_position = winsaveview()
-        exe 'gg"'.register.operator.'G'
-        call winrestview(restore_position)
-    endif
-    if g:OBA_yank_to_clipboard_always
-        " If whole buffer copy, and register is not clipboard, can copy it to
-        " the clipboard too:
-        if (operator == 'y' && register != '+')
-            exe ':let @+=@'.register
-            echom 'Copied from "'.register.' to the clipboard "+'
-        endif
-    endif
-endfun
-" Create text object 'A' to be mean ALL, i.e. the entire buffer
-onoremap A :<C-u>call OperateBufferAll()<Cr>
-vnoremap <silent> A :<C-U>normal! ggVG<CR>
-
-":call MyRestore()
-"onoremap A :<C-u>normal! ggVG<CR>
-"onoremap <expr> A OperateBufferAll()
-" onoremap <expr> A Store(v:operator, v:register) ? 'y' : 'y'
-
-"onoremap Esc>:call OperateBufferAll(v:operator)<CR>
-"<Esc>:call OperateBufferAll(g:op, g:reg)<CR>
-"onoremap <expr> d (v:count == 0 \|\| v:operator != 'd') ? 'd' : '<Esc>cc' . v:count . '<Esc>'
-
-"onoremap A :<C-u>normal! ggVG<CR>
-"onoremap A :<C-u>normal! ggVG<CR><C-o>
-"onoremap A inview = winsaveview()<bar>echo "hello"
-"let winview = winsaveview()<bar> :<C-u>normal! ggVG<CR><bar>call winrestview(winview)
-
-function! AutoIndentBuffer()
-    let winview = winsaveview()
-    normal gg=G
-    call winrestview(winview)
-endfun
-
-noremap <leader>aca :echo "the count is " . v:count<CR>
-noremap <leader>acb :echo "the count is " . v:count1<CR>
-noremap <leader>acc :<C-U>echo "the count is " . v:count<CR>
-noremap <leader>acd :<C-U>echo "the count is " . v:count1<CR>
-cnoremap <leader>ace :echo "the count is " . v:count<CR>
-cnoremap <leader>acf :echo "the count is " . v:count1<CR>
-cnoremap <leader>acg :<C-U>echo "the count is " . v:count<CR>
-cnoremap <leader>ach :<C-U>echo "the count is " . v:count1<CR>
-
-function! OperateBufferAll_B()
-    let cmd = ":\<C-u>normal! ggVG\<CR>"
-    if (v:operator != 'c' && v:operator != 'd')
-        let cmd .= "\<C-o>"
-    endif
-    return cmd
-endfun
-onoremap <expr> B OperateBufferAll_B()
-vnoremap <silent> B :<C-U>normal! ggVG<CR>
-
-"onoremap <expr> d (v:count == 0 \|\| v:operator != 'd') ? 'd' : '<Esc>cc' . v:count . '<Esc>'
-"onoremap <expr> C ':\<C-u>normal! ggVG\<CR>'.(v:operator != 'd') ? '' : ''
-onoremap <expr> C  ':\<C-u>normal! ggVG\<CR>'.((v:operator != 'c' && v:operator != 'd') ? '\<C-o>' : '')
-"onoremap <expr> C (v:operator != 'c' && v:operator != 'd') ? ':\<C-u>normal! ggVG\<CR>\<C-o>' : ':\<C-u>normal! ggVG\<CR>'
-"'
-".(v:operator != 'c' && v:operator != 'd') ? "\<C-o>" : "")
-vnoremap <silent> C :<C-U>normal! ggVG<CR>
-
-function! OperateBufferAll_D()
-    echom ':\<C-u>normal! ggVG\<CR>'.((v:operator != 'c' && v:operator != 'd') ? '\<C-o>' : '')
-endfun
-onoremap <expr> D OperateBufferAll_D()

@@ -39,8 +39,8 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'christoomey/vim-titlecase'
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-entire'
+"Plug 'kana/vim-textobj-user'
+"Plug 'kana/vim-textobj-entire'
 
 " SMALL MISC
 Plug 'tpope/vim-unimpaired'
@@ -128,6 +128,7 @@ call plug#end()
 
 " ______________________________________________________________________________
 " PLUGIN: ENTIRE
+" Removed in favour of own mapping
 " https://github.com/kana/vim-textobj-entire
 " Requires: https://github.com/kana/vim-textobj-entire
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=31m08
