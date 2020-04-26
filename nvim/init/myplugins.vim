@@ -1,6 +1,9 @@
 " TO TRY
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
 " https://github.com/janko/vim-test
+" https://github.com/EinfachToll/DidYouMean
+" https://github.com/justinmk/vim-sneak
+
 
 " Indicator for what was yanked
 " Plug 'machakann/vim-highlightedyank'
@@ -66,6 +69,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Always load the vim-devicons as the very last one.
 Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+
+" Python
+Plug 'tmhedberg/SimpylFold'
+
 call plug#end()
 
 
@@ -287,6 +294,14 @@ augroup Fzf_Status_Line
     autocmd User FzfStatusLine setlocal statusline=%#_FzfStatusChevron#\ >\ %#_fzfStatus#fzf
 augroup END
 
+
+" ______________________________________________________________________________
+" PLUGIN: 'tmhedberg/SimpylFold'
+let g:SimpylFold_docstring_preview = 0 " Preview docstring in fold text  0
+let g:SimpylFold_fold_docstring    = 0 " Fold docstrings 1
+let g:SimpylFold_fold_import       = 0 " Fold imports    1
+
+
 " ______________________________________________________________________________
 " PLUGIN: 'Xuyuanp/nerdtree-git-plugin'
 " ●✗
@@ -346,3 +361,6 @@ let g:coc_global_extensions = [
 let g:coc_filetype_map = {
             \ 'htmldjango': 'html',
             \ }
+" Own vim file for all the coc settings (based on the provided settings file)
+source <sfile>:h/coc.vim
+

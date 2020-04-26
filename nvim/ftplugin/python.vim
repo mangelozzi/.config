@@ -3,3 +3,7 @@ augroup python_set_wrong_spacing
     autocmd!
     autocmd FileType python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 augroup END
+
+" Folding controlled by "tmhedberg/SimpylFold"
+" set foldmethod=indent
+" set foldnestmax=1
