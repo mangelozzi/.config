@@ -107,6 +107,11 @@ To Try: :CocInstall coc-snippets coc-pairs coc-prettier
 
 ## FZF
 Automatically installed by VimPlug.
+#### Windows
+Add it to user %Path%
+```
+C:\Users\Michael\.config\nvim\tmp\fzf\bin
+```
 
 ## Ripgrep
 ### Linux
@@ -115,10 +120,17 @@ curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_
 sudo dpkg -i ripgrep_11.0.2_amd64.deb
 ```
 ### Windows
-Requires the scoop package manager.
+Requires the scoop package manager:
+
+#### Install Scoop
+1. Press `WIN+R` -> `Powershell`
+2. Run `iwr -useb get.scoop.sh | iex`
+
+#### Install ripgrep
 ```
 scoop install ripgrep
 ```
+PS ignore the `Couldn't find manifest for 'vscredist' from 'extras' bucket`
 
 ### Django
 Check filetype with :set filetype?

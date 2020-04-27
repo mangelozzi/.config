@@ -1,37 +1,44 @@
+" TODO make it at end of jumplist, then tab opens current fold.
+
+" {{{ TITLE
+" TODO : NERD TRee status line, open vs when switch back to it
+"
 " A really good reference: https://github.com/jdhao/nvim-config
 " To create a link which loads a session file with neovim-qt:
 " C:\Neovim\bin\vim.exe -- -S
 " Notemap commands cant have comment on same line as them.
+" }}}
 
-" TO TRY:
-" https://github.com/EinfachToll/DidYouMean
-" https://github.com/justinmk/vim-sneak
-
-set nocompatible            " Must be first command. Enter the current millenium
-
+" {{{ VARIABLES
+"==============================================================================
 " System Dependant variables
-let g:is_win = has('win32') || has('win64')
+let g:is_win   = has('win32') || has('win64')
 let g:is_linux = has('unix') && !has('macunix')
-let g:is_mac = has('macunix')
+let g:is_mac   = has('macunix')
+" }}}
 
+" {{{ LEADER
 "==============================================================================
-" VARIABLES
-"==============================================================================
+" Change leader from \ to ;
+" Must appear before any mappings, as the mapping uses the current value of
+" variable at the time of the mapping.
+let mapleader = " "
+" }}}
 
-"==============================================================================
-" settings - standard (same on linux servers)
+" {{{ SETTINGS (same on linux servers)
 "==============================================================================
 " COLORS
 set background=dark
-set t_Co=256
+set termguicolors
 
 " GENERAL
+set nocompatible            " Must be first command. Enter the current millenium
 set autoindent              " When opening a new line keep indentation
 set hidden                  " Allows one to reuse the same window and switch without saving
 set history=10000           " NeoVim 10000. Number of previous commands remembered.
 set inccommand=split        " Neovim - See a live preview of :substitute as you type.
-set iskeyword+=-            " Add dash to word chars for SASS and CSS files
 set scrolloff=3             " When doing a search etc, always show at least n lines above and below the match
+set numberwidth=4           " Default number column width
 set mousefocus
 set nostartofline           " Stop certain movements going to start of line (more like modern editors)
 set nowrap                  " Disable word wrapping
@@ -50,12 +57,12 @@ set nomodeline              " Modelines are vimscript snippets in normal files w
 set undolevels=2000         " Default 1000.
 "set noshowmode              " Do not show mode on command line since vim-airline can show it
 set shortmess+=c            " Do not show "match xx of xx" and other messages during auto-completion
-set shiftround              " align tabs to std positions: http://vim.1045645.n5.nabble.com/shiftround-option-td5712100.html
+set shiftround              " Round indent to multiple of 'shiftwidth'. Applies to > and < commands. CTRL-T and CTRL-D in insert mode always round to a multiple of shiftwidths.
 set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
-
+" set cmdheight=2         " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
 
 " SEARCHING
 set ignorecase              " Use case insensitive search...
@@ -63,7 +70,6 @@ set smartcase               " ...except when using capital letters
 set incsearch               " Start highlighting partial match as start typing
 set wrapscan                " search-next wraps back to start of file (default with neovim)
 set hlsearch                " Highlight searches, use :noh to turn off residual highlightin
-
 
 " WRAPPED LINES
 set linebreak               " wrap at word breaks
@@ -84,16 +90,9 @@ set expandtab
 " FINDING FILES
 set path+=**
 set wildmenu                " Display all matching files when we tab complete
+" }}}
 
-"==============================================================================
-" SETTINGS - GUI computer
-"==============================================================================
-set mouse=a                 " Enable use of the mouse for all modes
-set number                  " Display line numbers on the left
-set relativenumber
-
-"==============================================================================
-" COPY PASTE
+" {{{ COPY PASTE
 "==============================================================================
 " In Linux there are multiple clipboard like buffers called selections:
 "   The PRIMARY (*) selection is updated every time you select text. To paste from it (in graphical programs), middle-click or use ShiftInsert. In Vim, it is accessible through the "* register.
@@ -116,18 +115,50 @@ noremap <2-LeftMouse> viw"*ygv
 inoremap <S-Insert> <C-r>+
 cnoremap <S-Insert> <C-r>+
 
+" =============================================================================
+" COPY & PASTE
+" =============================================================================
+" ----------------------------------------
+" Control quick fix windows are handled and :sb
+" set switchbuf=usetab,newtab
+
+" The following goes into paste mode and out when pasting so that
+" indentation is not messed up
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+function! XTermPasteBegin()
+    set pastetoggle=<Esc>[201~
+    set paste
+    return ""
+endfunction
+
+" ________________________________________________________
+" Copy paste columns
+" Temp solution until this is resolved: https://github.com/neovim/neovim/issues/1822
+"   This issue:     https://vi.stackexchange.com/questions/14486/what-does-it-mean-to-set-clipboard-unnamed/17058#17058
+"   NOT using this Fix: https://github.com/neovim/neovim/issues/1822#issuecomment-233152833
+" Just specify a buffer when copying and pasting
+" }}}
+
+" {{{ GUI computer
 "==============================================================================
-" KEY MAPPINGS
+set mouse=a                 " Enable use of the mouse for all modes
+set number                  " Display line numbers on the left
+set relativenumber
+" }}}
+
+" {{{ KEY MAPPINGS
 "==============================================================================
 " Can show a list of mappings with :map
 " Useful to check no leader clashes
-
-" ___ LEADER __________________________________________________________________
-" Change leader from \ to ;
-let mapleader = " "
+" Note!!! Comments on a separate line.
+" CTRL (^) maps lower and uppercase to same key (by convention use uppercase)
+" Meta (M-?) can map lower and upper case words)
 
 " ___ ALL MODES _______________________________________________________________
-
 
 " Map ; to : for speed
 map ; :
@@ -137,6 +168,17 @@ map! <M-;> <Esc>:
 map <C-s> :w<CR>
 " map! <C-s> <C-o>:w<CR>
 map! <C-s> <Esc>:w<CR>
+
+" ___ ESCAPE __________________________________________________________________
+" Map other forms of escape to true <Esc>, e.g. useful for multiline editing
+" requres <Esc>.
+noremap <C-[> <Esc>
+noremap <C-c> <Esc>
+noremap! <C-[> <Esc>
+noremap! <C-c> <Esc>
+"noremap! <C-Space> <Esc>
+" required for escaping out of the terminal too (especially with FZF)
+tnoremap <C-Space> <Esc>
 
 " ___ MAP (NOREMAP)____________________________________________________________
 "   Normal, Visual+Select, and Operator Pending modes
@@ -161,18 +203,18 @@ nmap <silent> * yiw<Esc>: let @/ = @""<CR>
 nmap <silent> # yiw<Esc>: let @/ = @""<CR>
 
 " ___ MAP! (NOREMAP!)__________________________________________________________
-" Map other forms of escape to true <Esc>, e.g. useful for multiline editing
-" requres <Esc>.
-noremap! <C-[> <Esc>
-noremap! <C-Space> <Esc>
-" required for escaping out of the terminal too (especially with FZF)
-tnoremap <C-Space> <Esc>
 
 " Left/Right arrow backspace and delete
 " <C-u> - Natively supports delete to beginning of line
 " <C-h> - Natively is <Backspace>
 noremap! <C-l> <Del>
 noremap! <C-a> <Home>
+
+" Easier split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " ___ FUNCTION KEYS ___________________________________________________________
 
@@ -190,10 +232,12 @@ map! <F3> <Esc>:e $MYVIMRC<CR> :cd %:p:h<CR>
 " <F4> CLOSE BUFFER
 " Same as buffer delete, however if its the last none help or empty buffer,
 " then quit.
-map  <F4>      :call myautoload#QuitIfLastBuffer()<CR>
-map! <F4> <C-o>:call myautoload#QuitIfLastBuffer()<CR>
+map  <F4>      :call myautoload#DeleteCurBufferNotCloseWindow()<CR>
+map! <F4> <Esc>:call myautoload#DeleteCurBufferNotCloseWindow()<CR>
 
 " <F5> to <F8> SETTINGS -------------------------------------------------------
+map <F8>      :call myautoload#CopyEntireBuffer()<CR>
+map <F8> <Esc>:call myautoload#CopyEntireBuffer()<CR>
 
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
@@ -300,63 +344,38 @@ cnoremap <C-k> <C-\>estrpart(getcmdline(), 0, getcmdpos() - 1)<CR>
 " In command mode, if there are no more character to the right of the cursor
 " when delete is pressed, it starts to behave like backspace. Disable this.
 cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
+" }}}
 
+" {{{ VIM TALK (text objects and motions)
 "==============================================================================
-" COMMANDS
+" Create text-object `A` which operates on the whole buffer (i.e. All)
+" Keeps the cursor position in the same position
+function! TextObjectAll()
+    let g:restore_position = winsaveview()
+    normal! ggVG
+    call feedkeys("\<Plug>(RestoreView)")
+endfunction
+onoremap A :<C-U>call TextObjectAll()<CR>
+nnoremap <silent> <Plug>(RestoreView) :call winrestview(g:restore_position)<CR>
+" Disabled A in visual mode, cause use A to append at the end of selection.
+" vnoremap A :<C-U>normal! ggVG<CR>
+
+" Line Wise text objects (excludes the ending line char)
+" g_ means move to the last printable char of the line
+onoremap il :<C-U>normal! ^vg_<Cr>
+onoremap al :<C-U>normal! 0vg_<Cr>
+vnoremap il :<C-U>normal! ^vg_<Cr>
+vnoremap al :<C-U>normal! 0vg_<Cr>
+" }}}
+
+" {{{ COMMANDS
 "==============================================================================
 " Change dir to that of Vim config ($MYVIMRC head)
 " Not used, rather use more generic solution cd %:p:h
 " command! Cdv exe 'cd ' . fnamemodify($MYVIMRC, ':p:h')
+" }}}
 
-"==============================================================================
-" SPLIT VIMRC files
-"==============================================================================
-"Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
-source <sfile>:h/init/env.vim
-source <sfile>:h/init/git.vim
-source <sfile>:h/init/myplugins.vim
-source <sfile>:h/init/coc.vim
-source <sfile>:h/init/visual.vim
-
-" ----------------------------------------
-" Control quick fix windows are handled and :sb
-" set switchbuf=usetab,newtab
-
-" The following goes into paste mode and out when pasting so that
-" indentation is not messed up
-let &t_SI .= "\<Esc>[?2004h"
-let &t_EI .= "\<Esc>[?2004l"
-
-inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
-
-function! XTermPasteBegin()
-    set pastetoggle=<Esc>[201~
-    set paste
-    return ""
-endfunction
-
-" ________________________________________________________
-" Copy paste columns
-" Temp solution until this is resolved: https://github.com/neovim/neovim/issues/1822
-"   This issue:     https://vi.stackexchange.com/questions/14486/what-does-it-mean-to-set-clipboard-unnamed/17058#17058
-"   NOT using this Fix: https://github.com/neovim/neovim/issues/1822#issuecomment-233152833
-" Just specify a buffer when copying and pasting
-
-" ----------------------------------------
-" DUMPING GROUND:
-" set cmdheight=2         " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
-"Auto reload VIMRC file after changed
-"autocmd BufWritePost .vimrc source %
-
-" =============================================================================
-" KEYMAPPINGS
-"   Note!!! Comments on a separate line.
-"   CTRL (^) maps lower and uppercase to same key (by convention use uppercase)
-"   Meta (M-?) can map lower and upper case words)
-" =============================================================================
-
-" =============================================================================
-" AUTOCOMMANDS
+" {{{ AUTOCOMMAND
 " =============================================================================
 " https://learnvimscriptthehardway.stevelosh.com/chapters/14.html
 " Autocommands are duplicated everytime the file is sourced.
@@ -366,8 +385,17 @@ endfunction
 "
 
 augroup save_programming_file
-    autocmd!
     " Strips trailing whitespace and auto indents the file
-    autocmd BufWritePre *.vim,*.html,*.css,*.sass,*.py,*.js :call myautoload#SaveProgrammingFile()
+    autocmd!
+    autocmd BufWritePre *.vim :call myautoload#SaveProgrammingFile()
 augroup END
+" }}}
 
+" {{{ SOURCE INIT FILES
+"==============================================================================
+"Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
+source <sfile>:h/init/env.vim
+source <sfile>:h/init/git.vim
+source <sfile>:h/init/myplugins.vim
+source <sfile>:h/init/visual.vim
+" }}}

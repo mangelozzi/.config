@@ -1,6 +1,9 @@
 " TO TRY
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
 " https://github.com/janko/vim-test
+" https://github.com/EinfachToll/DidYouMean
+" https://github.com/justinmk/vim-sneak
+
 
 " Indicator for what was yanked
 " Plug 'machakann/vim-highlightedyank'
@@ -36,10 +39,11 @@ call plug#begin(plugdir)
 " OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-eunuch'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'christoomey/vim-titlecase'
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-entire'
+"Plug 'kana/vim-textobj-user'
+"Plug 'kana/vim-textobj-entire'
 
 " SMALL MISC
 Plug 'tpope/vim-unimpaired'
@@ -65,6 +69,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Always load the vim-devicons as the very last one.
 Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+
+" Python
+Plug 'tmhedberg/SimpylFold'
+
 call plug#end()
 
 
@@ -89,6 +97,21 @@ call plug#end()
 " gc = comment
 " gcc = comment out a line
 " gcgc = Uncomment above, else below line
+" ______________________________________________________________________________
+" PLUGIN: vim-eunuch
+" Vim sugar for the UNIX shell commands that need it the most:
+" :Delete:    Delete a buffer and the file on disk simultaneously.
+" :Unlink:    Like :Delete, but keeps the now empty buffer.
+" :Move:      Rename a buffer and the file on disk simultaneously.
+" :Rename:    Like :Move, but relative to the current file's containing directory.
+" :Chmod:     Change the permissions of the current file.
+" :Mkdir:     Create a directory, defaulting to the parent of the current file.
+" :Cfind:     Run find and load the results into the quickfix list.
+" :Clocate:   Run locate and load the results into the quickfix list.
+" :Lfind/:Llocate: Like above, but use the location list.
+" :Wall:      Write every open window. Handy for kicking off tools like guard.
+" :SudoWrite: Write a privileged file with sudo.
+" :SudoEdit:  Edit a privileged file with sudo.
 
 " ______________________________________________________________________________
 " PLUGIN: REPLACE WITH REGISTER
@@ -112,6 +135,7 @@ call plug#end()
 
 " ______________________________________________________________________________
 " PLUGIN: ENTIRE
+" Removed in favour of own mapping
 " https://github.com/kana/vim-textobj-entire
 " Requires: https://github.com/kana/vim-textobj-entire
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=31m08
@@ -192,6 +216,8 @@ nnoremap <silent> <leader>gs :Git status<cr>
 " To search within a dir `:FZF [dir] <CR>`
 let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 
+let $FZF_DEFAULT_COMMAND = 'rg --files . 2> nul'
+
 " Don't abort the function, so if no match is found, its communicates it.
 nnoremap <silent> <leader>zz :call myautoload#SearchInFiles()<CR>
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
@@ -246,6 +272,34 @@ nnoremap <silent> <leader>zb :BLines<cr>
 
 " Normal mode mappings
 nnoremap <silent> <leader>zm :Maps<cr>
+
+let g:fzf_colors =
+            \ { 'fg':    ['fg', '_FzfNormal'],
+            \ 'bg':      ['bg', '_FzfNormal'],
+            \ 'hl':      ['fg', '_FzfHl'],
+            \ 'fg+':     ['fg', '_FzfPlus'],
+            \ 'bg+':     ['bg', '_FzfPlus'],
+            \ 'hl+':     ['fg', '_FzfHlPlus'],
+            \ 'info':    ['fg', '_FzfInfo'],
+            \ 'border':  ['fg', '_FzfBorder'],
+            \ 'prompt':  ['fg', '_FzfPrompt'],
+            \ 'pointer': ['fg', '_FzfPointer'],
+            \ 'marker':  ['fg', '_FzfMarker'],
+            \ 'spinner': ['fg', '_FzfSpinner'],
+            \ 'header':  ['fg', '_FzfHeader']}
+
+" Set the FZF status line
+augroup Fzf_Status_Line
+    autocmd!
+    autocmd User FzfStatusLine setlocal statusline=%#_FzfStatusChevron#\ >\ %#_fzfStatus#fzf
+augroup END
+
+
+" ______________________________________________________________________________
+" PLUGIN: 'tmhedberg/SimpylFold'
+let g:SimpylFold_docstring_preview = 0 " Preview docstring in fold text  0
+let g:SimpylFold_fold_docstring    = 0 " Fold docstrings 1
+let g:SimpylFold_fold_import       = 0 " Fold imports    1
 
 
 " ______________________________________________________________________________
@@ -307,3 +361,6 @@ let g:coc_global_extensions = [
 let g:coc_filetype_map = {
             \ 'htmldjango': 'html',
             \ }
+" Own vim file for all the coc settings (based on the provided settings file)
+source <sfile>:h/coc.vim
+

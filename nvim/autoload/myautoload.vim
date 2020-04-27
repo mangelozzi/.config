@@ -7,19 +7,6 @@
 
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
-function! myautoload#QuitIfLastBuffer()
-    let cnt = 0
-    for nr in range(1,bufnr("$"))
-        if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
-            let cnt += 1
-        endif
-    endfor
-    if cnt <= 1
-        :q
-    else
-        :bd
-    endif
-endfunction
 
 function! myautoload#StripTrailingWhitespace()
     %s/\s\+$//e
@@ -119,3 +106,51 @@ function! myautoload#DeleteQuickfixOperator(mode)
     " echom a:mode." Start: ".l:start."  End: ".l:end
     call myautoload#DeleteQuickfix(l:start, l:end)
 endfunction
+
+function! myautoload#QuitIfLastBuffer()
+    let cnt = 0
+    for nr in range(1,bufnr("$"))
+        if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
+            let cnt += 1
+        endif
+    endfor
+    if cnt <= 1
+        :q
+    else
+        :bd
+    endif
+endfunction
+" from https://stackoverflow.com/a/44950143/5506400
+function! myautoload#DeleteCurBufferNotCloseWindow() abort
+    if &modified
+        echohl ErrorMsg
+        echom "E89: no write since last change"
+        echohl None
+    elseif winnr('$') == 1
+        " bd
+        call myautoload#QuitIfLastBuffer()
+    else  " multiple window
+        let oldbuf = bufnr('%')
+        let oldwin = winnr()
+        while 1   " all windows that display oldbuf will remain open
+            if buflisted(bufnr('#'))
+                b#
+            else
+                bn
+                let curbuf = bufnr('%')
+                if curbuf == oldbuf
+                    enew    " oldbuf is the only buffer, create one
+                endif
+            endif
+            let win = bufwinnr(oldbuf)
+            if win == -1
+                break
+            else        " there are other window that display oldbuf
+                exec win 'wincmd w'
+            endif
+        endwhile
+        " delete oldbuf and restore window to oldwin
+        exec oldbuf 'bd'
+        exec oldwin 'wincmd w'
+    endif
+endfunc
