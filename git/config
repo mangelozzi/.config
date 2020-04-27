@@ -1,3 +1,7 @@
+# Using Meld: https://stackoverflow.com/a/34119867/5506400
+
+# -----------------------------------------------------------------------------
+# CORE
 [user]
 	name = Michael Angelozzi
 	email = mangelozzi@gmail.com
@@ -8,8 +12,20 @@
 [core]
 	preloadindex = true
 	fscache = true
+
+# -----------------------------------------------------------------------------
+# DIFF TOOL
+[diff]
+    tool = meld
+[difftool]
+    prompt = false
+[difftool "meld"]
+    cmd = meld "$LOCAL" "$REMOTE"
 [gc]
 	auto = 256
+
+# -----------------------------------------------------------------------------
+# MERGE TOOL
 [mergetool]
 	keepBackup = false
 [merge]
