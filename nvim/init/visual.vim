@@ -78,9 +78,14 @@ endfunction
 "set statusline=%!MyStatusLine('Enter')
 augroup update_status_line
     autocmd!
-    " autocmd BufWinEnter,WinEnter,BufRead * setlocal statusline=%!MyStatusLine(1)
-    autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
-    autocmd BufWinLeave,WinLeave * setlocal statusline=%!MyStatusLine(0)
+    " WinEnter = Required for when a new window created and pops up
+    " BufEnter = Required for when switching between existing buffers
+    " BufWinEnter = Required when running another quickfix search when one
+    "               already exists
+    autocmd BufWinEnter,WinEnter,BufEnter * setlocal statusline=%!MyStatusLine(1)
+    autocmd WinLeave,BufLeave * setlocal statusline=%!MyStatusLine(0)
+    "autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
+    "autocmd BufWinLeave,WinLeave * setlocal statusline=%!MyStatusLine(0)
 augroup END
 
 "==============================================================================

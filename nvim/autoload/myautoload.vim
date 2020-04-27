@@ -33,21 +33,39 @@ function! myautoload#SearchOnStdout(job_id, data, event)
     endif
 endfun
 
+let g:search_errors = 0
 function! myautoload#SearchOnStderr(job_id, data, event)
-    "echo "My ERROR, job_id:".a:job_id." event:".a:event." data:".string(a:data)
-    let errorMsg = ''
-    for errorLine in a:data
-        let errorMsg .= errorLine.'  '
+    if a:data ==  ['']
+        " Sometimes stderr emits nothing and it triggers a false negative.
+        return
+    endif
+    let g:search_errors = 1
+    cclose
+    redraw
+    echom "SEARCH ERROR, job_id:".a:job_id." event:".a:event
+    let error_msg = ""
+    for error_line in a:data
+        let error_msg .= error_line."  \n  "
     endfor
-    echohl errormsg
-    echon errorMsg
+    echoerr error_msg
     echohl normal
+    " echohl errormsg
+    " for errorLine in a:data
+    "     echom errorLine
+    " endfor
+    " echohl normal
 endfun
 
 function! myautoload#SearchOnExit(job_id, data, event)
     "echo "My EXIT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
     " Refer to :h getqflist-examples*
-    "echom "COMPLETE. ".getqflist({'size' : 0}).size." entries for: ".g:searchString
+    let num_entries = getqflist({'size' : 0}).size
+
+    if g:search_errors
+        echom "Complete with ERRORS. ".num_entries." entries for: ".g:searchString
+    else
+        echom "COMPLETE. ".num_entries." entries for: ".g:searchString
+    endif
 endfun
 
 
@@ -57,29 +75,25 @@ endfun
 let g:jump_to_first_match = 0
 let g:searchString = ''
 function! myautoload#SearchInFiles()
-    let g:searchString = "call"
-    " 'neovim.io' "input('Search in Files '.getcwd().': ')
+    let g:searchString = input('Search in Files '.getcwd().': ')
+    let g:search_errors = 0
+    " let terminal_buf_nr = termopen(rg_cmd, opts_dict)
     "let foo = input("Which was escaped to: ".shellescape(searchString))
     " FROM FZF HELP, READ THIS: let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
 
-    let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case --color=always'.g:searchString
-    "silent cexpr system('rg --no-heading --column '.shellescape(searchString).' '.getcwd())
-    "silent cexpr system('rg -H --no-heading --column '.searchString)
-    "exe 'terminal rg -H --no-heading --column '.searchString. ' '.getcwd()
-    "let terminal_buf_nr = bufnr()
-    "silent copen
-    let opts_dict = {'on_exit': 'myautoload#SearchOnExit', 'on_stdout': 'myautoload#SearchOnStdout', 'on_stderr': 'myautoload#SearchOnStderr'}
-    " let terminal_buf_nr = termopen(rg_cmd, opts_dict)
+    " rg command options:
+    "   H = with filename
+    "   Note, --color=always causes error on parsing
+    let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case '.g:searchString
 
     " Clear the quickfix of entries
-    silent copen
-    echom
+    silent copen " Must be first so over operate on quickfix window
     let title = " ".g:searchString. "     Command: ".rg_cmd
     let context = {'cmd' : rg_cmd}
     call setqflist([], ' ', {'title' : title, 'context' : context})
-    "call setqflist([])
     echom "--------------------------------------------------"
     echom "About to start job..."
+    let opts_dict = {'on_exit': 'myautoload#SearchOnExit', 'on_stdout': 'myautoload#SearchOnStdout', 'on_stderr': 'myautoload#SearchOnStderr'}
     let terminal_buf_nr = jobstart(rg_cmd, opts_dict)
     "echom "Start search for ".g:searchString." got return start up value: ".terminal_buf_nr
 endfunction
