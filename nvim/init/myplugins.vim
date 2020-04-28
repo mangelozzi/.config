@@ -219,7 +219,6 @@ let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 let $FZF_DEFAULT_COMMAND = 'rg --files . 2> nul'
 
 " Don't abort the function, so if no match is found, its communicates it.
-nnoremap <silent> <leader>zz :call myautoload#SearchInFiles()<CR>
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
 
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=21m42s

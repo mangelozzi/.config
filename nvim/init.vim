@@ -1,4 +1,5 @@
 " TODO make it at end of jumplist, then tab opens current fold.
+" nested fold mappings
 
 " {{{ TITLE
 " TODO : NERD TRee status line, open vs when switch back to it
@@ -64,6 +65,8 @@ set synmaxcol=500           " Text after this column number is not highlighted
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
 " set cmdheight=2         " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
 
+"set switchbuf=usetab,newtab " Control how QUICKFIX ONLY window links are opened are handled and :sb
+
 " SEARCHING
 set ignorecase              " Use case insensitive search...
 set smartcase               " ...except when using capital letters
@@ -118,10 +121,6 @@ cnoremap <S-Insert> <C-r>+
 " =============================================================================
 " COPY & PASTE
 " =============================================================================
-" ----------------------------------------
-" Control quick fix windows are handled and :sb
-" set switchbuf=usetab,newtab
-
 " The following goes into paste mode and out when pasting so that
 " indentation is not messed up
 let &t_SI .= "\<Esc>[?2004h"
@@ -182,6 +181,10 @@ tnoremap <C-Space> <Esc>
 
 " ___ MAP (NOREMAP)____________________________________________________________
 "   Normal, Visual+Select, and Operator Pending modes
+
+" :h yy = If you like "Y" to work from the cursor to the end of line (which is
+" more logical, but not Vi-compatible) use ":map Y y$".
+noremap Y y$
 
 " Map backspace to other buffer
 noremap <BS> <C-^>
@@ -344,6 +347,12 @@ cnoremap <C-k> <C-\>estrpart(getcmdline(), 0, getcmdpos() - 1)<CR>
 " In command mode, if there are no more character to the right of the cursor
 " when delete is pressed, it starts to behave like backspace. Disable this.
 cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
+
+" Rip grep in files, use <cword> under the cursor as starting point
+nnoremap <leader>rg :call myautoload#SearchInFiles('n')<Cr>
+" Rip grep in files, use visual selection as starting point
+vnoremap <leader>rg :<C-U>call myautoload#SearchInFiles(visualmode())<Cr>
+
 " }}}
 
 " {{{ VIM TALK (text objects and motions)
@@ -389,6 +398,30 @@ augroup save_programming_file
     autocmd!
     autocmd BufWritePre *.vim :call myautoload#SaveProgrammingFile()
 augroup END
+
+function! SwitchAwayFromQFWindow()
+    if &filetype=='qf'
+        wincmd k
+        echom "switch 1"
+    endif
+    if &filetype=='qf'
+        wincmd k
+        echom "switch 2"
+    endif
+    if &filetype=='qf'
+        new
+        echom "switch new"
+    endif
+endfun
+augroup prevent_load_in_quickfix_window
+    autocmd!
+    "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
+augroup END
+
+autocmd BufNewFile * echom "hello new"
+autocmd BufReadPre * echom "hello read pres"
+
+
 " }}}
 
 " {{{ SOURCE INIT FILES
@@ -399,3 +432,4 @@ source <sfile>:h/init/git.vim
 source <sfile>:h/init/myplugins.vim
 source <sfile>:h/init/visual.vim
 " }}}
+
