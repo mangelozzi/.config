@@ -47,7 +47,8 @@ Plug 'christoomey/vim-titlecase'
 
 " SMALL MISC
 Plug 'tpope/vim-unimpaired'
-Plug 'ap/vim-css-color'
+" Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
+Plug 'chrisbra/Colorizer'
 
 " GIT
 Plug 'tpope/vim-fugitive'
@@ -219,7 +220,6 @@ let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
 let $FZF_DEFAULT_COMMAND = 'rg --files . 2> nul'
 
 " Don't abort the function, so if no match is found, its communicates it.
-nnoremap <silent> <leader>zz :call myautoload#SearchInFiles()<CR>
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
 
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=21m42s
@@ -364,3 +364,5 @@ let g:coc_filetype_map = {
 " Own vim file for all the coc settings (based on the provided settings file)
 source <sfile>:h/coc.vim
 
+" Colorizer
+let g:colorizer_auto_color = 1

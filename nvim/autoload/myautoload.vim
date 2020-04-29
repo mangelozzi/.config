@@ -1,9 +1,7 @@
 " TODO
-"  run jobstart in background
-"  multi line msg ... then input to get enter press.
-" add back delete lines
+"  run jobstart in background - added, but blocks
+"  multi line msg ... then input to get enter press. -> Neovim bug
 " tab toggles line color
-"  Clean up
 
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
@@ -32,79 +30,139 @@ function! myautoload#SearchOnStdout(job_id, data, event)
         call setqflist(addList, 'a')  " a = add to the list
     endif
 endfun
-
+let g:search_errors = 0
 function! myautoload#SearchOnStderr(job_id, data, event)
-    "echo "My ERROR, job_id:".a:job_id." event:".a:event." data:".string(a:data)
-    let errorMsg = ''
-    for errorLine in a:data
-        let errorMsg .= errorLine.'  '
-    endfor
-    echohl errormsg
-    echon errorMsg
-    echohl normal
+    if a:data ==  ['']
+        " Sometimes stderr emits nothing and it triggers a false negative.
+        return
+    endif
+    let g:search_errors = 1
+    cclose
+    redraw
+    echom "SEARCH ERROR, job_id:".a:job_id." event:".a:event
+    echoerr join(a:data, "    ")
+    " echohl ErrorMsg
+    " for errorLine in a:data
+    "     echom errorLine
+    " endfor
+    " echohl NONE
 endfun
-
 function! myautoload#SearchOnExit(job_id, data, event)
     "echo "My EXIT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
     " Refer to :h getqflist-examples*
-    "echom "COMPLETE. ".getqflist({'size' : 0}).size." entries for: ".g:searchString
+    let num_entries = getqflist({'size' : 0}).size
+    if g:search_errors
+        echom "Complete with ERRORS. ".num_entries." entries for: ".shellescape(g:searchString)
+    else
+        echom "COMPLETE. ".num_entries." entries for: ".shellescape(g:searchString)
+    endif
+    redrawstatus!
 endfun
-
-
+function! myautoload#SearchPearl2VimRegex(pearl)
+    let vim_re = a:pearl
+    return vim_re
+endfun
+function! myautoload#GetVisualSelection(mode)
+    " call with visualmode() as the argument
+    " vnoremap <leader>zz :<C-U>call myautoload#GetVisualSelection(visualmode())<Cr>
+    let [line_start, column_start] = getpos("'<")[1:2]
+    let [line_end, column_end]     = getpos("'>")[1:2]
+    let lines = getline(line_start, line_end)
+    if a:mode ==# 'v'
+        " Must trim the end before the start, the beginning will shift left.
+        let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+        let lines[0] = lines[0][column_start - 1:]
+    elseif  a:mode ==# 'V'
+        " Line mode no need to trim start or end
+    elseif  a:mode == "\<c-v>"
+        " Block mode, trim every line
+        let new_lines = []
+        let i = 0
+        for line in lines
+            let lines[i] = line[column_start - 1: column_end - (&selection == 'inclusive' ? 1 : 2)]
+            let i = i + 1
+        endfor
+    else
+        return ''
+    endif
+    return join(lines, "\n")
+endfunction
 " https://neovim.io/doc/user/nvim_terminal_emulator.html
 " https://neovim.io/doc/user/eval.html#termopen()
 " https://neovim.io/doc/user/eval.html#jobstart()
 let g:jump_to_first_match = 0
 let g:searchString = ''
-function! myautoload#SearchInFiles()
-    let g:searchString = "call"
-    " 'neovim.io' "input('Search in Files '.getcwd().': ')
+function! myautoload#SearchInFiles(mode)
+    " Only operates linewise, since 1 Quickfix entry is tied to 1 line.
+    if index(['v', 'V', "\<c-v>"], a:mode) != -1
+        let default_str = myautoload#GetVisualSelection(a:mode)
+    else
+        let default_str = expand('<cword>')
+    endif
+    let prompt = 'Search in Files '.getcwd().': '
+    "For list of completion options :h command-completion
+    " Not syntax, not tags (no tag file)
+    " tag syntaxcomplete#Complete
+    let g:searchString = input({
+                \ 'prompt'      : prompt,
+                \ 'default'     : default_str,
+                \ 'completion'  : 'syntax',
+                \ 'cancelreturn': 'cancelled' })
+
+    if g:searchString == '' || g:searchString == '\n'
+        echom "     YES >>>".g:searchString."<<<"
+        return
+    endif
+    echom "         NO  >>>".g:searchString."<<<"
+    let g:search_errors = 0
+    " let terminal_buf_nr = termopen(rg_cmd, opts_dict)
     "let foo = input("Which was escaped to: ".shellescape(searchString))
     " FROM FZF HELP, READ THIS: let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
 
-    let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case --color=always'.g:searchString
-    "silent cexpr system('rg --no-heading --column '.shellescape(searchString).' '.getcwd())
-    "silent cexpr system('rg -H --no-heading --column '.searchString)
-    "exe 'terminal rg -H --no-heading --column '.searchString. ' '.getcwd()
-    "let terminal_buf_nr = bufnr()
-    "silent copen
-    let opts_dict = {'on_exit': 'myautoload#SearchOnExit', 'on_stdout': 'myautoload#SearchOnStdout', 'on_stderr': 'myautoload#SearchOnStderr'}
-    " let terminal_buf_nr = termopen(rg_cmd, opts_dict)
+    " rg command options:
+    "   H = with filename
+    "   Note, --color=always causes error on parsing
+    let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case '.shellescape(g:searchString)
 
     " Clear the quickfix of entries
-    silent copen
-    echom
+    silent copen " Must be first so over operate on quickfix window
     let title = " ".g:searchString. "     Command: ".rg_cmd
     let context = {'cmd' : rg_cmd}
     call setqflist([], ' ', {'title' : title, 'context' : context})
-    "call setqflist([])
-    echom "--------------------------------------------------"
+    redrawstatus!
+    call clearmatches()
+    let pattern = myautoload#SearchPearl2VimRegex(g:searchString)
+    silent call matchadd('Search', pattern) " Hi group / pattern
+
     echom "About to start job..."
+    let opts_dict = {'on_exit': 'myautoload#SearchOnExit', 'on_stdout': 'myautoload#SearchOnStdout', 'on_stderr': 'myautoload#SearchOnStderr'}
+
+    " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    " command! -nargs=1 StartAsync
+    "          \ call jobstart(<f-args>, {
+    "          \    'on_exit': { j,d,e ->
+    "          \       execute('echom "command finished with exit status '.d.'"', '')
+    "          \    }
+    "          \ })
+
+
     let terminal_buf_nr = jobstart(rg_cmd, opts_dict)
     "echom "Start search for ".g:searchString." got return start up value: ".terminal_buf_nr
 endfunction
-function! myautoload#DeleteQuickfix(start, end)
-    "echom " Start: ".a:start."  End: ".a:end
+
+function! myautoload#QuickfixDeleteOperator(mode)
+    " Only operates linewise, since 1 Quickfix entry is tied to 1 line.
+    if a:mode ==# 'v' || a:mode ==# 'V' || a:mode ==# ''
+        let start = getpos("'<")[1]
+        let end   = getpos("'>")[1]
+    else
+        let start = line('.')
+        let end = v:count1 + start - 1
+    endif
     let save_pos = getpos(".")
     "call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
-    call setqflist(filter(getqflist(), {idx -> idx < a:start-1 || idx > a:end-1}), 'r')
+    call setqflist(filter(getqflist(), {idx -> idx < start-1 || idx > end-1}), 'r')
     call setpos('.', save_pos)
-endfunction
-function! myautoload#DeleteQuickfixOperator(mode)
-    " Only operates linewise, since 1 Quickfix entry is tied to 1 line.
-    " let save_pos = getpos(".")
-    " call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
-    " call setpos('.', save_pos)
-    " echo a:count1
-    if a:mode ==# 'v' || a:mode ==# 'V' || a:mode ==# ''
-        let l:start = getpos("'<")[1]
-        let l:end   = getpos("'>")[1]
-    else
-        let l:start = line('.')
-        let l:end = v:count1 + l:start - 1
-    endif
-    " echom a:mode." Start: ".l:start."  End: ".l:end
-    call myautoload#DeleteQuickfix(l:start, l:end)
 endfunction
 
 function! myautoload#QuitIfLastBuffer()

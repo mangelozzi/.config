@@ -63,6 +63,7 @@ function MyStatusLine(currentWindow) abort
     let s .= "%#_StatusModified#%{&modified?' +++ ':''}"
     let s .= col_fade3."%{!&modified?'▐':''}".col_fade2."%{!&modified?'▐':''}".col_fade1."%{!&modified?'▐':''}"
     let s .= col_line
+    let s .= "%<"                                        " Where to truncate long lines
     let s .= "%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}"
     let s .= "%="                                     " Left/Right separator
     if exists('g:loaded_fugitive')
@@ -78,9 +79,31 @@ endfunction
 "set statusline=%!MyStatusLine('Enter')
 augroup update_status_line
     autocmd!
-    " autocmd BufWinEnter,WinEnter,BufRead * setlocal statusline=%!MyStatusLine(1)
-    autocmd BufWinEnter,WinEnter * setlocal statusline=%!MyStatusLine(1)
-    autocmd BufWinLeave,WinLeave * setlocal statusline=%!MyStatusLine(0)
+    " Swap between windows: WinEnter --> BufEnter
+    " Swap between two windows showing the same buffer --> WinEnter
+    " WinEnter    =  Required for when a new window created and pops up
+    " BufEnter    =  Required for when switching between existing buffers
+    " BufWinEnter =  Required when running another quickfix search when one
+    "                already exists
+    " BufWritePost = When saving myplugins, with no window of buffer switching
+    "                would go blank
+    " autocmd BufEnter    * echom "BufEnter:    ".win_getid()." ".&buftype." ".@%
+    " autocmd BufNew      * echom "BufNew:      ".win_getid()." ".&buftype." ".@%
+    " autocmd WinEnter    * echom "WinEnter:    ".win_getid()." ".&buftype." ".@%
+    " autocmd WinNew      * echom "WinNew:      ".win_getid()." ".&buftype." ".@%
+    " autocmd BufWinEnter * echom "BufWinEnter: ".win_getid()." ".&buftype." ".@%
+
+    "autocmd BufLeave    * echom "BufLeave:    ".win_getid()." ".&buftype." ".@%
+    "autocmd WinLeave    * echom "WinLeave:    ".win_getid()." ".&buftype." ".@%
+    "autocmd BufWinLeave * echom "BufWinLeave: ".win_getid()." ".&buftype." ".@%
+
+    " StatusLine colouring dependant on active/none active window
+    autocmd BufWinEnter,BufEnter,WinEnter * setlocal statusline=%!MyStatusLine(1) | redrawstatus!
+    autocmd WinLeave * setlocal statusline=%!MyStatusLine(0) | redrawstatus!
+
+    " Quickfix custom Coloring
+    autocmd BufWinEnter,BufEnter * if &buftype == 'quickfix' | set winhighlight=Normal:_qfNormal,LineNr:_qfLineNr,CursorLineNr:_qfCursorLineNr,CursorLine:_qfCursorLine | endif
+    autocmd BufWinLeave * if &buftype == 'quickfix' | set winhighlight=Normal:Normal | endif
 augroup END
 
 "==============================================================================
@@ -100,6 +123,17 @@ match _TrailingWhitespace /\s\+\%#\@<!$/
 augroup match_whitespace
     autocmd!
     autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+augroup END
+
+augroup match_folds
+    autocmd!
+    " VimEnter handles at start up, WinNew for each window created AFTER startup.
+    " Regex matches { { { with an empty group in the middle so that vim does
+    " not create a fold in this code, then either a 1 or 2 then a space. Then
+    " zs is the start of the match which is the rest of the line then ze is
+    " the end of the match. Refer to :help pattern-overview
+    autocmd VimEnter,WinNew * let w:_foldlevel1_id = matchadd('_FoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
+    autocmd VimEnter,WinNew * let w:_foldlevel2_id = matchadd('_FoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
 augroup END
 
 " https://www.youtube.com/watch?v=aHm36-na4-4
