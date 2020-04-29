@@ -1,4 +1,5 @@
 " TODO make it at end of jumplist, then tab opens current fold.
+" :help usr_41 (write a vim script)
 " nested fold mappings
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
 
@@ -169,7 +170,8 @@ map! <C-s> <Esc>:w<CR>
 " requres <Esc>.
 noremap <C-[> <Esc>
 noremap <C-c> <Esc>
-noremap! <C-[> <Esc>
+" Line below makes exiting from input dialogue always fail
+" noremap! <C-[> <Esc>
 noremap! <C-c> <Esc>
 "noremap! <C-Space> <Esc>
 " required for escaping out of the terminal too (especially with FZF)

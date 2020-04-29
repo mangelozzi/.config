@@ -103,17 +103,17 @@ function! myautoload#SearchInFiles(mode)
     "For list of completion options :h command-completion
     " Not syntax, not tags (no tag file)
     " tag syntaxcomplete#Complete
-    let g:searchString = input({
-                \ 'prompt'      : prompt,
-                \ 'default'     : default_str,
-                \ 'completion'  : 'syntax',
-                \ 'cancelreturn': 'cancelled' })
+    " let g:searchString = input({
+    "             \ 'prompt'      : prompt,
+    "             \ 'default'     : default_str,
+    "             \ 'completion'  : 'syntax',
+    "             \ 'cancelreturn': 'cancelled' })
 
+    let g:searchString = input(prompt, default_str, 'syntax')
     if g:searchString == '' || g:searchString == '\n'
-        echom "     YES >>>".g:searchString."<<<"
+        echom "Aborted Search."
         return
     endif
-    echom "         NO  >>>".g:searchString."<<<"
     let g:search_errors = 0
     " let terminal_buf_nr = termopen(rg_cmd, opts_dict)
     "let foo = input("Which was escaped to: ".shellescape(searchString))
