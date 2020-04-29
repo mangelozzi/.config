@@ -99,12 +99,21 @@ function! myautoload#SearchInFiles(mode)
     else
         let default_str = expand('<cword>')
     endif
-    try
-        let g:searchString = input('Search in Files '.getcwd().': ', default_str)
-    catch
-        echom "Aborted search."
+    let prompt = 'Search in Files '.getcwd().': '
+    "For list of completion options :h command-completion
+    " Not syntax, not tags (no tag file)
+    " tag syntaxcomplete#Complete
+    let g:searchString = input({
+                \ 'prompt'      : prompt,
+                \ 'default'     : default_str,
+                \ 'completion'  : 'syntax',
+                \ 'cancelreturn': 'cancelled' })
+
+    if g:searchString == '' || g:searchString == '\n'
+        echom "     YES >>>".g:searchString."<<<"
         return
-    endtry
+    endif
+    echom "         NO  >>>".g:searchString."<<<"
     let g:search_errors = 0
     " let terminal_buf_nr = termopen(rg_cmd, opts_dict)
     "let foo = input("Which was escaped to: ".shellescape(searchString))
@@ -125,9 +134,18 @@ function! myautoload#SearchInFiles(mode)
     let pattern = myautoload#SearchPearl2VimRegex(g:searchString)
     silent call matchadd('Search', pattern) " Hi group / pattern
 
-    echom "--------------------------------------------------"
     echom "About to start job..."
     let opts_dict = {'on_exit': 'myautoload#SearchOnExit', 'on_stdout': 'myautoload#SearchOnStdout', 'on_stderr': 'myautoload#SearchOnStderr'}
+
+    " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+    " command! -nargs=1 StartAsync
+    "          \ call jobstart(<f-args>, {
+    "          \    'on_exit': { j,d,e ->
+    "          \       execute('echom "command finished with exit status '.d.'"', '')
+    "          \    }
+    "          \ })
+
+
     let terminal_buf_nr = jobstart(rg_cmd, opts_dict)
     "echom "Start search for ".g:searchString." got return start up value: ".terminal_buf_nr
 endfunction

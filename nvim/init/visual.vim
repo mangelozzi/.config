@@ -125,6 +125,17 @@ augroup match_whitespace
     autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 augroup END
 
+augroup match_folds
+    autocmd!
+    " VimEnter handles at start up, WinNew for each window created AFTER startup.
+    " Regex matches { { { with an empty group in the middle so that vim does
+    " not create a fold in this code, then either a 1 or 2 then a space. Then
+    " zs is the start of the match which is the rest of the line then ze is
+    " the end of the match. Refer to :help pattern-overview
+    autocmd VimEnter,WinNew * let w:_foldlevel1_id = matchadd('_FoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
+    autocmd VimEnter,WinNew * let w:_foldlevel2_id = matchadd('_FoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+augroup END
+
 " https://www.youtube.com/watch?v=aHm36-na4-4
 " If a line goes over 80 char wide highlight it
 " This permanently sets a column coloured

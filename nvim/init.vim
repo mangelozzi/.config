@@ -1,32 +1,30 @@
 " TODO make it at end of jumplist, then tab opens current fold.
 " nested fold mappings
+" https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
 
-" {{{ TITLE
+" {{{1 TITLE
 " TODO : NERD TRee status line, open vs when switch back to it
 "
 " A really good reference: https://github.com/jdhao/nvim-config
 " To create a link which loads a session file with neovim-qt:
 " C:\Neovim\bin\vim.exe -- -S
 " Notemap commands cant have comment on same line as them.
-" }}}
 
-" {{{ VARIABLES
+" {{{1 VARIABLES
 "==============================================================================
 " System Dependant variables
 let g:is_win   = has('win32') || has('win64')
 let g:is_linux = has('unix') && !has('macunix')
 let g:is_mac   = has('macunix')
-" }}}
 
-" {{{ LEADER
+" {{{1 LEADER
 "==============================================================================
 " Change leader from \ to ;
 " Must appear before any mappings, as the mapping uses the current value of
 " variable at the time of the mapping.
 let mapleader = " "
-" }}}
 
-" {{{ SETTINGS (same on linux servers)
+" {{{1 SETTINGS (same on linux servers)
 "==============================================================================
 " COLORS
 set background=dark
@@ -47,6 +45,8 @@ set showcmd                 " Show partial commands in the last line of the scre
 set showmatch               " When a bracket is inserted, briefly jump to the matching one.
 set matchtime=3             " 1/10ths of a second for which showmatch applies
 set wildmenu                " Better command-line completion
+set wildmode=list:full      " When more than one match, list all matches and complete first match.
+
 " Ignore certain files and folders when globbing
 set wildignore=*.pyc,*.zip,package-lock.json
 set wildignore+=**/spike/**,**/ignore/**,**/temp/static/**
@@ -93,9 +93,8 @@ set expandtab
 " FINDING FILES
 set path+=**
 set wildmenu                " Display all matching files when we tab complete
-" }}}
 
-" {{{ COPY PASTE
+" {{{1 COPY PASTE
 "==============================================================================
 " In Linux there are multiple clipboard like buffers called selections:
 "   The PRIMARY (*) selection is updated every time you select text. To paste from it (in graphical programs), middle-click or use ShiftInsert. In Vim, it is accessible through the "* register.
@@ -140,16 +139,14 @@ endfunction
 "   This issue:     https://vi.stackexchange.com/questions/14486/what-does-it-mean-to-set-clipboard-unnamed/17058#17058
 "   NOT using this Fix: https://github.com/neovim/neovim/issues/1822#issuecomment-233152833
 " Just specify a buffer when copying and pasting
-" }}}
 
-" {{{ GUI computer
+" {{{1 GUI computer
 "==============================================================================
 set mouse=a                 " Enable use of the mouse for all modes
 set number                  " Display line numbers on the left
 set relativenumber
-" }}}
 
-" {{{ KEY MAPPINGS
+" {{{1 KEY MAPPINGS
 "==============================================================================
 " Can show a list of mappings with :map
 " Useful to check no leader clashes
@@ -157,8 +154,7 @@ set relativenumber
 " CTRL (^) maps lower and uppercase to same key (by convention use uppercase)
 " Meta (M-?) can map lower and upper case words)
 
-" ___ ALL MODES _______________________________________________________________
-
+" {{{2 All modes
 " Map ; to : for speed
 map ; :
 map! <M-;> <Esc>:
@@ -168,7 +164,7 @@ map <C-s> :w<CR>
 " map! <C-s> <C-o>:w<CR>
 map! <C-s> <Esc>:w<CR>
 
-" ___ ESCAPE __________________________________________________________________
+" {{{2 Escape
 " Map other forms of escape to true <Esc>, e.g. useful for multiline editing
 " requres <Esc>.
 noremap <C-[> <Esc>
@@ -178,8 +174,8 @@ noremap! <C-c> <Esc>
 "noremap! <C-Space> <Esc>
 " required for escaping out of the terminal too (especially with FZF)
 tnoremap <C-Space> <Esc>
-
-" ___ MAP (NOREMAP)____________________________________________________________
+"
+" {{{2 Map (noremap)
 "   Normal, Visual+Select, and Operator Pending modes
 
 " :h yy = If you like "Y" to work from the cursor to the end of line (which is
@@ -205,7 +201,7 @@ noremap <leader>/ /\v
 nmap <silent> * yiw<Esc>: let @/ = @""<CR>
 nmap <silent> # yiw<Esc>: let @/ = @""<CR>
 
-" ___ MAP! (NOREMAP!)__________________________________________________________
+" {{{2 Map! (noremap!)
 
 " Left/Right arrow backspace and delete
 " <C-u> - Natively supports delete to beginning of line
@@ -219,8 +215,7 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" ___ FUNCTION KEYS ___________________________________________________________
-
+" {{{2 Function keys
 " <F1> to <F4> COMMON ACTIONS -------------------------------------------------
 " <F1> ESCAPE If I hit <F1> it was a mistake because I was reaching for <Esc>
 map  <F1> <Esc>
@@ -249,7 +244,7 @@ map <F8> <Esc>:call myautoload#CopyEntireBuffer()<CR>
 map  <F9> :echo 'Current date/time is ' . strftime('%Y-%m-%d %T')<CR>
 map! <F9> <C-R>=strftime('%Y-%m-%d %T')<CR>
 
-" ___ VISUAL MODE _____________________________________________________________
+" {{{2 Visual mode
 " v = select and visual mode, x = visual, s = select (mouse)
 " s mode = allows one to select with the mouse, then type any printable
 "          character to replace the selection and start typing. Unfortunately
@@ -266,7 +261,7 @@ vnoremap <S-left>   hPgvhxoho
 vnoremap <S-Down>   jPgvjxojo
 vnoremap <S-Up>     xkPgvkoko
 
-" ___ SEARCHING & REPLACING ___________________________________________________
+" {{{2 Searching & replacing
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m48s
 " He uses a plugin to achieve this.
 " Mapped with visual mode so that can use the mouse and press *
@@ -292,7 +287,12 @@ noremap <Leader>rc :%s///gc<Left><Left><Left>
 vnoremap <Leader>rr :s///g<Left><Left>
 vnoremap <Leader>rc :s///gc<Left><Left><Left>
 
-" ___ COPY & PASTE ____________________________________________________________
+" {{{2 Popup Menu
+inoremap <expr><C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
+inoremap <expr><C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
+inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
+
+" {{{2 Copy & paste
 " Copy to system clipboard
 " vnoremap  <leader>y  "+y
 " nnoremap  <leader>Y  "+yg_
@@ -305,11 +305,11 @@ vnoremap <Leader>rc :s///gc<Left><Left><Left>
 " vnoremap <leader>p "+p
 " vnoremap <leader>P "+P
 
-" ___ TERMINAL MODE ___________________________________________________________
+" {{{2 Terminal mode
 " <Esc> to exit terminal-mode:
 tnoremap <Esc> <C-\><C-n>
 
-" ___ COMMAND MODE ____________________________________________________________
+" {{{2 Command mode
 "   Make it more bash like
 " If wish to implement more functionality (requiring functions), refer to:
 " https://github.com/houtsnip/vim-emacscommandline/blob/master/plugin/emacscommandline.vim
@@ -353,10 +353,7 @@ nnoremap <leader>rg :call myautoload#SearchInFiles('n')<Cr>
 " Rip grep in files, use visual selection as starting point
 vnoremap <leader>rg :<C-U>call myautoload#SearchInFiles(visualmode())<Cr>
 
-" }}}
-
-" {{{ VIM TALK (text objects and motions)
-"==============================================================================
+" {{{2 Vim talk (text objects and motions)
 " Create text-object `A` which operates on the whole buffer (i.e. All)
 " Keeps the cursor position in the same position
 function! TextObjectAll()
@@ -375,28 +372,33 @@ onoremap il :<C-U>normal! ^vg_<Cr>
 onoremap al :<C-U>normal! 0vg_<Cr>
 vnoremap il :<C-U>normal! ^vg_<Cr>
 vnoremap al :<C-U>normal! 0vg_<Cr>
-" }}}
+" }}}2 End subsection
 
-" {{{ COMMANDS
+" {{{1 COMMANDS
 "==============================================================================
 " Change dir to that of Vim config ($MYVIMRC head)
 " Not used, rather use more generic solution cd %:p:h
 " command! Cdv exe 'cd ' . fnamemodify($MYVIMRC, ':p:h')
-" }}}
 
-" {{{ AUTOCOMMAND
+" {{{1 AUTOCOMMAND
 " =============================================================================
 " https://learnvimscriptthehardway.stevelosh.com/chapters/14.html
 " Autocommands are duplicated everytime the file is sourced.
 " To navigate this issue, place commands within an autocommand group, and
 " always clear the autocmds in the group by placing a autocmd! within the
 " group.
-"
+" While testing autocommands, can print debug related to them with
+"      :set verbose=9
 
-augroup save_programming_file
+augroup my_auto_commands
     " Strips trailing whitespace and auto indents the file
     autocmd!
-    autocmd BufWritePre *.vim :call myautoload#SaveProgrammingFile()
+    autocmd BufWritePre   *.vim call myautoload#SaveProgrammingFile()
+
+    " Restore the last position in a file when it was closed. Um-gas how this
+    " works.
+    " https://vi.stackexchange.com/questions/17007/after-closing-a-file-how-do-i-remember-return-to-the-previous-line
+    au BufReadPost * if line("'\"") > 0 && line ("'\"") <= line("$") | exe "normal! g'\"" | endif
 augroup END
 
 function! SwitchAwayFromQFWindow()
@@ -418,18 +420,10 @@ augroup prevent_load_in_quickfix_window
     "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
 augroup END
 
-autocmd BufNewFile * echom "hello new"
-autocmd BufReadPre * echom "hello read pres"
-
-
-" }}}
-
-" {{{ SOURCE INIT FILES
+" {{{1 SOURCE INIT FILES
 "==============================================================================
 "Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
 source <sfile>:h/init/env.vim
 source <sfile>:h/init/git.vim
 source <sfile>:h/init/myplugins.vim
 source <sfile>:h/init/visual.vim
-" }}}
-

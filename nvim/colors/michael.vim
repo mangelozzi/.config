@@ -141,6 +141,8 @@ hi _TrailingWhitespace                guibg=#880000 " Highlight trailing whitesp
 " {{{ Folds
 hi Folded               guifg=#FF9999 guibg=#005050 gui=bold,italic
 hi FoldColumn           guifg=#FF9999 guibg=#005050 gui=bold
+hi _FoldLevel1          guifg=#005050 guibg=#FF9999 gui=bold,italic
+hi _FoldLevel2          guifg=#003030 guibg=#CC8080 gui=bold,italic
 " }}}
 
 " {{{ NERDTree

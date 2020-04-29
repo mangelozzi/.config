@@ -47,7 +47,8 @@ Plug 'christoomey/vim-titlecase'
 
 " SMALL MISC
 Plug 'tpope/vim-unimpaired'
-Plug 'ap/vim-css-color'
+" Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
+Plug 'chrisbra/Colorizer'
 
 " GIT
 Plug 'tpope/vim-fugitive'
@@ -363,3 +364,5 @@ let g:coc_filetype_map = {
 " Own vim file for all the coc settings (based on the provided settings file)
 source <sfile>:h/coc.vim
 
+" Colorizer
+let g:colorizer_auto_color = 1
