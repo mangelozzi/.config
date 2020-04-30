@@ -1,4 +1,5 @@
 " TODO make it at end of jumplist, then tab opens current fold.
+" :help usr_toc
 " :help usr_41 (write a vim script)
 " nested fold mappings
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
@@ -144,6 +145,7 @@ endfunction
 " {{{1 GUI computer
 "==============================================================================
 set mouse=a                 " Enable use of the mouse for all modes
+behave xterm              " Sets selectmode, mousemodel, keymodel, and selection
 set number                  " Display line numbers on the left
 set relativenumber
 
@@ -258,10 +260,10 @@ map! <F9> <C-R>=strftime('%Y-%m-%d %T')<CR>
 
 " Move a block of text with SHIFT+arrows
 " https://vim.fandomcom/w.iki/Drag_words_with_Ctrl-left/right
-vnoremap <S-Right>  pgvloxlo
-vnoremap <S-left>   hPgvhxoho
-vnoremap <S-Down>   jPgvjxojo
-vnoremap <S-Up>     xkPgvkoko
+xnoremap <S-Right>  pgvloxlo
+xnoremap <S-left>   hPgvhxoho
+xnoremap <S-Down>   jPgvjxojo
+xnoremap <S-Up>     xkPgvkoko
 
 " {{{2 Searching & replacing
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m48s
@@ -272,8 +274,8 @@ vnoremap <S-Up>     xkPgvkoko
 "   \V = very NO magic
 "   <C-R> = CTRL+R to paste from " buffer
 "   escape = escape the / and \ which are the only none literals in no magic
-vnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
-vnoremap # y?\V<C-R>=escape(@",'/\')<CR><CR>
+xnoremap * y/\V<C-R>=escape(@",'/\')<CR><CR>
+xnoremap # y?\V<C-R>=escape(@",'/\')<CR><CR>
 
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=07m36s
 " Press * to search for the term under the cursor or a visual selection and
@@ -281,13 +283,13 @@ vnoremap # y?\V<C-R>=escape(@",'/\')<CR><CR>
 noremap <Leader>rr :%s///g<Left><Left>
 noremap <Leader>rc :%s///gc<Left><Left><Left>
 
-" vnoremap <Leader>rc :s///gc<Left><Left><Left>
+" xnoremap <Leader>rc :s///gc<Left><Left><Left>
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m25s
 " Similar to above, but in visual mode search within current selected region
 " for the previously search term. No need to add the '<,'> as it will be auto
 " added.
-vnoremap <Leader>rr :s///g<Left><Left>
-vnoremap <Leader>rc :s///gc<Left><Left><Left>
+xnoremap <Leader>rr :s///g<Left><Left>
+xnoremap <Leader>rc :s///gc<Left><Left><Left>
 
 " {{{2 Popup Menu
 inoremap <expr><C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
@@ -296,7 +298,7 @@ inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 
 " {{{2 Copy & paste
 " Copy to system clipboard
-" vnoremap  <leader>y  "+y
+" xnoremap  <leader>y  "+y
 " nnoremap  <leader>Y  "+yg_
 " nnoremap  <leader>y  "+y
 " nnoremap  <leader>yy  "+yy
@@ -304,8 +306,8 @@ inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 " " Paste from clipboard
 " nnoremap <leader>p "+p
 " nnoremap <leader>P "+P
-" vnoremap <leader>p "+p
-" vnoremap <leader>P "+P
+" xnoremap <leader>p "+p
+" xnoremap <leader>P "+P
 
 " {{{2 Terminal mode
 " <Esc> to exit terminal-mode:
@@ -353,7 +355,7 @@ cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 " Rip grep in files, use <cword> under the cursor as starting point
 nnoremap <leader>rg :call myautoload#SearchInFiles('n')<Cr>
 " Rip grep in files, use visual selection as starting point
-vnoremap <leader>rg :<C-U>call myautoload#SearchInFiles(visualmode())<Cr>
+xnoremap <leader>rg :<C-U>call myautoload#SearchInFiles(visualmode())<Cr>
 
 " {{{2 Vim talk (text objects and motions)
 " Create text-object `A` which operates on the whole buffer (i.e. All)
@@ -366,16 +368,19 @@ endfunction
 onoremap A :<C-U>call TextObjectAll()<CR>
 nnoremap <silent> <Plug>(RestoreView) :call winrestview(g:restore_position)<CR>
 " Disabled A in visual mode, cause use A to append at the end of selection.
-" vnoremap A :<C-U>normal! ggVG<CR>
+" xnoremap A :<C-U>normal! ggVG<CR>
 
 " Line Wise text objects (excludes the ending line char)
 " g_ means move to the last printable char of the line
 onoremap il :<C-U>normal! ^vg_<Cr>
 onoremap al :<C-U>normal! 0vg_<Cr>
-vnoremap il :<C-U>normal! ^vg_<Cr>
-vnoremap al :<C-U>normal! 0vg_<Cr>
-" }}}2 End subsection
+xnoremap il :<C-U>normal! ^vg_<Cr>
+xnoremap al :<C-U>normal! 0vg_<Cr>
 
+" Navigate HTML tags forward and backwards
+nnoremap [t vit<esc>`<
+nnoremap ]t vit<esc>`>
+" }}}2 End subsection
 " {{{1 COMMANDS
 "==============================================================================
 " Change dir to that of Vim config ($MYVIMRC head)
@@ -396,6 +401,7 @@ augroup my_auto_commands
     " Strips trailing whitespace and auto indents the file
     autocmd!
     autocmd BufWritePre   *.vim call myautoload#SaveProgrammingFile()
+    autocmd BufWritePre   *.html call myautoload#StripTrailingWhitespace()
 
     " Restore the last position in a file when it was closed. Um-gas how this
     " works.

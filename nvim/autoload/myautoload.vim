@@ -6,16 +6,32 @@
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 
-function! myautoload#StripTrailingWhitespace()
+function! myautoload#StripTrailingWhitespace(...)
+    let just_command = a:0 >= 1 ? a:1 : 0
+    if !just_command
+        let l:winview = winsaveview()
+    endif
     %s/\s\+$//e
+    if !just_command
+        call winrestview(l:winview)
+        echom "Trailing whitespace stripped."
+    endif
 endfun
-function! myautoload#AutoIndentFile()
+function! myautoload#AutoIndentFile(...)
+    let just_command = a:0 >= 1 ? a:1 : 0
+    if !just_command
+        let l:winview = winsaveview()
+    endif
     normal gg=G
+    if !just_command
+        call winrestview(l:winview)
+        echom "Auto Indented buffer."
+    endif
 endfun
 function! myautoload#SaveProgrammingFile()
     let l:winview = winsaveview()
-    silent call myautoload#StripTrailingWhitespace()
-    silent call myautoload#AutoIndentFile()
+    silent call myautoload#StripTrailingWhitespace(1)
+    silent call myautoload#AutoIndentFile(1)
     call winrestview(l:winview)
     echom "Trailing whitespace stripped & Auto Indented."
 endfun
@@ -90,6 +106,21 @@ endfunction
 " https://neovim.io/doc/user/nvim_terminal_emulator.html
 " https://neovim.io/doc/user/eval.html#termopen()
 " https://neovim.io/doc/user/eval.html#jobstart()
+function! myautoload#CompleteFromBufferWords(ArgLead, CmdLine, ...)
+    let str = getline(1, '$')
+    let str  = join(str, ' ')
+    " Split on whitespace and unusual characters (excludes - # _)
+    let slist = split(str, '[ \t~!@$%^&*+=()<>{}[\];:|,.?"\\/'']\+')
+    call filter(slist, {_, x -> len(x) > 2 && match(x, '^[a-zA-Z_]\+') > -1})
+    " If must start with the word
+    "call filter(slist, {_, x -> match(x, '^' . a:CmdLine) > -1})
+    " If must only contain the word
+    call filter(slist, {_, x -> match(x, a:CmdLine) > -1})
+    call sort(slist)
+    call uniq(slist)
+    return slist
+endfunction
+" echom CompleteWords2("Comp")
 let g:jump_to_first_match = 0
 let g:searchString = ''
 function! myautoload#SearchInFiles(mode)
@@ -109,7 +140,7 @@ function! myautoload#SearchInFiles(mode)
     "             \ 'completion'  : 'syntax',
     "             \ 'cancelreturn': 'cancelled' })
 
-    let g:searchString = input(prompt, default_str, 'syntax')
+    let g:searchString = input(prompt, default_str, 'customlist,myautoload#CompleteFromBufferWords')
     if g:searchString == '' || g:searchString == '\n'
         echom "Aborted Search."
         return
