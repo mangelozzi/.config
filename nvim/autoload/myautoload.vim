@@ -36,44 +36,6 @@ function! myautoload#SaveProgrammingFile()
     echom "Trailing whitespace stripped & Auto Indented."
 endfun
 
-function! myautoload#SearchOnStdout(job_id, data, event)
-    " Refer to :h setqflist
-    " Refer to :h setqflist-examples
-    let validList = filter(a:data, {idx, val -> val != ''})
-    echo "Processing another ".len(a:data)." entries..."
-    if len(validList) > 0
-        let addList = getqflist({'lines' : validList}).items
-        call setqflist(addList, 'a')  " a = add to the list
-    endif
-endfun
-let g:search_errors = 0
-function! myautoload#SearchOnStderr(job_id, data, event)
-    if a:data ==  ['']
-        " Sometimes stderr emits nothing and it triggers a false negative.
-        return
-    endif
-    let g:search_errors = 1
-    cclose
-    redraw
-    echom "SEARCH ERROR, job_id:".a:job_id." event:".a:event
-    echoerr join(a:data, "    ")
-    " echohl ErrorMsg
-    " for errorLine in a:data
-    "     echom errorLine
-    " endfor
-    " echohl NONE
-endfun
-function! myautoload#SearchOnExit(job_id, data, event)
-    "echo "My EXIT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
-    " Refer to :h getqflist-examples*
-    let num_entries = getqflist({'size' : 0}).size
-    if g:search_errors
-        echom "Complete with ERRORS. ".num_entries." entries for: ".shellescape(g:searchString)
-    else
-        echom "COMPLETE. ".num_entries." entries for: ".shellescape(g:searchString)
-    endif
-    redrawstatus!
-endfun
 function! myautoload#SearchPearl2VimRegex(pearl)
     let vim_re = a:pearl
     return vim_re
@@ -103,9 +65,6 @@ function! myautoload#GetVisualSelection(mode)
     endif
     return join(lines, "\n")
 endfunction
-" https://neovim.io/doc/user/nvim_terminal_emulator.html
-" https://neovim.io/doc/user/eval.html#termopen()
-" https://neovim.io/doc/user/eval.html#jobstart()
 function! myautoload#CompleteFromBufferWords(ArgLead, CmdLine, ...)
     let str = getline(1, '$')
     let str  = join(str, ' ')
@@ -121,6 +80,56 @@ function! myautoload#CompleteFromBufferWords(ArgLead, CmdLine, ...)
     return slist
 endfunction
 " echom CompleteWords2("Comp")
+
+function! myautoload#SearchOnStdout(job_id, data, event)
+    echo "My STDOUT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
+    " Refer to :h setqflist
+    " Refer to :h setqflist-examples
+    echom "Stdout..."
+    let validList = filter(a:data, {idx, val -> val != ''})
+    echo "Processing another ".len(a:data)." entries..."
+    if len(validList) > 0
+        let addList = getqflist({'lines' : validList}).items
+        call setqflist(addList, 'a')  " a = add to the list
+    endif
+endfun
+let g:search_errors = 0
+function! myautoload#SearchOnStderr(job_id, data, event)
+    echo "My STDERR, job_id:".a:job_id." event:".a:event." data:".string(a:data)
+    if a:data ==  ['']
+        " Sometimes stderr emits nothing and it triggers a false negative.
+        echom "data is empty."
+        return
+    endif
+    let g:search_errors = 1
+    cclose
+    redraw
+    echom "SEARCH ERROR, job_id:".a:job_id." event:".a:event
+    echoerr join(a:data, "    ")
+    " echohl ErrorMsg
+    " for errorLine in a:data
+    "     echom errorLine
+    " endfor
+    " echohl NONE
+endfun
+function! myautoload#SearchOnExit(job_id, data, event)
+    echo "My EXIT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
+    " Refer to :h getqflist-examples*
+    let num_entries = getqflist({'size' : 0}).size
+    if g:search_errors
+        echom "Complete with ERRORS. ".num_entries." entries for: ".shellescape(g:searchString)
+    else
+        echom "COMPLETE. ".num_entries." entries for: ".shellescape(g:searchString)
+    endif
+    redrawstatus!
+endfun
+function! SearchHighlighting(cmdline)
+    hi _SearchHighlighting guifg=lime
+    return [[0, len(a:cmdline), '_SearchHighlighting']]
+endfunc
+" https://neovim.io/doc/user/nvim_terminal_emulator.html
+" https://neovim.io/doc/user/eval.html#termopen()
+" https://neovim.io/doc/user/eval.html#jobstart()
 let g:jump_to_first_match = 0
 let g:searchString = ''
 function! myautoload#SearchInFiles(mode)
@@ -134,13 +143,14 @@ function! myautoload#SearchInFiles(mode)
     "For list of completion options :h command-completion
     " Not syntax, not tags (no tag file)
     " tag syntaxcomplete#Complete
-    " let g:searchString = input({
-    "             \ 'prompt'      : prompt,
-    "             \ 'default'     : default_str,
-    "             \ 'completion'  : 'syntax',
-    "             \ 'cancelreturn': 'cancelled' })
+    let g:searchString = input({
+                \ 'prompt'      : prompt,
+                \ 'default'     : default_str,
+                \ 'completion'  : 'customlist,myautoload#CompleteFromBufferWords',
+                \ 'cancelreturn': '',
+                \ 'highlight'   : 'SearchHighlighting'})
 
-    let g:searchString = input(prompt, default_str, 'customlist,myautoload#CompleteFromBufferWords')
+    "let g:searchString = input(prompt, default_str, 'customlist,myautoload#CompleteFromBufferWords')
     if g:searchString == '' || g:searchString == '\n'
         echom "Aborted Search."
         return
@@ -153,7 +163,10 @@ function! myautoload#SearchInFiles(mode)
     " rg command options:
     "   H = with filename
     "   Note, --color=always causes error on parsing
-    let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case '.shellescape(g:searchString)
+    let rg_list = add(['rg', '-H', '--no-heading', '--column', '--line-number', '--smart-case'], g:searchString)
+    " let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case call'.g:searchString
+    let rg_cmd = join(rg_list, ' ') "'rg -H --no-heading --column --line-number --smart-case call'.g:searchString
+    ".shellescape(g:searchString)
 
     " Clear the quickfix of entries
     silent copen " Must be first so over operate on quickfix window
@@ -177,8 +190,8 @@ function! myautoload#SearchInFiles(mode)
     "          \ })
 
 
-    let terminal_buf_nr = jobstart(rg_cmd, opts_dict)
-    "echom "Start search for ".g:searchString." got return start up value: ".terminal_buf_nr
+    let terminal_buf_nr = jobstart(rg_list, opts_dict)
+    echom "Start search for ".g:searchString." got return start up value: ".terminal_buf_nr
 endfunction
 
 function! myautoload#QuickfixDeleteOperator(mode)
