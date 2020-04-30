@@ -3,16 +3,19 @@
 # -----------------------------------------------------------------------------
 # CORE
 [user]
-	name = Michael Angelozzi
-	email = mangelozzi@gmail.com
+    name = Michael Angelozzi
+    email = mangelozzi@gmail.com
 [credential "https://github.com"]
-	username = michael-angelozzi
+    username = michael-angelozzi
 [credential]
-	#helper = mananger
+    #Look into SSH keys: https://stackoverflow.com/a/51327559/5506400
+    #helper = mananger
     #helper = store
+    helper = cache --timeout=86400
 [core]
-	preloadindex = true
-	fscache = true
+    preloadindex = true
+    fscache = true
+    editor = nvim
 
 # -----------------------------------------------------------------------------
 # DIFF TOOL
@@ -23,14 +26,14 @@
 [difftool "meld"]
     cmd = meld "$LOCAL" "$REMOTE"
 [gc]
-	auto = 256
+    auto = 256
 
 # -----------------------------------------------------------------------------
 # MERGE TOOL
 [mergetool]
-	keepBackup = false
+    keepBackup = false
 [merge]
-	tool = nvim
+    tool = nvim
 [mergetool "nvim"]
-	cmd = vim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+    cmd = vim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 
