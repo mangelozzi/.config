@@ -12,6 +12,7 @@ set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " Delays and poor user experience.
+" They recommend 300
 set updatetime=500
 
 " Don't pass messages to |ins-completion-menu|.
@@ -37,7 +38,8 @@ function! s:check_back_space() abort
 endfunction
 
 " Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+" Use CTRL+Space for something else
+" inoremap <silent><expr> <c-space> coc#refresh()
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 " position. CoC only does snippet and additional edit on confirm.

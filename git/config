@@ -9,6 +9,10 @@
     username = michael-angelozzi
 [credential]
     # LINUX: Use SSH keys
+    # NOTE!!! HTTPS remotes always ask for password, so must change to SSH repo:
+    #   git remote --verbose
+    #   git remote set-url origin git@github.com:USERNAME/REPOSITORY.git
+    #
     #   Follow this guide: https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
     #   0. Check if have ~/.ssh/id_rsa* keys already, if yes goto step 5.
     #   1. Open a terminal and run:
@@ -22,6 +26,8 @@
     #           cat ~/.ssh/id_rsa.pub
     #   6. Go to github.com -> Settings -> SSH and GPG keys -> New SSH Key.
     #   7. Type in description and paste in key.
+    #   8. Check Github.com fingerprint matches you own key:
+    #           ssh-add -l -E md5
     #
     # WINDOWS: Use manager for the entire machine (system)
     #       git config --system credential.helper manager

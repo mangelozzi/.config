@@ -137,8 +137,8 @@ hi _TrailingWhitespace                guibg=#880000 " Highlight trailing whitesp
 " {{{1 Folds
 hi Folded               guifg=#FF9999 guibg=#005050 gui=bold,italic
 hi FoldColumn           guifg=#FF9999 guibg=#005050 gui=bold
-hi _FoldLevel1          guifg=#005050 guibg=#FF9999 gui=bold,italic
-hi _FoldLevel2          guifg=#003030 guibg=#CC8080 gui=bold,italic
+hi _FoldLevel1          guifg=#000000 guibg=#FFFFFF guisp=#FFFFFF gui=bold,italic,underline
+hi _FoldLevel2          guifg=#003030 guibg=#C0C0C0 guisp=#FFFFFF gui=bold,italic,underline
 
 " {{{1 NERDTree
 hi treeDir              guifg=#FF0000 guibg=#00ff00
@@ -222,6 +222,12 @@ hi TabLineSel           guifg=#192224 guibg=#00A000 gui=bold " Currently selecte
 hi TabLine              guifg=#000000 guibg=#ababab gui=bold " Not selected tab
 hi TabLineFill                        guibg=#333333 gui=none " Tab line
 
+" {{{1 Spelling
+hi SpellBad                           guibg=#700000 guisp=#FF0000 gui=bold,undercurl " Not recognised by spell checker
+hi SpellCap                           guibg=#700000 guisp=#FF0000 gui=bold,undercurl " Word that should start with a capital
+hi SpellLocal                         guibg=#700000 guisp=#FF0000 gui=bold,undercurl " Word that is used in another region
+hi SpellRare                          guibg=#700000 guisp=#FF0000 gui=bold,undercurl " Word that is hardly ever used
+
 " {{{1 MISC
 " TODO example
 hi Todo                 guifg=#FFFFFF guibg=#0044FF   " TODO within a comment (at line start)
@@ -261,7 +267,6 @@ hi Label                guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 c
 hi PMenuSel             guifg=#000000 guibg=#00c800 guisp=#00c800 gui=NONE ctermfg=NONE ctermbg=40 cterm=NONE
 hi Delimiter            guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Statement            guifg=#ff0000 guibg=NONE guisp=NONE gui=bold ctermfg=196 ctermbg=NONE cterm=bold
-hi SpellRare            guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi Comment              guifg=#00ff00 guibg=NONE guisp=NONE ctermfg=10 ctermbg=NONE cterm=NONE " gui=italic TAKEN OUT FOR NOW!!!!
 hi Character            guifg=#A1A6A8 guibg=NONE guisp=NONE gui=NONE ctermfg=248 ctermbg=NONE cterm=NONE
 hi Float                guifg=#A1A6A8 guibg=NONE guisp=NONE gui=NONE ctermfg=248 ctermbg=NONE cterm=NONE
@@ -274,12 +279,10 @@ hi Define               guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 c
 hi Function             guifg=#ffbf00 guibg=NONE guisp=NONE gui=bold ctermfg=214 ctermbg=NONE cterm=bold
 hi PreProc              guifg=#ff80ff guibg=NONE guisp=NONE gui=NONE ctermfg=213 ctermbg=NONE cterm=NONE
 hi MoreMsg              guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
-hi SpellCap             guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi VertSplit            guifg=#192224 guibg=#5E6C70 guisp=#5E6C70 gui=bold ctermfg=235 ctermbg=66 cterm=bold
 hi Exception            guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi Keyword              guifg=#ff7b00 guibg=NONE guisp=NONE gui=bold ctermfg=208 ctermbg=NONE cterm=bold
 hi Type                 guifg=#ff0000 guibg=NONE guisp=NONE gui=bold ctermfg=196 ctermbg=NONE cterm=bold
-hi SpellLocal           guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi Error                guifg=#A1A6A8 guibg=#912C00 guisp=#912C00 gui=NONE ctermfg=248 ctermbg=88 cterm=NONE
 hi PMenu                guifg=#ffffff guibg=#636363 guisp=#636363 gui=NONE ctermfg=15 ctermbg=241 cterm=NONE
 hi Constant             guifg=#80ffff guibg=NONE guisp=NONE gui=NONE ctermfg=123 ctermbg=NONE cterm=NONE
@@ -288,7 +291,6 @@ hi String               guifg=#00ff00 guibg=NONE guisp=NONE gui=NONE ctermfg=10 
 hi PMenuThumb           guifg=#ffffff guibg=#d9d9d9 guisp=#d9d9d9 gui=NONE ctermfg=15 ctermbg=253 cterm=NONE
 hi MatchParen           guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
-hi SpellBad             guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi Directory            guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi Structure            guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE

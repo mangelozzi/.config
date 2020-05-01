@@ -42,13 +42,12 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'christoomey/vim-titlecase'
-"Plug 'kana/vim-textobj-user'
-"Plug 'kana/vim-textobj-entire'
 
 " SMALL MISC
 Plug 'tpope/vim-unimpaired'
 " Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
-Plug 'chrisbra/Colorizer'
+" Plug 'chrisbra/Colorizer' "SUPER SLOW
+Plug 'norcalli/nvim-colorizer.lua'
 
 " GIT
 Plug 'tpope/vim-fugitive'
@@ -133,16 +132,6 @@ call plug#end()
 " Create operator to title case over a range
 " gT = Title case
 " e.g. "foo bar" -> "Foo Bar"
-
-" ______________________________________________________________________________
-" PLUGIN: ENTIRE
-" Removed in favour of own mapping
-" https://github.com/kana/vim-textobj-entire
-" Requires: https://github.com/kana/vim-textobj-entire
-" https://www.youtube.com/watch?v=wlR5gYd6um0#t=31m08
-" Creates text-objects for the entire buffer
-" ae = entire buffer
-" ie = like ae but leading and trailing empty lines are excluded.
 
 " ==============================================================================
 " SMALL MISC
@@ -364,5 +353,7 @@ let g:coc_filetype_map = {
 " Own vim file for all the coc settings (based on the provided settings file)
 source <sfile>:h/coc.vim
 
-" Colorizer
-let g:colorizer_auto_color = 1
+" ______________________________________________________________________________
+" PLUGIN: norcalli/nvim-colorizer.lua
+" Colour background
+" lua require'colorizer'.setup()

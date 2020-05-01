@@ -63,9 +63,10 @@ function MyStatusLine(currentWindow) abort
     let s .= "%#_StatusModified#%{&modified?' +++ ':''}"
     let s .= col_fade3."%{!&modified?'▐':''}".col_fade2."%{!&modified?'▐':''}".col_fade1."%{!&modified?'▐':''}"
     let s .= col_line
-    let s .= "%<"                                        " Where to truncate long lines
+    "let s .= "%<"                                        " Where to truncate long lines
     let s .= "%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}"
     let s .= "%="                                     " Left/Right separator
+    let s .= " %{coc#status()}%{get(b:,'coc_current_function','')} "
     if exists('g:loaded_fugitive')
         let s .= col_subtle."%{&l:modifiable ? fugitive#statusline().'   ' : ''}"
     endif

@@ -45,7 +45,7 @@ set nostartofline           " Stop certain movements going to start of line (mor
 set nowrap                  " Disable word wrapping
 set showcmd                 " Show partial commands in the last line of the screen
 set showmatch               " When a bracket is inserted, briefly jump to the matching one.
-set matchtime=3             " 1/10ths of a second for which showmatch applies
+set matchtime=3             " 1/10ths of a second for which showmatch applies to matching a bracket
 set wildmenu                " Better command-line completion
 set wildmode=list:full      " When more than one match, list all matches and complete first match.
 
@@ -95,6 +95,14 @@ set expandtab
 " FINDING FILES
 set path+=**
 set wildmenu                " Display all matching files when we tab complete
+
+" WORD TOOLS
+" Specify the spelling language, have to use `:set spell` to enable it.
+" :set spell` is set in ftplugin to enable spell checking
+set spelllang=en_gb
+
+" i_CTRL-X_CTRL-T for thesaurus completion
+exe 'set thesaurus+='.fnamemodify("%", ":p:h").'/thesaurus/english.txt'
 
 " {{{1 COPY PASTE
 "==============================================================================

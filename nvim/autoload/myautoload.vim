@@ -143,6 +143,10 @@ function! myautoload#SearchInFiles(mode)
     "For list of completion options :h command-completion
     " Not syntax, not tags (no tag file)
     " tag syntaxcomplete#Complete
+    hi _SearchFlagTips guifg=#808080
+    echohl _SearchFlagTips
+    echom "Add auto complete for all possible flags, and separate question: Possible Flags: -F=no regex, -L=follow symlinks, --hidden=hidden files, --no-ignore=incl.Non VC files, --no-messages=no IO errors, --trim=Leading whitespace, -s=case sensitive, -i=ignore case"
+    echohl None
     let g:searchString = input({
                 \ 'prompt'      : prompt,
                 \ 'default'     : default_str,
@@ -162,8 +166,10 @@ function! myautoload#SearchInFiles(mode)
 
     " rg command options:
     "   H = with filename
+    "   --column = column number and implies --line-number
+    "   look into using --file for single file
     "   Note, --color=always causes error on parsing
-    let rg_list = add(['rg', '-H', '--no-heading', '--column', '--line-number', '--smart-case'], g:searchString)
+    let rg_list = add(['rg', '-H', '--no-heading', '--column', '--smart-case'], g:searchString)
     " let rg_cmd = 'rg -H --no-heading --column --line-number --smart-case call'.g:searchString
     let rg_cmd = join(rg_list, ' ') "'rg -H --no-heading --column --line-number --smart-case call'.g:searchString
     ".shellescape(g:searchString)
@@ -256,3 +262,35 @@ function! myautoload#DeleteCurBufferNotCloseWindow() abort
         exec oldwin 'wincmd w'
     endif
 endfunc
+
+
+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+" command! -nargs=1 StartAsync
+"          \ call jobstart(<f-args>, {
+"          \    'on_exit': { j,d,e ->
+"          \       execute('echom "command finished with exit status '.d.'"', '')
+"          \    }
+"          \ })
+
+
+function! myautoload#OnStdout(job_id, data, event)
+    " echo "My STDOUT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
+    for line in a:data
+        echom string(line)
+    endfor
+endfun
+function! myautoload#OnStderr(job_id, data, event)
+    echo "My STDERR, job_id:".a:job_id." event:".a:event." data:".string(a:data)
+endfun
+function! myautoload#OnExit(job_id, data, event)
+    echo "My EXIT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
+endfun
+function! myautoload#TestJobStart()
+    echom  "------------------------------------"
+    echom "About to start job..."
+    let opts_dict = {'on_exit': 'myautoload#OnExit', 'on_stdout': 'myautoload#OnStdout', 'on_stderr': 'myautoload#OnStderr'}
+    let cmd = "ls -la"
+    let terminal_buf_nr = jobstart(cmd, opts_dict)
+    echom "Start search for ".g:searchString." got return start up value: ".terminal_buf_nr
+endfunction
+call myautoload#TestJobStart()
