@@ -1,8 +1,9 @@
 *.bak
 /*
 /*/
-!/git/
-!/nvim/
 !/emacs/
+!/git/
+!/misc/
+!/nvim/
 !.gitignore
 !README.md

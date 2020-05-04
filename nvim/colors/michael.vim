@@ -20,12 +20,17 @@
 " Refer to cterm_colours.png in current folder
 
 " gui (Font style), can be the following values:
-"    bold
-"    undercurl
-"    underline
-"    reverse
-"    italic
-"    none
+"       bold
+"       underline
+"       undercurl	curly underline
+"       strikethrough
+"       reverse
+"       inverse		same as reverse
+"       italic
+"       standout
+"       nocombine	override attributes instead of combining them
+"       NONE		no attributes used (used to reset it)
+"
 " Can be multiple values e.g.
 "    gui=bold,undercurl
 " guifg - GUI Foreground colour
@@ -234,6 +239,10 @@ hi Todo                 guifg=#FFFFFF guibg=#0044FF   " TODO within a comment (a
 hi StorageClass         guifg=#FF6991 guibg=NONE guisp=NONE gui=bold " Change .CSS attribute font colour
 hi Visual                             guibg=#888888 " Visual Selection
 
+" {{{1 WILDMENU
+hi Directory            guifg=#FFFF00 guibg=NONE guisp=NONE gui=bold
+hi WildMenu             guifg=#000000 guibg=#00FF00 " Current match in 'wildmenu' completion
+
 " {{{1 DEFAULT LANUAGE HI ITEMS (Unused)
 "hi CTagsMember -- no settings --
 "hi CTagsGlobalConstant -- no settings --
@@ -251,7 +260,6 @@ hi Visual                             guibg=#888888 " Visual Selection
 
 " {{{1 Theme generator highlight groups
 hi Typedef              guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
-hi WildMenu             guifg=NONE    guibg=#A1A6A8 guisp=#A1A6A8 gui=NONE ctermfg=NONE ctermbg=248 cterm=NONE
 hi SpecialComment       guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Title                guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=bold ctermfg=189 ctermbg=235 cterm=bold
 hi PreCondit            guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
@@ -291,7 +299,6 @@ hi String               guifg=#00ff00 guibg=NONE guisp=NONE gui=NONE ctermfg=10 
 hi PMenuThumb           guifg=#ffffff guibg=#d9d9d9 guisp=#d9d9d9 gui=NONE ctermfg=15 ctermbg=253 cterm=NONE
 hi MatchParen           guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
-hi Directory            guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi Structure            guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Underlined           guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline

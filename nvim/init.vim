@@ -4,7 +4,14 @@
 " nested fold mappings
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
 " testing git access tokens
+noremap <leader>v :call GrepWithHighlight()<Cr>
 
+" Add hot key to exe set env etc:
+" function! ExecuteManagerCheck(file)
+"     execute ':!start cmd /k "C:\Users\xyz\Documents\checker\manager check '.a:file.'"'
+" endfunction
+"
+" nmap <leader>m :call ExecuteManagerCheck(expand('%:p'))<cr>
 " {{{1 TITLE
 " TODO : NERD TRee status line, open vs when switch back to it
 "
@@ -47,28 +54,37 @@ set nowrap                  " Disable word wrapping
 set showcmd                 " Show partial commands in the last line of the screen
 set showmatch               " When a bracket is inserted, briefly jump to the matching one.
 set matchtime=3             " 1/10ths of a second for which showmatch applies to matching a bracket
-set wildmenu                " Better command-line completion
-set wildmode=list:full      " When more than one match, list all matches and complete first match.
 
-" Ignore certain files and folders when globbing
-set wildignore=*.pyc,*.zip,package-lock.json
-set wildignore+=**/spike/**,**/ignore/**,**/temp/static/**
-set wildignore+=**/venv/**,**/node_modules/**,**/.git/**
 set nolist                  " Dont show spaces/tabs/newlines etc
-"set noswapfiles
 set nomodeline              " Modelines are vimscript snippets in normal files which vim interprets, e.g. `ex:`
-"set undofile                " Persistent undo even after you close a file and re-open it
 set undolevels=2000         " Default 1000.
-"set noshowmode              " Do not show mode on command line since vim-airline can show it
 set shortmess+=c            " Do not show "match xx of xx" and other messages during auto-completion
 set shiftround              " Round indent to multiple of 'shiftwidth'. Applies to > and < commands. CTRL-T and CTRL-D in insert mode always round to a multiple of shiftwidths.
 set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
-" set cmdheight=2         " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
 
+" UNSET
+"set cmdheight=2            " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
+"set noswapfiles             " Disable making swap files to indicate file is open.
+"set undofile                " Persistent undo even after you close a file and re-open it
+"set noshowmode              " Do not show mode on command line since vim-airline can show it
 "set switchbuf=usetab,newtab " Control how QUICKFIX ONLY window links are opened are handled and :sb
+"set winaltkeys=menu         " Default value, if a ALT+... hotkey is pressed, first let windowing system handle it, if not then vim will try
+"set winblend=30             " Enables pseudo-transparency for a floating window.
+
+" WILD COMPLETION
+set wildmenu                " Better command-line completion
+" The parts (stages) in completion:
+"     1. longest = Complete until longest common string
+"     2. Next tab list = show a list of possible completions
+"     3. Next tab full = statusline selectable options
+set wildmode=longest,list,full
+" Ignore certain files and folders when globbing
+set wildignore=*.pyc,*.zip,package-lock.json
+set wildignore+=**/spike/**,**/ignore/**,**/temp/static/**
+set wildignore+=**/venv/**,**/node_modules/**,**/.git/**
 
 " SEARCHING
 set ignorecase              " Use case insensitive search...
@@ -80,7 +96,6 @@ set hlsearch                " Highlight searches, use :noh to turn off residual 
 " WRAPPED LINES
 set linebreak               " wrap at word breaks
 set showbreak=↪             " show an ellipsis at the start of wrapped lines
-
 
 syntax on                   " Enable syntax highlighting
 filetype plugin on          " Enable plugins (for newtrw), built in, comes with VIM
@@ -104,6 +119,15 @@ set spelllang=en_gb
 
 " i_CTRL-X_CTRL-T for thesaurus completion
 exe 'set thesaurus+='.fnamemodify("%", ":p:h").'/thesaurus/english.txt'
+
+" {{{1 SOURCE INIT FILES
+"==============================================================================
+" Sourced plugins before own personal maps
+" Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
+source <sfile>:h/init/env.vim
+source <sfile>:h/init/git.vim
+source <sfile>:h/init/myplugins.vim
+source <sfile>:h/init/visual.vim
 
 " {{{1 COPY PASTE
 "==============================================================================
@@ -381,15 +405,19 @@ nnoremap <silent> <Plug>(RestoreView) :call winrestview(g:restore_position)<CR>
 
 " Line Wise text objects (excludes the ending line char)
 " g_ means move to the last printable char of the line
-onoremap il :<C-U>normal! ^vg_<Cr>
-onoremap al :<C-U>normal! 0vg_<Cr>
-xnoremap il :<C-U>normal! ^vg_<Cr>
-xnoremap al :<C-U>normal! 0vg_<Cr>
+onoremap il :<C-U>normal! ^vg_<CR>
+onoremap al :<C-U>normal! 0vg_<CR>
+xnoremap il :<C-U>normal! ^vg_<CR>
+xnoremap al :<C-U>normal! 0vg_<CR>
 
-" Navigate HTML tags forward and backwards
-nnoremap [t vit<esc>`<
-nnoremap ]t vit<esc>`>
+" Navigate to the start/end of the inner text
+nnoremap [t vit<ESC>`<
+nnoremap ]t vit<ESC>`>
+" Navigate to the start/end of the <tag>...</tag> set
+nnoremap [T vat<ESC>`<
+nnoremap ]T vat<ESC>`>
 " }}}2 End subsection
+
 " {{{1 COMMANDS
 "==============================================================================
 " Change dir to that of Vim config ($MYVIMRC head)
@@ -437,10 +465,3 @@ augroup prevent_load_in_quickfix_window
     "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
 augroup END
 
-" {{{1 SOURCE INIT FILES
-"==============================================================================
-"Where <sfile> when executing a ":source" command, is replaced with the file name of the sourced file.
-source <sfile>:h/init/env.vim
-source <sfile>:h/init/git.vim
-source <sfile>:h/init/myplugins.vim
-source <sfile>:h/init/visual.vim

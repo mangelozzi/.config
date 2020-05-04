@@ -1,0 +1,14 @@
+Tortoise SVN right click popup settings -> Settings -> Diff viewer
+
+Diff tool settings:
+Select external.
+WinMerge:
+    C:\Program Files (x86)\WinMerge\WinMergeU.exe  /r /e /x /u /wl /dl %bname /dr %yname %base %mine
+Meld:
+    meld %base %mine
+
+Merging:
+Select external.
+Winmerge:
+    C:\Program Files (x86)\WinMerge\WinMergeU.exe /e /u %merged
+

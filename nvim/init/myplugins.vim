@@ -48,6 +48,7 @@ Plug 'tpope/vim-unimpaired'
 " Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
 " Plug 'chrisbra/Colorizer' "SUPER SLOW
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'AndrewRadev/bufferize.vim'
 
 " GIT
 Plug 'tpope/vim-fugitive'
@@ -131,6 +132,7 @@ call plug#end()
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=27m40
 " Create operator to title case over a range
 " gT = Title case
+" gTT = Title case the whole line
 " e.g. "foo bar" -> "Foo Bar"
 
 " ==============================================================================
@@ -353,7 +355,18 @@ let g:coc_filetype_map = {
 " Own vim file for all the coc settings (based on the provided settings file)
 source <sfile>:h/coc.vim
 
+
+" ______________________________________________________________________________
+" PLUGIN: AndrewRadev/bufferize.vim
+" Pipe the output of commands into a buffer, e.g.
+" :Bufferize messages
+" :Bufferize hi
+" :Bufferize messages
+" :Bufferize digraphs
+" :Bufferize map
+" :Bufferize command
+
 " ______________________________________________________________________________
 " PLUGIN: norcalli/nvim-colorizer.lua
 " Colour background
-" lua require'colorizer'.setup()
+lua require'colorizer'.setup()
