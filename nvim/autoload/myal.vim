@@ -6,7 +6,7 @@
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 
-function! myautoload#QuitIfLastBuffer()
+function! myal#QuitIfLastBuffer()
     let cnt = 0
     for nr in range(1,bufnr("$"))
         if buflisted(nr) && ! empty(bufname(nr)) || getbufvar(nr, '&buftype') ==# 'help'
@@ -20,14 +20,14 @@ function! myautoload#QuitIfLastBuffer()
     endif
 endfunction
 " from https://stackoverflow.com/a/44950143/5506400
-function! myautoload#DeleteCurBufferNotCloseWindow() abort
+function! myal#DeleteCurBufferNotCloseWindow() abort
     if &modified
         echohl ErrorMsg
         echom "E89: no write since last change"
         echohl None
     elseif winnr('$') == 1
         " bd
-        call myautoload#QuitIfLastBuffer()
+        call myal#QuitIfLastBuffer()
     else  " multiple window
         let oldbuf = bufnr('%')
         let oldwin = winnr()
@@ -54,37 +54,20 @@ function! myautoload#DeleteCurBufferNotCloseWindow() abort
     endif
 endfunction
 
-function! myautoload#StripTrailingWhitespace(...)
-    let just_command = a:0 >= 1 ? a:1 : 0
-    if !just_command
-        let l:winview = winsaveview()
-    endif
-    %s/\s\+$//e
-    if !just_command
-        call winrestview(l:winview)
-        echom "Trailing whitespace stripped."
-    endif
-endfun
-function! myautoload#AutoIndentFile(...)
-    let just_command = a:0 >= 1 ? a:1 : 0
-    if !just_command
-        let l:winview = winsaveview()
-    endif
-    normal gg=G
-    if !just_command
-        call winrestview(l:winview)
-        echom "Auto Indented buffer."
-    endif
-endfun
-function! myautoload#SaveProgrammingFile()
+function! myal#StripTrailingWhitespace()
     let l:winview = winsaveview()
-    silent call myautoload#StripTrailingWhitespace(1)
-    silent call myautoload#AutoIndentFile(1)
+    :%s/\s\+$//e
     call winrestview(l:winview)
-    echom "Trailing whitespace stripped & Auto Indented."
+    echom "Trailing whitespace stripped."
+endfun
+function! myal#AutoIndentFile()
+    let l:winview = winsaveview()
+    normal gg=G
+    call winrestview(l:winview)
+    echom "Auto Indented buffer."
 endfun
 
-function! myautoload#QuickfixDeleteOperator(mode)
+function! myal#QuickfixDeleteOperator(mode)
     " Only operates linewise, since 1 Quickfix entry is tied to 1 line.
     if a:mode ==# 'v' || a:mode ==# 'V' || a:mode ==# ''
         let start = getpos("'<")[1]
@@ -99,13 +82,13 @@ function! myautoload#QuickfixDeleteOperator(mode)
     call setpos('.', save_pos)
 endfunction
 
-function! myautoload#SearchPearl2VimRegex(pearl)
+function! myal#SearchPearl2VimRegex(pearl)
     let vim_re = a:pearl
     return vim_re
 endfun
-function! myautoload#GetVisualSelection(mode)
+function! myal#GetVisualSelection(mode)
     " call with visualmode() as the argument
-    " vnoremap <leader>zz :<C-U>call myautoload#GetVisualSelection(visualmode())<Cr>
+    " vnoremap <leader>zz :<C-U>call myal#GetVisualSelection(visualmode())<Cr>
     let [line_start, column_start] = getpos("'<")[1:2]
     let [line_end, column_end]     = getpos("'>")[1:2]
     let lines = getline(line_start, line_end)
@@ -128,7 +111,7 @@ function! myautoload#GetVisualSelection(mode)
     endif
     return join(lines, "\n")
 endfunction
-function! myautoload#CompleteFromBufferWords(ArgLead, CmdLine, ...)
+function! myal#CompleteFromBufferWords(ArgLead, CmdLine, ...)
     let str = getline(1, '$')
     let str  = join(str, ' ')
     " Split on whitespace and unusual characters (excludes - # _)
@@ -184,15 +167,16 @@ endfun
 function! s:SearchOnExit(job_id, data, event) dict
     " echo "My EXIT, job_id:".a:job_id." event:".a:event." data:".string(a:data)
     " Refer to :h getqflist-examples*
-    let num_entries = getqflist({'size' : 0}).size
     if self.error_cnt
         echom "Complete with ".self.error_cnt." ERRORS. ".num_entries." entries for: ".self.pattern
     else
-        echom "COMPLETE. ".num_entries." entries for: ".self.pattern
+        echom "COMPLETE. ".self.match_cnt." entries for: ".self.pattern
+        if self.match_cnt > 0
+            call clearmatches()
+            let pattern = myal#SearchPearl2VimRegex(self.pattern)
+            silent call matchadd('Search', pattern) " Hi group / pattern
+        endif
     endif
-    call clearmatches()
-    let pattern = myautoload#SearchPearl2VimRegex(self.pattern)
-    silent call matchadd('Search', pattern) " Hi group / pattern
     redrawstatus!
 endfun
 function! SearchHighlighting(cmdline)
@@ -203,7 +187,7 @@ endfunc
 " https://neovim.io/doc/user/eval.html#termopen()
 " https://neovim.io/doc/user/eval.html#jobstart()
 let g:jump_to_first_match = 0
-function! myautoload#SearchInFiles(mode)
+function! myal#SearchInFiles(mode)
     let s:search_dict = {
                 \ 'pattern'  : '',
                 \ 'qf_title' : '',
@@ -213,7 +197,7 @@ function! myautoload#SearchInFiles(mode)
     " GET SEARCH STRING
     " Only operates linewise, since 1 Quickfix entry is tied to 1 line.
     if index(['v', 'V', "\<c-v>"], a:mode) != -1
-        let default_str = myautoload#GetVisualSelection(a:mode)
+        let default_str = myal#GetVisualSelection(a:mode)
     else
         let default_str = expand('<cword>')
     endif
@@ -226,10 +210,10 @@ function! myautoload#SearchInFiles(mode)
     let s:search_dict.pattern = input({
                 \ 'prompt'      : prompt,
                 \ 'default'     : default_str,
-                \ 'completion'  : 'customlist,myautoload#CompleteFromBufferWords',
+                \ 'completion'  : 'customlist,myal#CompleteFromBufferWords',
                 \ 'cancelreturn': '',
                 \ 'highlight'   : 'SearchHighlighting'})
-    "let pattern = input(prompt, default_str, 'customlist,myautoload#CompleteFromBufferWords')
+    "let pattern = input(prompt, default_str, 'customlist,myal#CompleteFromBufferWords')
     if s:search_dict.pattern == '' || s:search_dict.pattern == '\n'
         echom "Aborted Search."
         return

@@ -1,10 +1,10 @@
-set nowrap
-set norelativenumber
-set colorcolumn=
+setlocal nowrap
+setlocal norelativenumber
+setlocal colorcolumn=
 
-nnoremap <Plug>MyDeleteQuickfix       :<C-U>set  opfunc=myautoload#QuickfixDeleteOperator<CR>g@
-nnoremap <Plug>MyDeleteQuickfixLine   :<C-U>call myautoload#QuickfixDeleteOperator('line')<CR>
-vnoremap <Plug>MyDeleteQuickfixVisual :<C-U>call myautoload#QuickfixDeleteOperator(visualmode())<CR>
+nnoremap <buffer> <Plug>MyDeleteQuickfix       :<C-U>set  opfunc=myal#QuickfixDeleteOperator<CR>g@
+nnoremap <buffer> <Plug>MyDeleteQuickfixLine   :<C-U>call myal#QuickfixDeleteOperator('line')<CR>
+vnoremap <buffer> <Plug>MyDeleteQuickfixVisual :<C-U>call myal#QuickfixDeleteOperator(visualmode())<CR>
 
 nmap <silent> <buffer> d  <Plug>MyDeleteQuickfix
 nmap <silent> <buffer> dd <Plug>MyDeleteQuickfixLine

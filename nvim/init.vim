@@ -267,12 +267,12 @@ map! <F3> <Esc>:e $MYVIMRC<CR> :cd %:p:h<CR>
 " <F4> CLOSE BUFFER
 " Same as buffer delete, however if its the last none help or empty buffer,
 " then quit.
-map  <F4>      :call myautoload#DeleteCurBufferNotCloseWindow()<CR>
-map! <F4> <Esc>:call myautoload#DeleteCurBufferNotCloseWindow()<CR>
+map  <F4>      :call myal#DeleteCurBufferNotCloseWindow()<CR>
+map! <F4> <Esc>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " <F5> to <F8> SETTINGS -------------------------------------------------------
-map <F8>      :call myautoload#CopyEntireBuffer()<CR>
-map <F8> <Esc>:call myautoload#CopyEntireBuffer()<CR>
+map <F8>      :call myal#CopyEntireBuffer()<CR>
+map <F8> <Esc>:call myal#CopyEntireBuffer()<CR>
 
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
@@ -386,9 +386,9 @@ cnoremap <C-k> <C-\>estrpart(getcmdline(), 0, getcmdpos() - 1)<CR>
 cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 
 " Rip grep in files, use <cword> under the cursor as starting point
-nnoremap <leader>rg :call myautoload#SearchInFiles('n')<Cr>
+nnoremap <leader>rg :call myal#SearchInFiles('n')<Cr>
 " Rip grep in files, use visual selection as starting point
-xnoremap <leader>rg :<C-U>call myautoload#SearchInFiles(visualmode())<Cr>
+xnoremap <leader>rg :<C-U>call myal#SearchInFiles(visualmode())<Cr>
 
 " {{{2 Vim talk (text objects and motions)
 " Create text-object `A` which operates on the whole buffer (i.e. All)
@@ -433,12 +433,21 @@ nnoremap ]T vat<ESC>`>
 " group.
 " While testing autocommands, can print debug related to them with
 "      :set verbose=9
+" autocmds spefic to a certain file type are placed here, or else they would
+" be remove/added everytime a file of that type is opened.
 
 augroup my_auto_commands
-    " Strips trailing whitespace and auto indents the file
     autocmd!
-    autocmd BufWritePre   *.vim call myautoload#SaveProgrammingFile()
-    autocmd BufWritePre   *.html call myautoload#StripTrailingWhitespace()
+
+    " Source a vim file after it is saved
+    autocmd BufWritePost *.vim source %
+
+    " Highlight groups of leading whitespace which is not a mutliple of 4
+    autocmd FileType javascript,python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+
+    " Strips trailing whitespace and auto indents the file
+    autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace() | call myal#AutoIndentFile()
+    autocmd BufWritePre *.html call myal#StripTrailingWhitespace()
 
     " Restore the last position in a file when it was closed. Um-gas how this
     " works.

@@ -9,4 +9,4 @@ setlocal shiftwidth=4
 setlocal softtabstop=4
 
 " Add dash to word chars for SASS and CSS files
-set iskeyword+=-
+setlocal iskeyword+=-
