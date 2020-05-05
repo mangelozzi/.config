@@ -34,6 +34,9 @@ let plugdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/vim-plug"
 call plug#begin(plugdir)
 "call plug#begin('$VIM\vim-plug')
 
+let temprg = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
+Plug temprg
+
 " Only place plug items within here or else can get weird errors with some packages
 
 " OPERATOR + MOTION + TEXT-OBJECT = AWESOME

@@ -238,6 +238,7 @@ hi SpellRare                          guibg=#700000 guisp=#FF0000 gui=bold,under
 hi Todo                 guifg=#FFFFFF guibg=#0044FF   " TODO within a comment (at line start)
 hi StorageClass         guifg=#FF6991 guibg=NONE guisp=NONE gui=bold " Change .CSS attribute font colour
 hi Visual                             guibg=#888888 " Visual Selection
+hi MatchParen                                       gui=bold,reverse
 
 " {{{1 WILDMENU
 hi Directory            guifg=#FFFF00 guibg=NONE guisp=NONE gui=bold
@@ -297,7 +298,6 @@ hi Constant             guifg=#80ffff guibg=NONE guisp=NONE gui=NONE ctermfg=123
 hi Tag                  guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi String               guifg=#00ff00 guibg=NONE guisp=NONE gui=NONE ctermfg=10 ctermbg=NONE cterm=NONE
 hi PMenuThumb           guifg=#ffffff guibg=#d9d9d9 guisp=#d9d9d9 gui=NONE ctermfg=15 ctermbg=253 cterm=NONE
-hi MatchParen           guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi Structure            guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE

@@ -146,6 +146,9 @@ If linting errors for django syntax could add a {# Comment #} at the beginning o
 - `:CheckHealth` - Neovim internal checks
 - `:CocConfig` - To open CocConfig 
 - `CocInfo` - If one gets an error, and Coc informs you to check `ouput channel`, e.g. ESLint output channel
+### LUA
+Can get LUA for windows (for learning Lua) here (its already built into Neovim):
+- https://sourceforge.net/projects/luabinaries/
 
 ## GIT MERGETOOL
 Use Neovim Diff as the default merge tool for git.

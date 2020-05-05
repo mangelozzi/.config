@@ -1,10 +1,15 @@
 " TODO make it at end of jumplist, then tab opens current fold.
+" lua: https://ms-jpq.github.io/neovim-async-tutorial/
+" I highly recommend reading :h Lua
+" Neovim plugins, the lua API is really nice, and using buffer updates (:h
+" api-buffer-updates-lua) allow you to create async plugins really easily.
+"
+"
 " :help usr_toc
 " :help usr_41 (write a vim script)
 " nested fold mappings
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
 " testing git access tokens
-noremap <leader>v :call GrepWithHighlight()<Cr>
 
 " Add hot key to exe set env etc:
 " function! ExecuteManagerCheck(file)
@@ -12,6 +17,7 @@ noremap <leader>v :call GrepWithHighlight()<Cr>
 " endfunction
 "
 " nmap <leader>m :call ExecuteManagerCheck(expand('%:p'))<cr>
+
 " {{{1 TITLE
 " TODO : NERD TRee status line, open vs when switch back to it
 "
@@ -39,6 +45,7 @@ let mapleader = " "
 " COLORS
 set background=dark
 set termguicolors
+set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
 " GENERAL
 set nocompatible            " Must be first command. Enter the current millenium
@@ -220,8 +227,10 @@ tnoremap <C-Space> <Esc>
 noremap Y y$
 
 " Map backspace to other buffer
-noremap <BS> <C-^>
-noremap <BS> <C-^>
+" Note!!! Using recursive version so will recurse to <Esc> when in the
+" quickfix window
+nmap <BS> <C-^>
+nmap <BS> <C-^>
 
 " Make x/X not change the registers, i.e. uses the black hole register
 noremap x "_x
@@ -237,6 +246,9 @@ noremap <leader>/ /\v
 " When pressing star, don't jump to the next match
 nmap <silent> * yiw<Esc>: let @/ = @""<CR>
 nmap <silent> # yiw<Esc>: let @/ = @""<CR>
+
+" Make it easily to delete to the start of the line
+noremap db d$
 
 " {{{2 Map! (noremap!)
 
@@ -386,9 +398,9 @@ cnoremap <C-k> <C-\>estrpart(getcmdline(), 0, getcmdpos() - 1)<CR>
 cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 
 " Rip grep in files, use <cword> under the cursor as starting point
-nnoremap <leader>rg :call myal#SearchInFiles('n')<Cr>
+" nnoremap <leader>rg :call myal#SearchInFiles('n')<Cr>
 " Rip grep in files, use visual selection as starting point
-xnoremap <leader>rg :<C-U>call myal#SearchInFiles(visualmode())<Cr>
+" xnoremap <leader>rg :<C-U>call myal#SearchInFiles(visualmode())<Cr>
 
 " {{{2 Vim talk (text objects and motions)
 " Create text-object `A` which operates on the whole buffer (i.e. All)
@@ -473,4 +485,3 @@ augroup prevent_load_in_quickfix_window
     autocmd!
     "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
 augroup END
-

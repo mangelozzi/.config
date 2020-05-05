@@ -1,3 +1,10 @@
+" Consider using this Grammarly like tool plugin:
+" https://www.vim.org/scripts/script.php?script_id=3223
+
+setlocal wrap
+noremap <buffer> j gj
+noremap <buffer> k gk
+
 " Spell checking on
 setlocal spell
 
