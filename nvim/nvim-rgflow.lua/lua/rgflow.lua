@@ -148,7 +148,6 @@ end
 function create_input_dialogue(default_pattern)
     -- get the editor's max width and height
     local width  = api.nvim_get_option("columns")
-    print("create_input_dialogue new style:", vim.wo[0].columns)
     local height = api.nvim_get_option("lines")
 
     -- bufh / winh = heading window/buffer
@@ -158,10 +157,11 @@ function create_input_dialogue(default_pattern)
     -- nvim_create_buf({listed}, {scratch})
     bufi  = api.nvim_create_buf(false, true)
     local flags = api.nvim_get_var('rgflow_flags')
+    default_pattern = default_pattern or ""
     local cwd = vim.fn.getcwd()
 
     -- nvim_buf_set_lines({buffer}, {start}, {end}, {strict_indexing}, {replacement})
-    print("create_input_dialogue pattern", default_pattern)
+    -- print("create_input_dialogue pattern", default_pattern)
     api.nvim_buf_set_lines(bufi, 0, -1, false, {flags, default_pattern, cwd})
 
     -- nvim_open_win({buffer}, {enter}, {config})
@@ -194,10 +194,6 @@ function create_input_dialogue(default_pattern)
     -- -- os.execute("sleep 1.5")
     winh = 0
     return bufi, wini, winh
-end
-function rgflow.start()
-    api.nvim_win_close(wini, true)
-    -- api.nvim_win_close(winh, true)
 end
 function rgflow.flags_complete(findstart, base)
     -- print("findstart:", findstart, "base:", base)
@@ -274,6 +270,32 @@ function create_hotkeys(buf)
     -- map-<cmd> does change the mode
     api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<cmd>lua rgflow.complete()<CR>", {noremap = true;})
     api.nvim_buf_set_keymap(buf, "n", "<CR>", "<cmd>lua rgflow.start()<CR>", {noremap = true;})
+end
+
+function rgflow.on_stdout(job_id, data, event)
+    print(job_id, data, event)
+end
+
+function rgflow.start()
+    local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
+    -- Update the g:rgflow_flags so it retains its value for the session.
+    api.nvim_set_var('rgflow_flags', flags)
+    local rg_cmd = {'rg', }
+
+    -- 1. Add the flags first to the Ripgrep command
+    for flag in flags:gmatch("[-%w]+") do table.insert(rg_cmd, flag) end
+
+    -- 2. Add the pattern
+    table.insert(rg_cmd, pattern)
+
+    -- 3. Add the search path
+    table.insert(rg_cmd, path)
+    print(vim.inspect(rg_cmd))
+
+    local opts_dict = {on_stdout='v:lua.rgflow.on_stdout', on_err='v:lua.rgflow.on_stdout', on_exit='v:lua.rgflow.on_stdout'}
+    local job_buf_nr = vim.fn.jobstart(rg_cmd, opts_dict)
+    api.nvim_win_close(wini, true)
+    -- api.nvim_win_close(winh, true)
 end
 function rgflow.search(mode)
     api.nvim_command("messages clear")
