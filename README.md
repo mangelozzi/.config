@@ -59,4 +59,33 @@ npm -v
 #### Windows
 Download and run installer from [node homepage](https://nodejs.org/en/)
 
+## Scoop
+A Windows Package manager
+1. Press `WIN+R` -> `Powershell`
+2. Run `iwr -useb get.scoop.sh | iex`
 
+## Ripgrep
+For searching within files
+### Ubuntu
+```
+curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
+sudo dpkg -i ripgrep_11.0.2_amd64.deb
+```
+### Windows
+```
+scoop install ripgrep
+```
+PS ignore the `Couldn't find manifest for 'vscredist' from 'extras' bucket`
+
+## Fd
+For searching file names
+### Ubuntu
+```
+sudo apt install fd-find
+```
+Unfortunately the name `fd` is already taken, so add to bashrc: `alias fd=fdfind` 
+
+### Windows
+```
+scoop install fd
+```

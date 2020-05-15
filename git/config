@@ -44,15 +44,22 @@
 
 # -----------------------------------------------------------------------------
 # DIFF TOOL
-[diff]
-    tool = meld
-[difftool]
-    prompt = false
-[difftool "meld"]
-    cmd = meld "$LOCAL" "$REMOTE"
-[gc]
-    auto = 256
+#[diff]
+#    tool = meld
+#[difftool]
+#    prompt = false
+#[difftool "meld"]
+#    cmd = meld "$LOCAL" "$REMOTE"
+#[gc]
+#    auto = 256
 
+[diff]
+    tool = nvim
+[difftool]
+    keepBackup = false
+[difftool "nvim"]
+    cmd = nvim-qt -- -d $LOCAL $REMOTE
+    
 # -----------------------------------------------------------------------------
 # MERGE TOOL
 [mergetool]

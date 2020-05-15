@@ -33,11 +33,15 @@
 let plugdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/vim-plug"
 call plug#begin(plugdir)
 "call plug#begin('$VIM\vim-plug')
-
-let temprg = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
-Plug temprg
-
 " Only place plug items within here or else can get weird errors with some packages
+
+" let temprg = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
+" Plug temprg
+let rgflow_local = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
+Plug rgflow_local
+
+let temp = fnamemodify($MYVIMRC, ":p:h")."/lua/nvim-demo-plugin.lua"
+Plug temp
 
 " OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'tpope/vim-surround'
@@ -209,9 +213,10 @@ nnoremap <silent> <leader>gs :Git status<cr>
 " ==============================================================================
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
 " To search within a dir `:FZF [dir] <CR>`
-let $FZF_DEFAULT_OPTS = '--bind ctrl-a:select-all'
+let $FZF_DEFAULT_OPTS='--bind ctrl-a:select-all'
 
-let $FZF_DEFAULT_COMMAND = 'rg --files . 2> nul'
+"let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
+let $FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore'
 
 " Don't abort the function, so if no match is found, its communicates it.
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>

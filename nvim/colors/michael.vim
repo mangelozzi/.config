@@ -85,11 +85,12 @@ augroup END
 hi _CmdNormal           guifg=#FFFFFF guibg=#000044
 hi _CmdLineNr           guifg=#A0A0A0 guibg=#000000 " Line number colour
 hi _cmdCursorLineNr     guifg=#000080 guibg=#FFFFFF  gui=bold " Cursor line number colour
-augroup mythemecmdLine
-    autocmd!
-    autocmd CmdlineEnter * set winhighlight=Normal:_CmdNormal,LineNr:_CmdLineNr,CursorLineNr:_CmdCursorLineNr | redraw
-    autocmd CmdlineLeave * set winhighlight=Normal:Normal,LineNr:LineNr,CursorLineNr:CursorLineNr | redraw
-augroup END
+" Doesnt work well on windows
+" augroup mythemecmdLine
+"     autocmd!
+"     autocmd CmdlineEnter * set winhighlight=Normal:_CmdNormal,LineNr:_CmdLineNr,CursorLineNr:_CmdCursorLineNr | redraw
+"     autocmd CmdlineLeave * set winhighlight=Normal:Normal,LineNr:LineNr,CursorLineNr:CursorLineNr | redraw
+" augroup END
 
 " {{{1 Quickfix
 hi _qfNormal            guifg=#ffffff guibg=#333300 " Override default Normal
@@ -191,10 +192,10 @@ hi _helpStatusSublte    guifg=#000077 guibg=#0000A0
 
 " {{{1 DIFFs (GIT)
 " This might be for vim diff, notice DiffAdd vs DiffAdded
-hi DiffAdd              guifg=#000000 guibg=#00D000 gui=bold " Added line
-hi DiffDelete           guifg=#FFFFFF guibg=#F00000 gui=bold " Delete Line
-hi DiffText             guifg=#000000 guibg=#FF00FF gui=none " Changed text within a changed line
-hi DiffChange           guifg=#000000 guibg=#FFFF33 gui=bold,undercurl " Changed line
+hi DiffAdd              guifg=#00CF00 guibg=#005000 gui=bold " Added line
+hi DiffDelete           guifg=#FF0000 guibg=#500000 gui=bold " Delete Line
+hi DiffText             guifg=#FF00FF guibg=#500050 gui=none " Changed text within a changed line
+hi DiffChange           guifg=#FFFF00 guibg=#505000 gui=bold,undercurl " Changed line
 
 " DIFF HEADER
 " Example of diff header:
@@ -238,13 +239,18 @@ hi SpellRare                          guibg=#700000 guisp=#FF0000 gui=bold,under
 hi Todo                 guifg=#FFFFFF guibg=#0044FF   " TODO within a comment (at line start)
 hi StorageClass         guifg=#FF6991 guibg=NONE guisp=NONE gui=bold " Change .CSS attribute font colour
 hi Visual                             guibg=#888888 " Visual Selection
-hi MatchParen                                       gui=bold,reverse
+" If not reversed:
+"   FG = Other   Parenthesis BG
+"   BG = Current parenthesis FG
+hi MatchParen           guifg=#00FF00 guibg=#550000           gui=bold
 
 " {{{1 WILDMENU
 hi Directory            guifg=#FFFF00 guibg=NONE guisp=NONE gui=bold
 hi WildMenu             guifg=#000000 guibg=#00FF00 " Current match in 'wildmenu' completion
 
-" {{{1 DEFAULT LANUAGE HI ITEMS (Unused)
+" {{{1 DEFAULT LANUAGE HI ITEMS
+hi Structure            guifg=#FFF991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
+
 "hi CTagsMember -- no settings --
 "hi CTagsGlobalConstant -- no settings --
 "hi Ignore -- no settings --
@@ -299,7 +305,6 @@ hi Tag                  guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 c
 hi String               guifg=#00ff00 guibg=NONE guisp=NONE gui=NONE ctermfg=10 ctermbg=NONE cterm=NONE
 hi PMenuThumb           guifg=#ffffff guibg=#d9d9d9 guisp=#d9d9d9 gui=NONE ctermfg=15 ctermbg=253 cterm=NONE
 hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
-hi Structure            guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Underlined           guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi cursorim             guifg=#192224 guibg=#536991 guisp=#536991 gui=NONE ctermfg=235 ctermbg=60 cterm=NONE

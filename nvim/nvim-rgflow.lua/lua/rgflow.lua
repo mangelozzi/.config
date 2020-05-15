@@ -1,4 +1,7 @@
 --[[
+See for jobstart!!!
+https://teukka.tech/vimloop.html
+
 vim.{g,v,o,bo,wo}
 vim.bo[0].bufhidden=hide
 
@@ -142,7 +145,7 @@ function rgaddy(x, y)
 end
 
 function rgflow.test()
-    print("Hello from Lua add: ", rgaddy(1,2))
+    print("Hello from Lua add2: ", rgaddy(1,2))
 end
 
 function create_input_dialogue(default_pattern)
@@ -175,23 +178,27 @@ function create_input_dialogue(default_pattern)
     api.nvim_command('redraw!')
 
     -- Create Headings (relative to input dialogue)
-    -- -- nvim_create_buf({listed}, {scratch})
-    -- bufh  = api.nvim_create_buf(false, true)
+    -- nvim_create_buf({listed}, {scratch})
+    bufh  = api.nvim_create_buf(false, true)
 
-    -- -- nvim_buf_set_lines({buffer}, {start}, {end}, {strict_indexing}, {replacement})
-    -- api.nvim_buf_set_lines(bufh, 0, -1, false, {" FLAGS ", " PATTERN ", " PATH "})
-    -- create_hotkeys(bufh)
+    -- nvim_buf_set_lines({buffer}, {start}, {end}, {strict_indexing}, {replacement})
+    -- TODO: REFER TO HERE FOR BORDER: https://www.2n.pl/blog/how-to-write-neovim-plugins-in-lua
+    api.nvim_buf_set_lines(bufh, 0, -1, false, {" FLAGS ", " PATTERN ", " PATH "})
+    create_hotkeys(bufh)
 
-    -- -- nvim_open_win({buffer}, {enter}, {config})
-    -- -- focusable=false,
-    -- -- Open relative to the input window
-    -- local configh = { relative='win', win=wini, anchor='SE', width=9, height=3, col=0, row=height-3, style='minimal'}
-    -- local winh = api.nvim_open_win(bufh, false, configh)
-    -- api.nvim_win_set_option(winh, 'winhl', 'Normal:RgFlowHead')
-    -- api.nvim_buf_set_option(bufh, 'bufhidden', 'wipe')
+    -- nvim_open_win({buffer}, {enter}, {config})
+    -- focusable=false,
+    -- Open relative to the input window
+    local configh = { relative='editor', anchor='SW', width=9, height=3, col=0, row=height-3, style='minimal'}
+    local winh = api.nvim_open_win(bufh, false, configh)
+    api.nvim_win_set_option(winh, 'winhl', 'Normal:RgFlowHead')
+    api.nvim_buf_set_option(bufh, 'bufhidden', 'wipe')
+    -- Autocommand to close the heading window when the input window is closed
+    api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "'..bufh)
+
+    -- os.execute("sleep 1.5")
     -- api.nvim_command('redraw!')
-    -- 
-    -- -- os.execute("sleep 1.5")
+
     winh = 0
     return bufi, wini, winh
 end
@@ -216,7 +223,6 @@ function rgflow.flags_complete(findstart, base)
 end
 function rgflow.complete()
     local linenr = api.nvim_win_get_cursor(0)[1]
-    print("PUM visible:", vim.fn.pumvisible())
     if vim.fn.pumvisible() ~= 0 then
         api.nvim_input("<C-N>")
     elseif linenr == 1 then
@@ -272,29 +278,47 @@ function create_hotkeys(buf)
     api.nvim_buf_set_keymap(buf, "n", "<CR>", "<cmd>lua rgflow.start()<CR>", {noremap = true;})
 end
 
-function rgflow.on_stdout(job_id, data, event)
-    print(job_id, data, event)
-end
+
+
+
+
+
+
+
+
+
+
 
 function rgflow.start()
     local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
+    
     -- Update the g:rgflow_flags so it retains its value for the session.
     api.nvim_set_var('rgflow_flags', flags)
-    local rg_cmd = {'rg', }
+    local rg_args = {}
 
     -- 1. Add the flags first to the Ripgrep command
-    for flag in flags:gmatch("[-%w]+") do table.insert(rg_cmd, flag) end
+    for flag in flags:gmatch("[-%w]+") do table.insert(rg_args, flag) end
 
     -- 2. Add the pattern
-    table.insert(rg_cmd, pattern)
+    table.insert(rg_args, pattern)
 
     -- 3. Add the search path
-    table.insert(rg_cmd, path)
-    print(vim.inspect(rg_cmd))
+    table.insert(rg_args, path)
+    -- print(vim.inspect(rg_args))
 
-    local opts_dict = {on_stdout='v:lua.rgflow.on_stdout', on_err='v:lua.rgflow.on_stdout', on_exit='v:lua.rgflow.on_stdout'}
-    local job_buf_nr = vim.fn.jobstart(rg_cmd, opts_dict)
+    -- api.nvim_win_close(wini, true)
+    -- Closing the input window triggers an Autocmd to close the heading window
     api.nvim_win_close(wini, true)
+
+    config = {
+        rg_args=rg_args,
+        pattern=pattern,
+        path=path,
+        error_cnt=0,
+        match_cnt=0,
+        title="  "..pattern.."    "..path,
+    }
+    rgflow.spawn_job()
     -- api.nvim_win_close(winh, true)
 end
 function rgflow.search(mode)
@@ -311,8 +335,66 @@ function rgflow.search(mode)
     create_hotkeys(buf)
     return
 end
--- rgflow.search()
 
 
+local loop = vim.loop
+local results = {}
+local function onread2(err, data)
+    if err then
+        -- print('ERROR: ', err)
+        -- TODO handle err
+    end
+    if data then
+        local vals = vim.split(data, "\n")
+        for _, d in pairs(vals) do
+            if d ~= "" then
+                table.insert(results, d)
+            end
+        end
+    end
+end
+function table.contains(table, element)
+  for _, value in pairs(table) do
+    if value == element then
+      return true
+    end
+  end
+  return false
+end
+function rgflow.spawn_job()
+    term = "function"
+    print("at least it was called:", term)
+    results = {}
+    local stdout = vim.loop.new_pipe(false)
+    local stderr = vim.loop.new_pipe(false)
+    local function setQF()
+        vim.fn.setqflist({}, 'r', {title = 'Search Results', lines = results})
+        api.nvim_command('cwindow')
+        local count = #results
+        for i=0, count do results[i]=nil end -- clear the table for the next search
+    end
+    -- https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
+    if not table.contains(config.rg_args, "--vimgrep") then
+        table.insert(config.rg_args, 2, "--vimgrep")
+    end
+    print(vim.inspect(config.rg_args))
+    handle = vim.loop.spawn('rg', {
+        -- args = {term, '--vimgrep', '--smart-case', './'},
+        args = config.rg_args,
+        stdio = {stdout,stderr}
+    },
+    vim.schedule_wrap(function()
+        stdout:read_stop()
+        stderr:read_stop()
+        stdout:close()
+        stderr:close()
+        handle:close()
+        setQF()
+    end
+    )
+    )
+    vim.loop.read_start(stdout, onread2)
+    vim.loop.read_start(stderr, onread2)
+end
 
 return rgflow

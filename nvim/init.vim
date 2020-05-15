@@ -49,6 +49,7 @@ set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
 " GENERAL
 set nocompatible            " Must be first command. Enter the current millenium
+set complete=.,w,b,u,t      " Default auto complete
 set autoindent              " When opening a new line keep indentation
 set hidden                  " Allows one to reuse the same window and switch without saving
 set history=10000           " NeoVim 10000. Number of previous commands remembered.
@@ -209,22 +210,20 @@ map! <C-s> <Esc>:w<CR>
 
 " {{{2 Escape
 " Map other forms of escape to true <Esc>, e.g. useful for multiline editing
+" DONT SEE THIS BEHAVIOUR ANYMORE - deprecated.
 " requres <Esc>.
-noremap <C-[> <Esc>
-noremap <C-c> <Esc>
-" Line below makes exiting from input dialogue always fail
-" noremap! <C-[> <Esc>
-noremap! <C-c> <Esc>
-"noremap! <C-Space> <Esc>
-" required for escaping out of the terminal too (especially with FZF)
-tnoremap <C-Space> <Esc>
-"
+" noremap <C-[> <Esc>
+" noremap <C-c> <Esc>
+" " Line below makes exiting from input dialogue always fail
+" " noremap! <C-[> <Esc>
+" noremap! <C-c> <Esc>
+
 " {{{2 Map (noremap)
 "   Normal, Visual+Select, and Operator Pending modes
 
 " :h yy = If you like "Y" to work from the cursor to the end of line (which is
 " more logical, but not Vi-compatible) use ":map Y y$".
-noremap Y y$
+" noremap Y y$
 
 " Map backspace to other buffer
 " Note!!! Using recursive version so will recurse to <Esc> when in the
@@ -248,7 +247,7 @@ nmap <silent> * yiw<Esc>: let @/ = @""<CR>
 nmap <silent> # yiw<Esc>: let @/ = @""<CR>
 
 " Make it easily to delete to the start of the line
-noremap db d$
+" slow dd down noremap db d$
 
 " {{{2 Map! (noremap!)
 
@@ -356,7 +355,12 @@ inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 
 " {{{2 Terminal mode
 " <Esc> to exit terminal-mode:
-tnoremap <Esc> <C-\><C-n>
+" Require <C-\><C-N> to escape the terminal
+" Require <C-C> to escape FZF in Windows
+tnoremap <Esc> <C-C><C-\><C-n>
+tnoremap <C-C> <C-C><C-\><C-n>
+tnoremap <C-]> <C-C><C-\><C-n>
+
 
 " {{{2 Command mode
 "   Make it more bash like
@@ -408,7 +412,9 @@ cnoremap <expr> <Del> getcmdpos() <= strlen(getcmdline()) ? "\<Del>" : ""
 function! TextObjectAll()
     let g:restore_position = winsaveview()
     normal! ggVG
-    call feedkeys("\<Plug>(RestoreView)")
+    if index(['c','d'], v:operator) == -1
+        call feedkeys("\<Plug>(RestoreView)")
+    end
 endfunction
 onoremap A :<C-U>call TextObjectAll()<CR>
 nnoremap <silent> <Plug>(RestoreView) :call winrestview(g:restore_position)<CR>
@@ -436,6 +442,13 @@ nnoremap ]T vat<ESC>`>
 " Not used, rather use more generic solution cd %:p:h
 " command! Cdv exe 'cd ' . fnamemodify($MYVIMRC, ':p:h')
 
+" Print the highlight group under the cursor, and which group it links to.
+function! SynGroup()
+    let l:s = synID(line('.'), col('.'), 1)
+    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+endfun
+command! SynGroup call SynGroup()
+
 " {{{1 AUTOCOMMAND
 " =============================================================================
 " https://learnvimscriptthehardway.stevelosh.com/chapters/14.html
@@ -453,12 +466,14 @@ augroup my_auto_commands
 
     " Source a vim file after it is saved
     autocmd BufWritePost *.vim source %
+    autocmd BufWritePost *.lua luafile %
 
     " Highlight groups of leading whitespace which is not a mutliple of 4
     autocmd FileType javascript,python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 
     " Strips trailing whitespace and auto indents the file
-    autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace() | call myal#AutoIndentFile()
+    " autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace() | call myal#AutoIndentFile()
+    autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace()
     autocmd BufWritePre *.html call myal#StripTrailingWhitespace()
 
     " Restore the last position in a file when it was closed. Um-gas how this
@@ -485,3 +500,21 @@ augroup prevent_load_in_quickfix_window
     autocmd!
     "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
 augroup END
+
+" {{{1 DIFF MODE
+if &diff
+    " Make all unchanged text by default one standard color
+    " syntax off
+    set norelativenumber
+    color michael_diff
+    echom "Diff mode"
+    normal <C-w>=
+    normal zR
+endif
+
+" {{{1 LUA
+" load lua functions
+lua temp = require("init")
+nmap <leader>W :lua temp.make_window()<CR>
+" let g:fzf_layout = { 'window': 'lua NavigationFloatingWin()' }
+
