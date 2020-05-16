@@ -17,14 +17,12 @@ nnoremap <buffer> <C-^>   <Nop>
 nnoremap <buffer> <C-S-^> <Nop>
 nnoremap <buffer> <C-6>   <Nop>
 
-" nnoremap <buffer> <Plug>MyDeleteQuickfix       :<C-U>set  opfunc=rgflow#QuickfixDeleteOperator<CR>g@
-" nnoremap <buffer> <Plug>MyDeleteQuickfixLine   :<C-U>call rgflow#QuickfixDeleteOperator('line')<CR>
-" vnoremap <buffer> <Plug>MyDeleteQuickfixVisual :<C-U>call rgflow#QuickfixDeleteOperator(visualmode())<CR>
-nnoremap <buffer> <Plug>MyDeleteQuickfix       :<C-U>set  opfunc=v:lua.rgflow.del_operator<CR>g@
-nnoremap <buffer> <Plug>MyDeleteQuickfixLine   :<C-U>call v:lua.rgflow.del_operator('line')<CR>
-vnoremap <buffer> <Plug>MyDeleteQuickfixVisual :<C-U>call v:lua.rgflow.del_operator(visualmode())<CR>
+nmap <silent> <buffer> d        <Plug>RgflowDeleteQuickfix
+nmap <silent> <buffer> dd       <Plug>RgflowDeleteQuickfixLine
+vmap <silent> <buffer> d        <Plug>RgflowDeleteQuickfixVisual
 
-nmap <silent> <buffer> d  <Plug>MyDeleteQuickfix
-nmap <silent> <buffer> dd <Plug>MyDeleteQuickfixLine
-vmap <silent> <buffer> d  <Plug>MyDeleteQuickfixVisual
+nmap <silent> <buffer> <Tab>    <Plug>RgflowMarkQuickfixLine
+vmap <silent> <buffer> <Tab>    <Plug>RgflowMarkQuickfixVisual
+nmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixLine
+vmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixVisual
 

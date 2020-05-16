@@ -1,8 +1,7 @@
 --[[
 TODO
+make border
 message how many matches found
-qf delete operator
-df mark operator
 docs
 
 See for jobstart!!!
@@ -42,7 +41,6 @@ function get_line_range(mode)
     -- call with visualmode() as the argument
     -- vnoremap <leader>zz :<C-U>call rgflow#GetVisualSelection(visualmode())<Cr>
     -- nvim_buf_get_mark({buffer}, {name})
-    local current_pos = vim.fn.getpos(".")
     local startl, endl
     if mode == 'v' or mode=='V' or mode=='\22' then
         startl = unpack(api.nvim_buf_get_mark(0, "<"))
@@ -51,20 +49,46 @@ function get_line_range(mode)
         startl = vim.fn.line('.')
         endl = vim.v.count1 + startl - 1
     end
-    print(vim.inspect(current_pos), ">>>", startl, endl)
-    return current_pos, startl, endl
+    -- print(vim.inspect(current_pos), ">>>", startl, endl)
+    return startl, endl
 end
 function rgflow.del_operator(mode)
     -- Only operates linewise, since 1 Quickfix entry is tied to 1 line.
     -- call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
-    local current_pos, startl, endl = get_line_range(mode)
+    local win_pos = vim.fn.winsaveview()
+    local startl, endl = get_line_range(mode)
     local count = endl-startl + 1
     local qf_list = vim.fn.getqflist()
     for i=1,count,1 do
         table.remove(qf_list, startl)
     end
     vim.fn.setqflist(qf_list, 'r')
-    vim.fn.setpos('.', current_pos)
+    vim.fn.winrestview(win_pos)
+    -- vim.fn.setpos('.', current_pos)
+end
+function rgflow.mark_operator(add_not_remove, mode)
+    -- Only operates linewise, since 1 Quickfix entry is tied to 1 line.
+    -- call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
+    local win_pos = vim.fn.winsaveview()
+    local startl, endl = get_line_range(mode)
+    local count = endl-startl + 1
+    local qf_list = vim.fn.getqflist()
+    local mark = api.nvim_get_var('rgflow_mark_str')
+
+    -- the quickfix list is an arrow of dictionary entries, an example of one entry:
+    -- {'lnum': 57, 'bufnr': 5, 'col': 1, 'pattern': '', 'valid': 1, 'vcol': 0, 'nr': -1, 'type': '', 'module': '', 'text': 'function! myal#StripTrailingWhitespace()'}
+    -- print(vim.inspect(qf_list[i]['text']))
+    if add_not_remove  then
+        for i=startl,endl,1 do
+            qf_list[i]['text'] = string.gsub(qf_list[i]['text'], "^(%s*)", "%1"..mark, 1)
+        end
+    else
+        for i=startl,endl,1 do
+            qf_list[i]['text'] = string.gsub(qf_list[i]['text'], "^(%s*)"..mark, "%1", 1)
+        end
+    end
+    vim.fn.setqflist(qf_list, 'r')
+    vim.fn.winrestview(win_pos)
 end
 
 function get_flag_data(base)
@@ -319,8 +343,8 @@ local function on_read(err, data)
         local vals = vim.split(data, "\n")
         for _, d in pairs(vals) do
             if d ~= "" then
-                -- If the last char is a ^M i.e. <CR> then trim it
-                if string.sub(d, -1, -1) then d = string.sub(d, 1, -2) end
+                -- If the last char is a ASCII 13 / ^M / <CR> then trim it
+                if string.sub(d, -1, -1) == "\13" then d = string.sub(d, 1, -2) end
                 table.insert(results, d)
             end
         end
@@ -348,26 +372,26 @@ function rgflow.spawn_job()
         -- local winqf = api.nvim_call_function("getqflist({'winid':1})")
         local count = #results
         for i=0, count do results[i]=nil end -- clear the table for the next search
-        vim.fn.clearmatches()
+        -- vim.fn.clearmatches()
         -- Set char ASCII value 30 (<C-^>),"record separator" as invisible char around the pattern matches 
         -- Conceal options set in ftplugin
-        api.nvim_command('call matchadd("Conceal", "\\<C-^>", 12, -1, {"conceal":""})')
+        vim.fn.matchadd("Conceal", "\30", 12, -1, {conceal=""})
+
         -- Highlight the matches between the invisible chars
         -- \{-n,} means match at least n chars, none greedy version
-        api.nvim_command('call matchadd("Search", "\\<C-^>.\\{-1,}\\<C-^>", 11, -1)')
-        -- Set incremental search to be the same value as pattern
+        vim.fn.matchadd("Search", "\30.\\{-1,}\30", 11, -1)
 
+        -- TODO UNDO AND FALSE BELOW !!!!!!!!!!!
         if api.nvim_get_var('rgflow_set_incsearch') then
+            -- Set incremental search to be the same value as pattern
             vim.fn.setreg("/", config.pattern, "c")
+            -- Trigger the highlighting of search by turning hl on
+            api.nvim_set_option("hlsearch", true)
         end
     end
     -- https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
-    if not table.contains(config.rg_args, "--vimgrep") then
-        table.insert(config.rg_args, 2, "--vimgrep")
-    end
     print(vim.inspect(config.rg_args))
     handle = vim.loop.spawn('rg', {
-        -- args = {term, '--vimgrep', '--smart-case', './'},
         args = config.rg_args,
         stdio = {stdout,stderr}
     },
