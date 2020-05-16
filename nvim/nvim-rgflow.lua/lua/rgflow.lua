@@ -1,8 +1,9 @@
 --[[
 TODO
+message how many matches found
 qf delete operator
 df mark operator
-highlight search terms
+docs
 
 See for jobstart!!!
 https://teukka.tech/vimloop.html
@@ -10,10 +11,8 @@ https://teukka.tech/vimloop.html
 vim.{g,v,o,bo,wo}
 vim.bo[0].bufhidden=hide
 
-Command:
-vim.api.nvim_command('startinsert')
-Function:
-vim.fn.getcwd()
+Command:  vim.api.nvim_command('startinsert')
+Function: vim.fn.getcwd()
 
 Auto complete algo
 map tab to custom function, if line 2 call feedkeys hotkey for built in complete (ctrl-X ctrl-N)
@@ -23,85 +22,13 @@ set completeopt accordingly to menu,preview, and load in preview
 
 if dict file for rg does not exist, then create it
 
-
 Depending on line, set 'completefunc' diffferent
 setlocal completefunc=csscomplete#CompleteFA
 
-
-
 echo:
 nvim_out_write({str})
+--]]
 
-
-Examples:
-
-GLOBAL FUNCTIONS
-:lua print(vim.inspect(vim.api.nvim_get_commands({builtin=false})))
-lua vim.inspect(vim.api.nvim_get_color_map())
-lua vim.api.nvim_del_current_line()
-lua vim.api.nvim_create_buffer(true, false)
-lua print(vim.inspect(vim.api))
-lua print(vim.inspect(vim.api.nvim_get_current_line()))
-lua print(vim.inspect(vim.api.nvim_get_keymap("n")))
-
-lua print(vim.inspect(vim.api.nvim_get_current_buf()))
-
--- This can only access global options, not buffer or window local ones:
-lua print(vim.api.nvim_get_option('hidden'))
-
-nvim_get_var
-
--- GET VIM GLOBAL VAR:
--- let g:rgflow_test = 123
-lua print(vim.inspect(vim.api.nvim_get_var('rgflow_test')))
-
-vim.api.nvim_set_current_buf(5)
-nvim_set_current_dir({dir})
-nvim_set_current_line({line})
-nvim_set_current_win({window})
-nvim_set_option({name}, {value})
--- Set Global variable
-nvim_set_var({name}, {value})
-
-LOCAL FUNCTIONS
-nvim_buf_get_option
-nvim_buf_get_var
-nvim_buf_get_virtual_text
-nvim_buf_set_keymap({buffer}, {mode}, {lhs}, {rhs}, {opts})
-nvim_buf_set_name({buffer}, {name})
-nvim_buf_set_option({buffer}, {name}, {value})
-nvim_buf_set_virtual_text({buffer}, {ns_id}, {line}, {chunks}, {opts})
-
-WINDOW FUNCTIONS
-nvim_win_close
-
-
-function hlyank(event, timeout)
-if event.operator ~= 'y' or event.regtype == '' then return end
-local timeout = timeout or 500
-
-local bn = api.nvim_get_current_buf()
-local ns = api.nvim_create_namespace('hlyank')
-api.nvim_buf_clear_namespace(bn, ns, 0, -1)
-
-local pos1 = api.nvim_call_function('getpos',{"'["})
-local lin1, col1, off1 = pos1[2] - 1, pos1[3] - 1, pos1[4]
-local pos2 = api.nvim_call_function('getpos',{"']"})
-local lin2, col2, off2 = pos2[2] - 1, pos2[3] - (event.inclusive and 0 or 1), pos2[4]
-for l = lin1, lin2 do
-local c1 = (l == lin1 or event.regtype:byte() == 22) and (col1+off1) or 0
-local c2 = (l == lin2 or event.regtype:byte() == 22) and (col2+off2) or -1
-api.nvim_buf_add_highlight(bn, ns, 'TextYank', l, c1, c2)
-end
-local timer = vim.loop.new_timer()
-timer:start(timeout,0,vim.schedule_wrap(function() api.nvim_buf_clear_namespace(bn, ns, 0, -1) end))
-end
-
-------------------
-lua require'hlyank'
-highlight default link TextYank IncSearch
-autocmd TextYankPost * lua hlyank(vim.v.event)
-]]--
 
 -- nvim_buf_add_highlight()
 --
@@ -111,7 +38,34 @@ local api = vim.api
 rgflow = {}
 
 
--- let g:rgflow_test = 123
+function get_line_range(mode)
+    -- call with visualmode() as the argument
+    -- vnoremap <leader>zz :<C-U>call rgflow#GetVisualSelection(visualmode())<Cr>
+    -- nvim_buf_get_mark({buffer}, {name})
+    local current_pos = vim.fn.getpos(".")
+    local startl, endl
+    if mode == 'v' or mode=='V' or mode=='\22' then
+        startl = unpack(api.nvim_buf_get_mark(0, "<"))
+        endl   = unpack(api.nvim_buf_get_mark(0, ">"))
+    else
+        startl = vim.fn.line('.')
+        endl = vim.v.count1 + startl - 1
+    end
+    print(vim.inspect(current_pos), ">>>", startl, endl)
+    return current_pos, startl, endl
+end
+function rgflow.del_operator(mode)
+    -- Only operates linewise, since 1 Quickfix entry is tied to 1 line.
+    -- call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
+    local current_pos, startl, endl = get_line_range(mode)
+    local count = endl-startl + 1
+    local qf_list = vim.fn.getqflist()
+    for i=1,count,1 do
+        table.remove(qf_list, startl)
+    end
+    vim.fn.setqflist(qf_list, 'r')
+    vim.fn.setpos('.', current_pos)
+end
 
 function get_flag_data(base)
     local rghelp = vim.fn.systemlist("rg -h")
