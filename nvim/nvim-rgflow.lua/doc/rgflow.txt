@@ -1,0 +1,50 @@
+*rgflow.txt*  Ripgrep interface
+Author:  Michael Angelozzi <http://github.com/michael-angelozzi/>
+License: Same terms as Vim itself (see |license|)
+
+This plugin is made for Neovim (not VIM compatible).
+
+INTRODUCTION                                    *rgflow*
+
+Allows one to flow with ripgrep from within Neovim. It is not simply a wrapper
+which could be replaced by a few lines of config. It provdes the following functions:
+
+By default will turn off relative number etc, can disable qf settings from applying 
+by making a ftplugin/qf.vim file and putting this inside it:
+	let b:did_ftplugin = 1
+
+
+Highlight matches even if you use regex
+
+Always add these flags:
+local rg_args = {"--vimgrep", "--no-messages", "--replace",  "\30$0\30"}
+
+Disables <C-^> and <C-S-^> and <C-6> when in the quickfix window.
+
+COMMANDS                                        *rgflow-commands*
+
+                                                *eunuch-:Cfind*
+                                                *eunuch-:Find*
+:Cfind[!] {args}        Run `find` and load the results into the quickfix
+                        list.  Jump to the first result unless ! is given.
+
+                                                *eunuch-:Lfind*
+:Lfind[!] {args}        Run `find` and load the results into the location
+                        list.  Jump to the first result unless ! is given.
+
+
+                                                *eunuch-:Wall* *eunuch-:W*
+:Wall                   Like |:wall|, but for windows rather than buffers.
+:W                      It also writes files that haven't changed, which is
+                        useful for kicking off build and test suites (such as
+                        with watchr or guard).  Furthermore, it handily
+                        doubles as a safe fallback for people who, like me,
+                        accidentally type :W instead of :w a lot.
+
+ABOUT                                           *eunuch-about*
+
+Grab the latest version or report a bug on GitHub:
+
+http://github.com/michael-angelozzi/rgflow
+
+ vim:tw=78:et:ft=help:norl:

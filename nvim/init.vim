@@ -1,4 +1,6 @@
 " TODO make it at end of jumplist, then tab opens current fold.
+" nvim-lsp + completition-nvim is ez too
+"
 " lua: https://ms-jpq.github.io/neovim-async-tutorial/
 " I highly recommend reading :h Lua
 " Neovim plugins, the lua API is really nice, and using buffer updates (:h

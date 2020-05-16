@@ -1,4 +1,9 @@
 --[[
+TODO
+qf delete operator
+df mark operator
+highlight search terms
+
 See for jobstart!!!
 https://teukka.tech/vimloop.html
 
@@ -52,7 +57,7 @@ lua print(vim.inspect(vim.api.nvim_get_var('rgflow_test')))
 
 vim.api.nvim_set_current_buf(5)
 nvim_set_current_dir({dir})
-nvim_set_current_line({line})  
+nvim_set_current_line({line})
 nvim_set_current_win({window})
 nvim_set_option({name}, {value})
 -- Set Global variable
@@ -205,7 +210,7 @@ end
 function rgflow.flags_complete(findstart, base)
     -- print("findstart:", findstart, "base:", base)
     if findstart == 1 then
-        local pos = api.nvim_win_get_cursor(0)                          
+        local pos = api.nvim_win_get_cursor(0)
         row = pos[1]
         col = pos[2]
         local line = api.nvim_buf_get_lines(0,row-1,row, false)[1]
@@ -271,7 +276,7 @@ function get_visual_selection(mode)
 end
 function create_hotkeys(buf)
     -- api.nvim_buf_set_keymap(buf, "", "<CR>", ":lua rgflow.start()", {noremap=true,})
-    -- api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<ESC>:lua rgflow.complete()<CR>", {noremap=true,})    
+    -- api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<ESC>:lua rgflow.complete()<CR>", {noremap=true,})
     -- api.nvim_buf_set_keymap(buf, "i", "<TAB>", "lua rgflow.complete()", {expr=true, noremap=true,})
     -- map-<cmd> does change the mode
     api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<cmd>lua rgflow.complete()<CR>", {noremap = true;})
@@ -291,13 +296,25 @@ end
 
 function rgflow.start()
     local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
-    
+
     -- Update the g:rgflow_flags so it retains its value for the session.
     api.nvim_set_var('rgflow_flags', flags)
-    local rg_args = {}
+
+    -- Default flags always included
+    -- TODO get $0 to work
+    local rg_args = {"--vimgrep", "--no-messages", "--replace",  "\30$0\30"}
 
     -- 1. Add the flags first to the Ripgrep command
-    for flag in flags:gmatch("[-%w]+") do table.insert(rg_args, flag) end
+    local flags_list = vim.split(flags, " ")
+
+    -- set conceallevel=2
+    -- syntax match Todo /bar/ conceal
+    -- :help conceal
+
+    -- for flag in flags:gmatch("[-%w]+") do table.insert(rg_args, flag) end
+    for i,flag in ipairs(flags_list) do
+        table.insert(rg_args, flag)
+    end
 
     -- 2. Add the pattern
     table.insert(rg_args, pattern)
@@ -330,7 +347,7 @@ function rgflow.search(mode)
         default_pattern = get_visual_selection(mode)
     else
         default_pattern = vim.fn.expand('<cword>')
-    end 
+    end
     buf, wini, winh = create_input_dialogue(default_pattern)
     create_hotkeys(buf)
     return
@@ -339,39 +356,56 @@ end
 
 local loop = vim.loop
 local results = {}
-local function onread2(err, data)
+local function on_read(err, data)
     if err then
-        -- print('ERROR: ', err)
+        print('ERROR: ', err)
         -- TODO handle err
     end
     if data then
         local vals = vim.split(data, "\n")
         for _, d in pairs(vals) do
             if d ~= "" then
+                -- If the last char is a ^M i.e. <CR> then trim it
+                if string.sub(d, -1, -1) then d = string.sub(d, 1, -2) end
                 table.insert(results, d)
             end
         end
     end
 end
 function table.contains(table, element)
-  for _, value in pairs(table) do
-    if value == element then
-      return true
+    for _, value in pairs(table) do
+        if value == element then
+            return true
+        end
     end
-  end
-  return false
+    return false
 end
 function rgflow.spawn_job()
     term = "function"
-    print("at least it was called:", term)
     results = {}
     local stdout = vim.loop.new_pipe(false)
     local stderr = vim.loop.new_pipe(false)
     local function setQF()
-        vim.fn.setqflist({}, 'r', {title = 'Search Results', lines = results})
-        api.nvim_command('cwindow')
+        vim.fn.setqflist({}, 'r', {title=config.title, lines=results})
+        -- matchadd only works on current window
+        api.nvim_command('copen')
+        -- local winqf = api.nvim_command("getqflist({'winid':1})")
+        -- local winqf = vim.fn.getqflist({'winid'=1})
+        -- local winqf = api.nvim_call_function("getqflist({'winid':1})")
         local count = #results
         for i=0, count do results[i]=nil end -- clear the table for the next search
+        vim.fn.clearmatches()
+        -- Set char ASCII value 30 (<C-^>),"record separator" as invisible char around the pattern matches 
+        -- Conceal options set in ftplugin
+        api.nvim_command('call matchadd("Conceal", "\\<C-^>", 12, -1, {"conceal":""})')
+        -- Highlight the matches between the invisible chars
+        -- \{-n,} means match at least n chars, none greedy version
+        api.nvim_command('call matchadd("Search", "\\<C-^>.\\{-1,}\\<C-^>", 11, -1)')
+        -- Set incremental search to be the same value as pattern
+
+        if api.nvim_get_var('rgflow_set_incsearch') then
+            vim.fn.setreg("/", config.pattern, "c")
+        end
     end
     -- https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
     if not table.contains(config.rg_args, "--vimgrep") then
@@ -393,8 +427,8 @@ function rgflow.spawn_job()
     end
     )
     )
-    vim.loop.read_start(stdout, onread2)
-    vim.loop.read_start(stderr, onread2)
+    vim.loop.read_start(stdout, on_read)
+    vim.loop.read_start(stderr, on_read)
 end
 
 return rgflow

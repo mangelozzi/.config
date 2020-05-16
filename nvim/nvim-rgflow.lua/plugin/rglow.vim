@@ -10,7 +10,8 @@ if testing
     " When testing, wish to reload lua files, and reset global values
     hi RgFlowHead guifg=white guibg=black gui=bold, ctermfg=15, ctermbg=0, cterm=bold
     hi RgFlowInput guifg=black guibg=white ctermfg=0, ctermbg=15
-    let g:rgflow_flags = "--vimgrep --smart-case --no-messages"
+    let g:rgflow_flags = "--smart-case"
+    let g:rgflow_set_incsearch = 1
     "lua package.loaded.rgflow = nil
     let g:rgflow_test = 123
 
@@ -36,6 +37,9 @@ else
     " Default settings, if not set yet
     " For some reason --no-messages makes it stop working
     let g:rgflow_flags = get(g:, 'rgflow_flags', "--vimgrep --smart-case --no-messages")
+
+    " After a search, whether to set incsearch to be the pattern searched for
+    let g:rgflow_set_incsearch = get(g:, 'rgflow_set_incsearch', 1)
 
     lua rgflow = require("rgflow")
 endif
