@@ -8,8 +8,11 @@
 let testing = 1
 if testing
     " When testing, wish to reload lua files, and reset global values
-    hi RgFlowHead guifg=white guibg=black gui=bold, ctermfg=15, ctermbg=0, cterm=bold
-    hi RgFlowInput guifg=black guibg=white ctermfg=0, ctermbg=15
+    hi RgFlowHead         guifg=white guibg=black gui=bold ctermfg=15 ctermbg=0, cterm=bold
+    hi RgFlowHeadLine     guifg=#00CC00 guibg=black gui=bold ctermfg=15 ctermbg=0, cterm=bold
+    hi RgFlowInputFlags   guifg=gray  guibg=white ctermfg=8 ctermbg=15
+    hi RgFlowInputPattern guifg=green guibg=white gui=bold ctermfg=2 ctermbg=15 cterm=bold
+    hi RgFlowInputPath    guifg=black guibg=white ctermfg=0 ctermbg=15
     let g:rgflow_flags = "--smart-case"
     let g:rgflow_set_incsearch = 1
     "lua package.loaded.rgflow = nil

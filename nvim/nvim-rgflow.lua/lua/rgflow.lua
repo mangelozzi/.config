@@ -138,49 +138,51 @@ function create_input_dialogue(default_pattern)
     -- bufh / winh = heading window/buffer
     -- bufi / wini = input dialogue window/buffer
 
-    -- Create Input Dialogue
+    -- Create Buffers
     -- nvim_create_buf({listed}, {scratch})
     bufi  = api.nvim_create_buf(false, true)
+    bufh  = api.nvim_create_buf(false, true)
+
+    -- Generate text content for the buffers
+    -- REFER TO HERE FOR BORDER: https://www.2n.pl/blog/how-to-write-neovim-plugins-in-lua
     local flags = api.nvim_get_var('rgflow_flags')
     default_pattern = default_pattern or ""
     local cwd = vim.fn.getcwd()
+    local contenti = {flags, default_pattern, cwd}
+    local contenth = {string.rep("▄", width), " FLAGS ", " PATTERN ", " PATH "}
 
+    -- Add text content to the buffers
     -- nvim_buf_set_lines({buffer}, {start}, {end}, {strict_indexing}, {replacement})
-    api.nvim_buf_set_lines(bufi, 0, -1, false, {flags, default_pattern, cwd})
+    api.nvim_buf_set_lines(bufi, 0, -1, false, contenti)
+    api.nvim_buf_set_lines(bufh, 0, -1, false, contenth)
 
-    -- nvim_open_win({buffer}, {enter}, {config})
+    -- Window config
     local configi = {relative='editor', anchor='SW', width=width-9, height=3, col=10, row=height-3,  style='minimal'}
-    local wini = api.nvim_open_win(bufi, true, configi)
+    local configh = {relative='editor', anchor='SW', width=width,   height=4, col=0,  row=height-3,  style='minimal'}
+
+    -- Create windows
+    -- nvim_open_win({buffer}, {enter}, {config})
+    local winh = api.nvim_open_win(bufh, false, configh)
+    local wini = api.nvim_open_win(bufi, true,  configi) -- open input dialogue after so its ontop
+
+    -- Setup Input window
     api.nvim_win_set_option(wini, 'winhl', 'Normal:RgFlowInput')
     api.nvim_buf_set_option(bufi, 'bufhidden', 'wipe')
-
+    vim.fn.matchaddpos("RgFlowInputFlags",   {1}, 11, -1, {window=wini})
+    vim.fn.matchaddpos("RgFlowInputPattern", {2}, 11, -1, {window=wini})
+    vim.fn.matchaddpos("RgFlowInputPath",    {3}, 11, -1, {window=wini})
     -- Position the cursor after the pattern
     api.nvim_win_set_cursor(wini, {2, string.len(default_pattern)})
-    api.nvim_command('redraw!')
 
-    -- Create Headings (relative to input dialogue)
-    -- nvim_create_buf({listed}, {scratch})
-    bufh  = api.nvim_create_buf(false, true)
-
-    -- nvim_buf_set_lines({buffer}, {start}, {end}, {strict_indexing}, {replacement})
-    -- TODO: REFER TO HERE FOR BORDER: https://www.2n.pl/blog/how-to-write-neovim-plugins-in-lua
-    api.nvim_buf_set_lines(bufh, 0, -1, false, {" FLAGS ", " PATTERN ", " PATH "})
-    create_hotkeys(bufh)
-
-    -- nvim_open_win({buffer}, {enter}, {config})
-    -- focusable=false,
-    -- Open relative to the input window
-    local configh = { relative='editor', anchor='SW', width=9, height=3, col=0, row=height-3, style='minimal'}
-    local winh = api.nvim_open_win(bufh, false, configh)
+    -- Setup Heading window
     api.nvim_win_set_option(winh, 'winhl', 'Normal:RgFlowHead')
     api.nvim_buf_set_option(bufh, 'bufhidden', 'wipe')
     -- Autocommand to close the heading window when the input window is closed
-    api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "'..bufh)
+    api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! '..bufh..'"')
+    vim.fn.matchaddpos("RgFlowHeadLine", {1}, 11, -1, {window=winh})
 
-    -- os.execute("sleep 1.5")
-    -- api.nvim_command('redraw!')
-
-    winh = 0
+    create_hotkeys(bufh)
+    api.nvim_command('redraw!')
     return bufi, wini, winh
 end
 function rgflow.flags_complete(findstart, base)
