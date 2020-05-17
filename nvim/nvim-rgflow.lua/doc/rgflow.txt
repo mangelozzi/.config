@@ -9,7 +9,7 @@ INTRODUCTION                                    *rgflow*
 Allows one to flow with ripgrep from within Neovim. It is not simply a wrapper
 which could be replaced by a few lines of config. It provdes the following functions:
 
-By default will turn off relative number etc, can disable qf settings from applying 
+By default will turn off relative number etc, can disable qf settings from applying
 by making a ftplugin/qf.vim file and putting this inside it:
 	let b:did_ftplugin = 1
 
@@ -47,7 +47,26 @@ COMMANDS                                        *rgflow-commands*
 <S-TAB> Unmark
 d (delete operator) removes lines
 
-ABOUT                                           *eunuch-about*
+HIGHLIGHTING
+Highlight color groups
+after a search if incsearch is on, then it will be coloured in the qf with the 'Search'
+highlight style. If one performs an incsearch for a different term, it will show
+the RgFlowQfPattern highlight
+
+To change the file name see:
+to change col number see:
+
+foo\bar.lua|101 col 4| local cows = "restless"
+<filename> <separator> <line/col number> <Text>
+
+hi qfFileName      guifg=red    gui=bold
+hi qfLineNr        guifg=yellow
+hi qfSeparator     guifg=black
+hi Normal          guifg=white  guibg=black
+
+hi QuickFixLine    guifg=yellow gui=bold      " The last quick entry browsed to
+
+ABOUT                                           *rgflow-about*
 
 Grab the latest version or report a bug on GitHub:
 

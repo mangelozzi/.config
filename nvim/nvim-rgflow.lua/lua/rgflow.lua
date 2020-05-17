@@ -1,7 +1,7 @@
 --[[
 TODO
-make border
-diff rg search highlighting
+search history with ctrl-f?
+Basically all such programs do the same: they set 'grepprg' and 'grepformat'
 docs
 
 See for jobstart!!!
@@ -385,7 +385,8 @@ local function on_exit()
 
         -- Highlight the matches between the invisible chars
         -- \{-n,} means match at least n chars, none greedy version
-        vim.fn.matchadd("Search", "\30.\\{-1,}\30", 11, -1)
+        -- priority 0, so that incsearch at priority 1 takes preference
+        vim.fn.matchadd("RgFlowQfPattern", "\30.\\{-1,}\30", 0, -1)
 
         if api.nvim_get_var('rgflow_set_incsearch') then
             -- Set incremental search to be the same value as pattern

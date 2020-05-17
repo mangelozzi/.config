@@ -8,6 +8,7 @@
 let testing = 1
 if testing
     " When testing, wish to reload lua files, and reset global values
+    hi RgFlowQfPattern    guifg=#A0FFA0   guibg=#000000 gui=bold ctermfg=15 ctermbg=0, cterm=bold
     hi RgFlowHead         guifg=white guibg=black gui=bold ctermfg=15 ctermbg=0, cterm=bold
     hi RgFlowHeadLine     guifg=#00CC00 guibg=black gui=bold ctermfg=15 ctermbg=0, cterm=bold
     hi RgFlowInputFlags   guifg=gray  guibg=white ctermfg=8 ctermbg=15
