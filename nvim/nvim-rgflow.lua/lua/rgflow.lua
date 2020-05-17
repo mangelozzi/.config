@@ -1,6 +1,7 @@
 --[[
 TODO
 make border
+diff rg search highlighting
 docs
 
 See for jobstart!!!
@@ -33,6 +34,7 @@ nvim_out_write({str})
 print("Loading rgflow.lua")
 
 local api = vim.api
+local loop = vim.loop
 rgflow = {}
 
 
@@ -331,14 +333,23 @@ function table.contains(table, element)
 end
 local function schedule_print(msg)
     local msg = msg
-    local timer = vim.loop.new_timer()
+    local timer = loop.new_timer()
     timer:start(100,0,vim.schedule_wrap(function() print(msg) end))
 end
-local loop = vim.loop
-local function on_read(err, data)
+local function on_stderr(err, data)
+    -- On exit stderr will run with nil, nil passed in
+    -- err always seems to be nil, and data has the error message
+    if not err and not data then return end
+    config.error_cnt = config.error_cnt + 1
+    local timer = loop.new_timer()
+    timer:start(100,0,vim.schedule_wrap(function()
+        api.nvim_command('echoerr "'..data..'"')
+    end))
+end
+local function on_stdout(err, data)
     if err then
         config.error_cnt = config.error_cnt + 1
-        vim.schedule_wrap(function() print("ERROR:", err) end)
+        schedule_print("ERROR: "..vim.inspect(err).." >>> "..vim.inspect(data))
     end
     if data then
         local vals = vim.split(data, "\n")
@@ -354,33 +365,33 @@ local function on_read(err, data)
     end
 end
 local function on_exit()
-    -- Sometime the print is delayed, print immediately and schedule it
-    print("Adding "..config.match_cnt.." results to the quickfix list...")
-    -- schedule_print("Adding "..config.match_cnt.." results to the quickfix list...")
-    api.nvim_command('redraw!')
+    if config.match_cnt > 0 then
+        print("Adding "..config.match_cnt.." results to the quickfix list...")
+        -- schedule_print("Adding "..config.match_cnt.." results to the quickfix list...")
+        api.nvim_command('redraw!')
 
-    vim.fn.setqflist({}, 'r', {title=config.title, lines=config.results})
-    api.nvim_command('copen')
-    -- matchadd only works on current window
-    -- local winqf = api.nvim_command("getqflist({'winid':1})")
-    -- local winqf = vim.fn.getqflist({'winid'=1})
-    -- local winqf = api.nvim_call_function("getqflist({'winid':1})")
-    vim.fn.clearmatches()
-    -- Set char ASCII value 30 (<C-^>),"record separator" as invisible char around the pattern matches 
-    -- Conceal options set in ftplugin
-    vim.fn.matchadd("Conceal", "\30", 12, -1, {conceal=""})
+        vim.fn.setqflist({}, 'r', {title=config.title, lines=config.results})
+        api.nvim_command('copen')
+        -- matchadd only works on current window
+        -- local winqf = api.nvim_command("getqflist({'winid':1})")
+        -- local winqf = vim.fn.getqflist({'winid'=1})
+        -- local winqf = api.nvim_call_function("getqflist({'winid':1})")
+        vim.fn.clearmatches()
+        -- Set char ASCII value 30 (<C-^>),"record separator" as invisible char around the pattern matches
+        -- Conceal options set in ftplugin
+        vim.fn.matchadd("Conceal", "\30", 12, -1, {conceal=""})
 
-    -- Highlight the matches between the invisible chars
-    -- \{-n,} means match at least n chars, none greedy version
-    vim.fn.matchadd("Search", "\30.\\{-1,}\30", 11, -1)
+        -- Highlight the matches between the invisible chars
+        -- \{-n,} means match at least n chars, none greedy version
+        vim.fn.matchadd("Search", "\30.\\{-1,}\30", 11, -1)
 
-    if api.nvim_get_var('rgflow_set_incsearch') then
-        -- Set incremental search to be the same value as pattern
-        vim.fn.setreg("/", config.pattern, "c")
-        -- Trigger the highlighting of search by turning hl on
-        api.nvim_set_option("hlsearch", true)
+        if api.nvim_get_var('rgflow_set_incsearch') then
+            -- Set incremental search to be the same value as pattern
+            vim.fn.setreg("/", config.pattern, "c")
+            -- Trigger the highlighting of search by turning hl on
+            api.nvim_set_option("hlsearch", true)
+        end
     end
-
     -- Print exit message
     local msg = config.pattern.." ░ "..config.match_cnt.." result"..(config.match_cnt==1 and '' or 's')
     if config.error_cnt > 0 then
@@ -392,16 +403,17 @@ local function on_exit()
 end
 function rgflow.spawn_job()
     term = "function"
-    local stdout = vim.loop.new_pipe(false)
-    local stderr = vim.loop.new_pipe(false)
+    local stdin  = loop.new_pipe(false)
+    local stdout = loop.new_pipe(false)
+    local stderr = loop.new_pipe(false)
 
     -- print(vim.inspect(config.rg_args))
-    print("Rgflow search started for:  "..config.pattern.."  with  "..config.demo_cmd)
+    print("Rgflow start search for:  "..config.pattern.."  with  "..config.demo_cmd)
 
     -- https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
-    handle = vim.loop.spawn('rg', {
+    handle = loop.spawn('rg', {
         args = config.rg_args,
-        stdio = {stdout,stderr}
+        stdio = {stdin, stdout, stderr}
     },
     vim.schedule_wrap(function()
         stdout:read_stop()
@@ -412,8 +424,8 @@ function rgflow.spawn_job()
         on_exit()
     end)
     )
-    vim.loop.read_start(stdout, on_read)
-    vim.loop.read_start(stderr, on_read)
+    loop.read_start(stdout, on_stdout)
+    loop.read_start(stderr, on_stderr)
 end
 
 return rgflow
