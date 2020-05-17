@@ -41,6 +41,12 @@ COMMANDS                                        *rgflow-commands*
                         doubles as a safe fallback for people who, like me,
                         accidentally type :W instead of :w a lot.
 
+<CR> starts search
+<ESC> <C-C> <C-[> aborts
+<TAB> mark
+<S-TAB> Unmark
+d (delete operator) removes lines
+
 ABOUT                                           *eunuch-about*
 
 Grab the latest version or report a bug on GitHub:
