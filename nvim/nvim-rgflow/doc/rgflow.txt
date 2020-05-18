@@ -9,7 +9,7 @@ INTRODUCTION                                    *rgflow*
 Allows one to flow with ripgrep from within Neovim. It is not simply a wrapper
 which could be replaced by a few lines of config. It provdes the following functions:
 
-By default will turn off relative number etc, can disable qf settings from applying 
+By default will turn off relative number etc, can disable qf settings from applying
 by making a ftplugin/qf.vim file and putting this inside it:
 	let b:did_ftplugin = 1
 
@@ -17,25 +17,16 @@ Disables <C-^> and <C-S-^> and <C-6> when in the quickfix window.
 
 COMMANDS                                        *rgflow-commands*
 
-                                                *eunuch-:Cfind*
-                                                *eunuch-:Find*
+                                                *rgflow-:Cfind*
+                                                *rgflow-:Find*
 :Cfind[!] {args}        Run `find` and load the results into the quickfix
                         list.  Jump to the first result unless ! is given.
 
-                                                *eunuch-:Lfind*
+                                                *rgflow-:Lfind*
 :Lfind[!] {args}        Run `find` and load the results into the location
                         list.  Jump to the first result unless ! is given.
 
-
-                                                *eunuch-:Wall* *eunuch-:W*
-:Wall                   Like |:wall|, but for windows rather than buffers.
-:W                      It also writes files that haven't changed, which is
-                        useful for kicking off build and test suites (such as
-                        with watchr or guard).  Furthermore, it handily
-                        doubles as a safe fallback for people who, like me,
-                        accidentally type :W instead of :w a lot.
-
-ABOUT                                           *eunuch-about*
+ABOUT                                           *rgflow-about*
 
 Grab the latest version or report a bug on GitHub:
 

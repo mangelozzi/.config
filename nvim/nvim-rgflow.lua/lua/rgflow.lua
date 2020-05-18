@@ -184,7 +184,6 @@ function create_input_dialogue(default_pattern)
     api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! '..bufh..'"')
     vim.fn.matchaddpos("RgFlowHeadLine", {1}, 11, -1, {window=winh})
 
-    create_hotkeys(bufh)
     api.nvim_command('redraw!')
     return bufi, wini, winh
 end
@@ -261,32 +260,6 @@ function get_visual_selection(mode)
 end
 
 
-function create_hotkeys(buf)
-    -- map-<cmd> does not change the mode
-
-    -- Map tab to be general autocomplete flags/buffer/file depending on which line user is on
-    api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<cmd>lua rgflow.complete()<CR>", {noremap=true})
-
-    -- Map <CR> to start search in normal and insert (not command) modes
-    api.nvim_buf_set_keymap(buf, "", "<CR>", "<cmd>lua rgflow.start()<CR>", {noremap=true})
-    api.nvim_buf_set_keymap(buf, "i", "<CR>", "<ESC><cmd>lua rgflow.start()<CR>", {noremap=true})
-
-    -- When cursor at line end, press <DEL> should not join it with the next line
-    api.nvim_buf_set_keymap(buf, "i", "<DEL>", "( col('.') == col('$') ? '' : '<DEL>')", {expr=true, noremap=true})
-
-    -- When cursor at line start, press <BS> should not join it with the next line
-    api.nvim_buf_set_keymap(buf, "i", "<BS>", "( col('.') == 1 ? '' : '<BS>')", {expr=true, noremap=true})
-
-    -- Disable join lines
-    api.nvim_buf_set_keymap(buf, "n", "J", "<NOP>", {noremap=true})
-
-    -- Map various abort like keys to cancel search
-    api.nvim_buf_set_keymap(buf, "n", "<ESC>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
-    api.nvim_buf_set_keymap(buf, "n", "<C-]>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
-    api.nvim_buf_set_keymap(buf, "n", "<C-C>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
-end
-
-
 function rgflow.abort_start()
     api.nvim_win_close(wini, true)
 end
@@ -348,7 +321,6 @@ function rgflow.search(mode)
         default_pattern = vim.fn.expand('<cword>')
     end
     buf, wini, winh = create_input_dialogue(default_pattern)
-    -- create_hotkeys(buf)
     return
 end
 
