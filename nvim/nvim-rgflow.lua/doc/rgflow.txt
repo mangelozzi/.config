@@ -66,6 +66,31 @@ hi Normal          guifg=white  guibg=black
 
 hi QuickFixLine    guifg=yellow gui=bold      " The last quick entry browsed to
 
+
+
+
+example links
+-L=follow sym links, --hidden=hidden files, --no-ignore=Don't use .ignore files, --no-messages=supress IO errors, --trim=Leading whitespace
+-S = Smart case
+-i ignore case
+-s case sensitive
+--no-ignore Don't respect ignore files
+
+--no-messages Suppress all error messages related to opening and reading files.
+
+-r, --replace <REPLACEMENT_TEXT> , got replace line with invisible markers, and then highlight it in vim
+--trim
+            When set, all ASCII whitespace at the beginning of each line printed will be
+            trimmed.
+
+-u = dont respenct git ignore
+-uu = liek -u but also dont respect hidden
+-uuu = like -uu but also search binary files
+
+
+
+
+
 ABOUT                                           *rgflow-about*
 
 Grab the latest version or report a bug on GitHub:
