@@ -47,7 +47,8 @@ let mapleader = " "
 " COLORS
 set background=dark
 set termguicolors
-set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
+" Need to work on this more, currently it makes cursor dissapear in input input diagloue
+" set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
 " GENERAL
 set nocompatible            " Must be first command. Enter the current millenium

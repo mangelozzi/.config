@@ -39,9 +39,10 @@ call plug#begin(plugdir)
 " Plug temprg
 let rgflow_local = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
 Plug rgflow_local
+" Plug 'michael-angelozzi/nvim-rgflow.lua'
 
-let temp = fnamemodify($MYVIMRC, ":p:h")."/lua/nvim-demo-plugin.lua"
-Plug temp
+" let temp = fnamemodify($MYVIMRC, ":p:h")."/lua/nvim-demo-plugin.lua"
+" Plug temp
 
 " OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'tpope/vim-surround'
@@ -54,7 +55,7 @@ Plug 'christoomey/vim-titlecase'
 Plug 'tpope/vim-unimpaired'
 " Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
 " Plug 'chrisbra/Colorizer' "SUPER SLOW
-Plug 'norcalli/nvim-colorizer.lua'
+"Plug 'norcalli/nvim-colorizer.lua'
 Plug 'AndrewRadev/bufferize.vim'
 
 " GIT
@@ -377,4 +378,4 @@ source <sfile>:h/coc.vim
 " ______________________________________________________________________________
 " PLUGIN: norcalli/nvim-colorizer.lua
 " Colour background
-lua require'colorizer'.setup()
+" lua require'colorizer'.setup()

@@ -1,4 +1,4 @@
-print(" loading init.lua")
+-- print(" loading init.lua")
 local api = vim.api
 
 -- Keymappings

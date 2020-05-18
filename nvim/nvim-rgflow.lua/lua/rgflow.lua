@@ -1,11 +1,22 @@
 --[[
 TODO
+handle errors if pattern is blank, or if path is blank (set to './')
 search history with ctrl-f?
+Mark preview hints appear to left on window
 Basically all such programs do the same: they set 'grepprg' and 'grepformat'
 docs
 
 See for jobstart!!!
 https://teukka.tech/vimloop.html
+
+nvim_buf_add_highlight()
+
+To execute VimL from Lua:
+:lua vim.api.nvim_command('echo "Hello, Nvim!"')
+:lua vim.api.nvim_call_function("namemodify', {fname, ':p'})
+To see contents of a table use: print(vim.inspect(table))
+Consider tree sitter for auto copmlete: parser = vim.treesitter.get_parser(bufnr, lang)
+local foo = vim.fn.getpos("[") and then foo[1],…,foo[4]
 
 vim.{g,v,o,bo,wo}
 vim.bo[0].bufhidden=hide
@@ -29,14 +40,9 @@ nvim_out_write({str})
 --]]
 
 
--- nvim_buf_add_highlight()
---
-print("Loading rgflow.lua")
-
 local api = vim.api
 local loop = vim.loop
 rgflow = {}
-
 
 function get_line_range(mode)
     -- call with visualmode() as the argument
@@ -52,9 +58,10 @@ function get_line_range(mode)
     end
     return startl, endl
 end
+
+
 function rgflow.del_operator(mode)
     -- Only operates linewise, since 1 Quickfix entry is tied to 1 line.
-    -- call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
     local win_pos = vim.fn.winsaveview()
     local startl, endl = get_line_range(mode)
     local count = endl-startl + 1
@@ -64,11 +71,11 @@ function rgflow.del_operator(mode)
     end
     vim.fn.setqflist(qf_list, 'r')
     vim.fn.winrestview(win_pos)
-    -- vim.fn.setpos('.', current_pos)
 end
+
+
 function rgflow.mark_operator(add_not_remove, mode)
     -- Only operates linewise, since 1 Quickfix entry is tied to 1 line.
-    -- call setqflist(filter(getqflist(), {idx -> idx != line('.') - 1}), 'r')
     local win_pos = vim.fn.winsaveview()
     local startl, endl = get_line_range(mode)
     local count = endl-startl + 1
@@ -89,6 +96,7 @@ function rgflow.mark_operator(add_not_remove, mode)
     vim.fn.setqflist(qf_list, 'r')
     vim.fn.winrestview(win_pos)
 end
+
 
 function get_flag_data(base)
     local rghelp = vim.fn.systemlist("rg -h")
@@ -115,28 +123,22 @@ function get_flag_data(base)
                 if not base or string.find(flag_opt, base, 1, true) then
                     table.insert(flag_data, {word=flag_opt, info=desc})
                 end
-                -- flag_data[flag_opt] = desc
             end
         end
     end
     return flag_data
 end
 
-function rgaddy(x, y)
-    return x + y + 20
-end
-
-function rgflow.test()
-    print("Hello from Lua add2: ", rgaddy(1,2))
-end
 
 function create_input_dialogue(default_pattern)
+    -- bufh / winh / widthh = heading window/buffer/width
+    -- bufi / wini / widthi = input dialogue window/buffer/width
+
     -- get the editor's max width and height
     local width  = api.nvim_get_option("columns")
     local height = api.nvim_get_option("lines")
-
-    -- bufh / winh = heading window/buffer
-    -- bufi / wini = input dialogue window/buffer
+    local widthh = width
+    local widthi = width - 9
 
     -- Create Buffers
     -- nvim_create_buf({listed}, {scratch})
@@ -149,7 +151,7 @@ function create_input_dialogue(default_pattern)
     default_pattern = default_pattern or ""
     local cwd = vim.fn.getcwd()
     local contenti = {flags, default_pattern, cwd}
-    local contenth = {string.rep("▄", width), " FLAGS ", " PATTERN ", " PATH "}
+    local contenth = {string.rep("▄", widthh), " FLAGS ", " PATTERN ", " PATH "}
 
     -- Add text content to the buffers
     -- nvim_buf_set_lines({buffer}, {start}, {end}, {strict_indexing}, {replacement})
@@ -157,8 +159,8 @@ function create_input_dialogue(default_pattern)
     api.nvim_buf_set_lines(bufh, 0, -1, false, contenth)
 
     -- Window config
-    local configi = {relative='editor', anchor='SW', width=width-9, height=3, col=10, row=height-3,  style='minimal'}
-    local configh = {relative='editor', anchor='SW', width=width,   height=4, col=0,  row=height-3,  style='minimal'}
+    local configi = {relative='editor', anchor='SW', width=widthi, height=3, col=10, row=height-3,  style='minimal'}
+    local configh = {relative='editor', anchor='SW', width=widthh, height=4, col=0,  row=height-3,  style='minimal'}
 
     -- Create windows
     -- nvim_open_win({buffer}, {enter}, {config})
@@ -166,7 +168,7 @@ function create_input_dialogue(default_pattern)
     local wini = api.nvim_open_win(bufi, true,  configi) -- open input dialogue after so its ontop
 
     -- Setup Input window
-    api.nvim_win_set_option(wini, 'winhl', 'Normal:RgFlowInput')
+    api.nvim_win_set_option(wini, 'winhl', 'Normal:RgFlowInputBg')
     api.nvim_buf_set_option(bufi, 'bufhidden', 'wipe')
     vim.fn.matchaddpos("RgFlowInputFlags",   {1}, 11, -1, {window=wini})
     vim.fn.matchaddpos("RgFlowInputPattern", {2}, 11, -1, {window=wini})
@@ -185,6 +187,8 @@ function create_input_dialogue(default_pattern)
     api.nvim_command('redraw!')
     return bufi, wini, winh
 end
+
+
 function rgflow.flags_complete(findstart, base)
     if findstart == 1 then
         local pos = api.nvim_win_get_cursor(0)
@@ -203,6 +207,8 @@ function rgflow.flags_complete(findstart, base)
         return flag_data
     end
 end
+
+
 function rgflow.complete()
     local linenr = api.nvim_win_get_cursor(0)[1]
     if vim.fn.pumvisible() ~= 0 then
@@ -220,6 +226,8 @@ function rgflow.complete()
         api.nvim_input("<C-X><C-F>")
     end
 end
+
+
 function get_visual_selection(mode)
     -- call with visualmode() as the argument
     -- vnoremap <leader>zz :<C-U>call rgflow#GetVisualSelection(visualmode())<Cr>
@@ -250,21 +258,42 @@ function get_visual_selection(mode)
     end
     return table.concat(lines, "\n")
 end
+
+
 function create_hotkeys(buf)
-    -- api.nvim_buf_set_keymap(buf, "", "<CR>", ":lua rgflow.start()", {noremap=true,})
-    -- api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<ESC>:lua rgflow.complete()<CR>", {noremap=true,})
-    -- api.nvim_buf_set_keymap(buf, "i", "<TAB>", "lua rgflow.complete()", {expr=true, noremap=true,})
-    -- map-<cmd> does change the mode
-    api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<cmd>lua rgflow.complete()<CR>", {noremap = true;})
-    api.nvim_buf_set_keymap(buf, "n", "<CR>", "<cmd>lua rgflow.start()<CR>", {noremap = true;})
-    api.nvim_buf_set_keymap(buf, "n", "<ESC>", "<cmd>lua rgflow.abort_start()<CR>", {noremap = true;})
-    api.nvim_buf_set_keymap(buf, "n", "<C-]>", "<cmd>lua rgflow.abort_start()<CR>", {noremap = true;})
-    api.nvim_buf_set_keymap(buf, "n", "<C-C>", "<cmd>lua rgflow.abort_start()<CR>", {noremap = true;})
+    -- map-<cmd> does not change the mode
+
+    -- Map tab to be general autocomplete flags/buffer/file depending on which line user is on
+    api.nvim_buf_set_keymap(buf, "i", "<TAB>", "<cmd>lua rgflow.complete()<CR>", {noremap=true})
+
+    -- Map <CR> to start search in normal and insert (not command) modes
+    api.nvim_buf_set_keymap(buf, "", "<CR>", "<cmd>lua rgflow.start()<CR>", {noremap=true})
+    api.nvim_buf_set_keymap(buf, "i", "<CR>", "<ESC><cmd>lua rgflow.start()<CR>", {noremap=true})
+
+    -- When cursor at line end, press <DEL> should not join it with the next line
+    api.nvim_buf_set_keymap(buf, "i", "<DEL>", "( col('.') == col('$') ? '' : '<DEL>')", {expr=true, noremap=true})
+
+    -- When cursor at line start, press <BS> should not join it with the next line
+    api.nvim_buf_set_keymap(buf, "i", "<BS>", "( col('.') == 1 ? '' : '<BS>')", {expr=true, noremap=true})
+
+    -- Disable join lines
+    api.nvim_buf_set_keymap(buf, "n", "J", "<NOP>", {noremap=true})
+
+    -- nnoremap <buffer> <C-^>   <Nop>
+-- nnoremap <buffer> <C-S-^> <Nop>
+-- nnoremap <buffer> <C-6>   <Nop>
+
+    -- Map various abort like keys to cancel search
+    api.nvim_buf_set_keymap(buf, "n", "<ESC>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
+    api.nvim_buf_set_keymap(buf, "n", "<C-]>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
+    api.nvim_buf_set_keymap(buf, "n", "<C-C>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
 end
+
 
 function rgflow.abort_start()
     api.nvim_win_close(wini, true)
 end
+
 
 function rgflow.start()
     local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
@@ -273,7 +302,6 @@ function rgflow.start()
     api.nvim_set_var('rgflow_flags', flags)
 
     -- Default flags always included
-    -- TODO get $0 to work
     local rg_args    = {"--vimgrep", "--no-messages", "--replace",  "\30$0\30"}
 
     -- 1. Add the flags first to the Ripgrep command
@@ -311,6 +339,8 @@ function rgflow.start()
     rgflow.spawn_job()
     -- api.nvim_win_close(winh, true)
 end
+
+
 function rgflow.search(mode)
     api.nvim_command("messages clear")
     local visual_modes = {v=true, V=true, ['\22']=true}
@@ -325,6 +355,7 @@ function rgflow.search(mode)
     return
 end
 
+
 function table.contains(table, element)
     for _, value in pairs(table) do
         if value == element then
@@ -333,11 +364,15 @@ function table.contains(table, element)
     end
     return false
 end
+
+
 local function schedule_print(msg)
     local msg = msg
     local timer = loop.new_timer()
     timer:start(100,0,vim.schedule_wrap(function() print(msg) end))
 end
+
+
 local function on_stderr(err, data)
     -- On exit stderr will run with nil, nil passed in
     -- err always seems to be nil, and data has the error message
@@ -348,6 +383,8 @@ local function on_stderr(err, data)
         api.nvim_command('echoerr "'..data..'"')
     end))
 end
+
+
 local function on_stdout(err, data)
     if err then
         config.error_cnt = config.error_cnt + 1
@@ -366,6 +403,8 @@ local function on_stdout(err, data)
         schedule_print("Found "..config.match_cnt.." results..")
     end
 end
+
+
 local function on_exit()
     if config.match_cnt > 0 then
         print("Adding "..config.match_cnt.." results to the quickfix list...")
@@ -404,6 +443,8 @@ local function on_exit()
     end
     schedule_print(msg)
 end
+
+
 function rgflow.spawn_job()
     term = "function"
     local stdin  = loop.new_pipe(false)
