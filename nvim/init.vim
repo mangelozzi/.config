@@ -471,13 +471,13 @@ augroup my_auto_commands
     autocmd FileType javascript,python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 
     " Strips trailing whitespace and auto indents the file
-    " autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace() | call myal#AutoIndentFile()
+    autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace() | call myal#AutoIndentFile()
     autocmd BufWritePre *.*    call myal#StripTrailingWhitespace()
     " autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace()
     " autocmd BufWritePre *.html call myal#StripTrailingWhitespace()
 
     " Source a vim file after it is saved
-    autocmd BufWritePost *.vim source %
+    " autocmd BufWritePost *.vim source %
     autocmd BufWritePost *.lua luafile %
 
     " Restore the last position in a file when it was closed. Um-gas how this

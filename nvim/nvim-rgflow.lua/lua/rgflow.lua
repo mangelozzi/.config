@@ -170,6 +170,7 @@ function create_input_dialogue(default_pattern)
     -- Setup Input window
     api.nvim_win_set_option(wini, 'winhl', 'Normal:RgFlowInputBg')
     api.nvim_buf_set_option(bufi, 'bufhidden', 'wipe')
+    api.nvim_buf_set_option(bufi, 'filetype', 'rgflow')
     vim.fn.matchaddpos("RgFlowInputFlags",   {1}, 11, -1, {window=wini})
     vim.fn.matchaddpos("RgFlowInputPattern", {2}, 11, -1, {window=wini})
     vim.fn.matchaddpos("RgFlowInputPath",    {3}, 11, -1, {window=wini})
@@ -279,10 +280,6 @@ function create_hotkeys(buf)
     -- Disable join lines
     api.nvim_buf_set_keymap(buf, "n", "J", "<NOP>", {noremap=true})
 
-    -- nnoremap <buffer> <C-^>   <Nop>
--- nnoremap <buffer> <C-S-^> <Nop>
--- nnoremap <buffer> <C-6>   <Nop>
-
     -- Map various abort like keys to cancel search
     api.nvim_buf_set_keymap(buf, "n", "<ESC>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
     api.nvim_buf_set_keymap(buf, "n", "<C-]>", "<cmd>lua rgflow.abort_start()<CR>", {noremap=true})
@@ -351,7 +348,7 @@ function rgflow.search(mode)
         default_pattern = vim.fn.expand('<cword>')
     end
     buf, wini, winh = create_input_dialogue(default_pattern)
-    create_hotkeys(buf)
+    -- create_hotkeys(buf)
     return
 end
 
