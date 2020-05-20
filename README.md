@@ -61,8 +61,12 @@ Download and run installer from [node homepage](https://nodejs.org/en/)
 
 ## Scoop
 A Windows Package manager
-1. Press `WIN+R` -> `Powershell`
-2. Run `iwr -useb get.scoop.sh | iex`
+1. Press `WIN+X` -> `Powershell`
+2. Run
+```
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+iwr -useb get.scoop.sh | iex`
+```    
 
 ## Ripgrep
 For searching within files
