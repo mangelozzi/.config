@@ -8,6 +8,7 @@
 [credential "https://github.com"]
     username = michael-angelozzi
 [credential]
+	helper = manager
     # LINUX: Use SSH keys
     # NOTE!!! HTTPS remotes always ask for password, so must change to SSH repo:
     #   git remote --verbose

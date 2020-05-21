@@ -168,13 +168,13 @@ cnoremap <S-Insert> <C-r>+
 " =============================================================================
 " The following goes into paste mode and out when pasting so that
 " indentation is not messed up
-let &t_SI .= "\<Esc>[?2004h"
-let &t_EI .= "\<Esc>[?2004l"
+let &t_SI .= "\<ESC>[?2004h"
+let &t_EI .= "\<ESC>[?2004l"
 
-inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+inoremap <special> <expr> <ESC>[200~ XTermPasteBegin()
 
 function! XTermPasteBegin()
-    set pastetoggle=<Esc>[201~
+    set pastetoggle=<ESC>[201~
     set paste
     return ""
 endfunction
@@ -204,22 +204,22 @@ set relativenumber
 " {{{2 All modes
 " Map ; to : for speed
 map ; :
-map! <M-;> <Esc>:
+map! <M-;> <ESC>:
 
 " CTRL+S to save
 map <C-s> :w<CR>
 " map! <C-s> <C-o>:w<CR>
-map! <C-s> <Esc>:w<CR>
+map! <C-s> <ESC>:w<CR>
 
 " {{{2 Escape
-" Map other forms of escape to true <Esc>, e.g. useful for multiline editing
+" Map other forms of escape to true <ESC>, e.g. useful for multiline editing
 " DONT SEE THIS BEHAVIOUR ANYMORE - deprecated.
-" requres <Esc>.
-" noremap <C-[> <Esc>
-" noremap <C-c> <Esc>
+" requres <ESC>.
+" noremap <C-[> <ESC>
+" noremap <C-c> <ESC>
 " " Line below makes exiting from input dialogue always fail
-" " noremap! <C-[> <Esc>
-" noremap! <C-c> <Esc>
+" " noremap! <C-[> <ESC>
+" noremap! <C-c> <ESC>
 
 " {{{2 Map (noremap)
 "   Normal, Visual+Select, and Operator Pending modes
@@ -229,7 +229,7 @@ map! <C-s> <Esc>:w<CR>
 " noremap Y y$
 
 " Map backspace to other buffer
-" Note!!! Using recursive version so will recurse to <Esc> when in the
+" Note!!! Using recursive version so will recurse to <ESC> when in the
 " quickfix window
 nmap <BS> <C-^>
 nmap <BS> <C-^>
@@ -246,8 +246,8 @@ noremap <leader>/ /\v
 "noremap <leader>sf :lvimgrep // %<left><left><left>
 
 " When pressing star, don't jump to the next match
-nmap <silent> * yiw<Esc>: let @/ = @""<CR>
-nmap <silent> # yiw<Esc>: let @/ = @""<CR>
+nmap <silent> * yiw<ESC>: let @/ = @""<CR>
+nmap <silent> # yiw<ESC>: let @/ = @""<CR>
 
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
@@ -267,26 +267,26 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 " {{{2 Function keys
-" <F1> to <F4> COMMON ACTIONS -------------------------------------------------
-" <F1> ESCAPE If I hit <F1> it was a mistake because I was reaching for <Esc>
-map  <F1> <Esc>
-map! <F1> <Esc>
+" <F1> to <F8> COMMON ACTIONS -------------------------------------------------
+" <F1> ESCAPE If I hit <F1> it was a mistake because I was reaching for <ESC>
+map  <F1> <ESC>
+map! <F1> <ESC>
 
 " <F2> is reseved for auto completion rename
 
 " <F3> Open VIM RC file and change pwd to it
 map  <F3> :e $MYVIMRC<CR> :cd %:p:h<CR>
-map! <F3> <Esc>:e $MYVIMRC<CR> :cd %:p:h<CR>
+map! <F3> <ESC>:e $MYVIMRC<CR> :cd %:p:h<CR>
 
 " <F4> CLOSE BUFFER
 " Same as buffer delete, however if its the last none help or empty buffer,
 " then quit.
 map  <F4>      :call myal#DeleteCurBufferNotCloseWindow()<CR>
-map! <F4> <Esc>:call myal#DeleteCurBufferNotCloseWindow()<CR>
+map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
-" <F5> to <F8> SETTINGS -------------------------------------------------------
-map <F8>      :call myal#CopyEntireBuffer()<CR>
-map <F8> <Esc>:call myal#CopyEntireBuffer()<CR>
+" Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
+map  <F5>      :!start chrome %<CR>
+map! <F5> <ESC>:!start chrome %<CR>
 
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
@@ -357,10 +357,10 @@ inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 " xnoremap <leader>P "+P
 
 " {{{2 Terminal mode
-" <Esc> to exit terminal-mode:
+" <ESC> to exit terminal-mode:
 " Require <C-\><C-N> to escape the terminal
 " Require <C-C> to escape FZF in Windows
-tnoremap <Esc> <C-C><C-\><C-n>
+tnoremap <ESC> <C-C><C-\><C-n>
 tnoremap <C-C> <C-C><C-\><C-n>
 tnoremap <C-]> <C-C><C-\><C-n>
 
@@ -465,23 +465,28 @@ command! SynGroup call SynGroup()
 " be remove/added everytime a file of that type is opened.
 
 augroup my_auto_commands
+    " Clear existing autocmds for this group
     autocmd!
 
+    " HIGHLIGHT
     " Highlight groups of leading whitespace which is not a mutliple of 4
     autocmd FileType javascript,python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 
-    " Strips trailing whitespace and auto indents the file
-    autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace() | call myal#AutoIndentFile()
-    autocmd BufWritePre *.*    call myal#StripTrailingWhitespace()
-    " autocmd BufWritePre *.vim  call myal#StripTrailingWhitespace()
-    " autocmd BufWritePre *.html call myal#StripTrailingWhitespace()
+    " AUTO INDENT
+    autocmd BufWritePre *.vim  call myal#AutoIndentFile()
 
-    " Source a vim file after it is saved
-    " autocmd BufWritePost *.vim source %
+    " STRIP TRAILING WHITESPACE
+    " All file type are trimmed except those in the following list:
+    " In markdown, a line break is represented by a double trailing space.
+    let no_trim_fts = ['markdown']
+    autocmd BufWritePre *.* if index(no_trim_fts, &ft) == -1 | call myal#StripTrailingWhitespace()
+
+    " SOURCE
+    autocmd BufWritePost *.vim source %
     autocmd BufWritePost *.lua luafile %
 
-    " Restore the last position in a file when it was closed. Um-gas how this
-    " works.
+    " RESTORE
+    " Restore the last position in a file when it was closed.
     " https://vi.stackexchange.com/questions/17007/after-closing-a-file-how-do-i-remember-return-to-the-previous-line
     au BufReadPost * if line("'\"") > 0 && line ("'\"") <= line("$") | exe "normal! g'\"" | endif
 augroup END
