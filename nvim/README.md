@@ -89,6 +89,8 @@ Refer to [Software setup docs](https://github.com/michael-angelozzi/software_set
 
 - Python via PIP3
 - Node via NPM
+- ripgrep
+- fzf
 
 ## PLUGIN DEPENDENCIES
 
