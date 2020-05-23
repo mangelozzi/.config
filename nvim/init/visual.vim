@@ -56,6 +56,9 @@ function MyStatusLine(currentWindow) abort
     let s .= col_line
     let s .= " "
     let s .= "%{(&readonly||!&modifiable)?'[R]':''}"    " If readonly file, show [R] instead of filepath
+    let s .= col_subtle
+    let s .= "%{&l:modifiable?getcwd().(g:is_win?'\\':'/'):''}"    " Show root to cwd path for modifiable files
+    let s .= col_line
     let s .= "%{&l:modifiable?expand('%:h').(g:is_win?'\\':'/'):''}"    " Show file path head for modifiable files
     let s .= col_fade1."▌".col_fade2."▌".col_fade3."▌"
     let s .= col_file

@@ -6,14 +6,11 @@ Runtime configuration files for my home directory.
 
 Clone repo:
 
-```bash
-git clone https://github.com/michael-angelozzi/.config.git ~/.config
-```
+    git clone https://github.com/michael-angelozzi/.config.git ~/.config
 
 ## Windows
 
 Clone repo:
 
-```bash
-git clone https://github.com/michael-angelozzi/.config.git C:\Users\Michael\.config
-```
+    git clone https://github.com/michael-angelozzi/.config.git C:\Users\Michael\.config
+

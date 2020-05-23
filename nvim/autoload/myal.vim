@@ -108,3 +108,25 @@ function! myal#CompleteFromBufferWords(ArgLead, CmdLine, ...)
 endfunction
 " echom CompleteWords2("Comp")
 
+" Experimental tab usage
+" https://dmerej.info/blog/post/vim-cwd-and-neovim/
+function! myal#OnTabEnter(path)
+    if isdirectory(a:path)
+        let dirname = a:path
+    else
+        let dirname = fnamemodify(a:path, ":h")
+    endif
+    " tcd sets curret dir for the current tab and window
+    execute "tcd ". dirname
+endfunction()
+function! myal#ConvertBufferToNewTab()
+    messages clear
+    let p = expand("%:p")
+    let h = expand("%:h")
+    let a = expand("#:p")
+    echom "normal \<C-S-^>"
+    exe   "normal \<C-S-^>"
+    echom "tabe ".p
+    exe   "tabe ".p
+    exe "tcd ".h
+endfunction

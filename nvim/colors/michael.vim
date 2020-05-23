@@ -244,11 +244,17 @@ hi Visual                             guibg=#888888 " Visual Selection
 "   BG = Current parenthesis FG
 hi MatchParen           guifg=#00FF00 guibg=#550000           gui=bold
 
+" {{{1 Popup Menu - TODO!
+" Pmenu       normal item  |hl-Pmenu|
+" PmenuSel    selected item  |hl-PmenuSel|
+" PmenuSbar   scrollbar  |hl-PmenuSbar|
+" PmenuThumb  thumb of the scrollbar  |hl-PmenuThumb|
+
 " {{{1 WILDMENU
 hi Directory            guifg=#FFFF00 guibg=NONE guisp=NONE gui=bold
 hi WildMenu             guifg=#000000 guibg=#00FF00 " Current match in 'wildmenu' completion
 
-" {{{1 DEFAULT LANUAGE HI ITEMS
+" {{{1 DEFAULT LANGUAGE HI ITEMS
 hi Structure            guifg=#FFF991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 
 "hi CTagsMember -- no settings --

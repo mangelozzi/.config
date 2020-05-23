@@ -142,6 +142,12 @@ call plug#end()
 " gT = Title case
 " gTT = Title case the whole line
 " e.g. "foo bar" -> "Foo Bar"
+" gT used for switching buffers, disable default hotkeys with:
+let g:titlecase_map_keys = 0
+" Menomic h = heading
+nmap gh <Plug>Titlecase
+vmap gh <Plug>Titlecase
+nmap gH <Plug>TitlecaseLine
 
 " ==============================================================================
 " SMALL MISC

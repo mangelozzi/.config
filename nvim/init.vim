@@ -47,7 +47,6 @@ let mapleader = " "
 " COLORS
 set background=dark
 set termguicolors
-" Need to work on this more, currently it makes cursor dissapear in input input diagloue
 " set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
 " GENERAL
@@ -288,6 +287,16 @@ map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 map  <F5>      :!start chrome %<CR>
 map! <F5> <ESC>:!start chrome %<CR>
 
+" Change PWD for the current window to that of the current buffer head.
+" https://dmerej.info/blog/post/vim-cwd-and-neovim/
+map  <F6>       :lcd %:h<CR>
+map! <F6> <ESC> :lcd %:h<CR>
+
+" Switch to previous buffer, then open the file that was showing in a new tab
+" and cd into the head of the file
+map  <F7>       :call myal#ConvertBufferToNewTab()<CR>
+map! <F7> <ESC> :call myal#ConvertBufferToNewTab()<CR>
+
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
 
@@ -488,8 +497,15 @@ augroup my_auto_commands
     " RESTORE
     " Restore the last position in a file when it was closed.
     " https://vi.stackexchange.com/questions/17007/after-closing-a-file-how-do-i-remember-return-to-the-previous-line
-    au BufReadPost * if line("'\"") > 0 && line ("'\"") <= line("$") | exe "normal! g'\"" | endif
+    autocmd BufReadPost * if line("'\"") > 0 && line ("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+    " TABS
+    " Automatically set the PWD when creating a path to be that of the dir, or
+    " the head of the file
+    autocmd TabNewEntered * call myal#OnTabEnter(expand("<amatch>"))
+
 augroup END
+
 
 function! SwitchAwayFromQFWindow()
     if &filetype=='qf'
@@ -527,3 +543,35 @@ lua temp = require("init")
 nmap <leader>W :lua temp.make_window()<CR>
 " let g:fzf_layout = { 'window': 'lua NavigationFloatingWin()' }
 
+" }}}
+
+
+function! MyTabLine()
+    return expand("%:h")
+    let s = ''
+    for i in range(tabpagenr('$'))
+        " select the highlighting
+        if i + 1 == tabpagenr()
+            let s .= '%#TabLineSel#'
+        else
+            let s .= '%#TabLine#'
+        endif
+
+        " set the tab page number (for mouse clicks)
+        let s .= '%' . (i + 1) . 'T'
+
+        " the label is made by MyTabLabel()
+        let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+    endfor
+
+    " after the last tab fill with TabLineFill and reset tab page nr
+    let s .= '%#TabLineFill#%T'
+
+    " right-align the label to close the current tab page
+    if tabpagenr('$') > 1
+        let s .= '%=%#TabLine#%999Xclose'
+    endif
+
+    return s
+endfunction
+" set tabline=%!MyTabLine()

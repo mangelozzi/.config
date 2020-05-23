@@ -54,7 +54,9 @@ Set the start in location to a common dir, e.g. `C:\code\project`
 
 ## FONT
 
-Requires a NERD FONT for the (NERD TREE icons)[https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/RobotoMono/Bold/complete]
+Requires a NERD FONT for the (NERD TREE icons)[https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/RobotoMono/Bold/complete]  
+Just needs to be installed, not set as the Neovim font for NERDTree to using
+the file browser icons.
 
 ### Ubuntu Font
 
@@ -62,6 +64,11 @@ Install font `font\RobotoMono NF.ttf`
 
 ### Windows Font
 
+```shell
+sudo scoop install RobotoMono-NF
+```
+
+or
 Install font `font\RobotoMono NF Windows Compatible.ttf`
 
 ## CLIPBOARD
