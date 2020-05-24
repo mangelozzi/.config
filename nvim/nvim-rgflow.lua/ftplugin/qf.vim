@@ -12,17 +12,18 @@ setlocal colorcolumn=
 set conceallevel=2
 set concealcursor=nvic
 
-"Disable accidental alternate buffer switching in quickfix window
-nnoremap <buffer> <C-^>   <Nop>
-nnoremap <buffer> <C-S-^> <Nop>
-nnoremap <buffer> <C-6>   <Nop>
+if g:rgflow_default_keymaps
+    "Disable accidental alternate buffer switching in quickfix window
+    nnoremap <buffer> <C-^>   <Nop>
+    nnoremap <buffer> <C-S-^> <Nop>
+    nnoremap <buffer> <C-6>   <Nop>
 
-nmap <silent> <buffer> d        <Plug>RgflowDeleteQuickfix
-nmap <silent> <buffer> dd       <Plug>RgflowDeleteQuickfixLine
-vmap <silent> <buffer> d        <Plug>RgflowDeleteQuickfixVisual
+    nmap <silent> <buffer> d        <Plug>RgflowDeleteQuickfix
+    nmap <silent> <buffer> dd       <Plug>RgflowDeleteQuickfixLine
+    vmap <silent> <buffer> d        <Plug>RgflowDeleteQuickfixVisual
 
-nmap <silent> <buffer> <Tab>    <Plug>RgflowMarkQuickfixLine
-vmap <silent> <buffer> <Tab>    <Plug>RgflowMarkQuickfixVisual
-nmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixLine
-vmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixVisual
-
+    nmap <silent> <buffer> <Tab>    <Plug>RgflowMarkQuickfixLine
+    vmap <silent> <buffer> <Tab>    <Plug>RgflowMarkQuickfixVisual
+    nmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixLine
+    vmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixVisual
+endif

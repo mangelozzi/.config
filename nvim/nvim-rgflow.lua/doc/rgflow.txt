@@ -21,6 +21,8 @@ local rg_args = {"--vimgrep", "--no-messages", "--replace",  "\30$0\30"}
 
 Disables <C-^> and <C-S-^> and <C-6> when in the quickfix window.
 
+Can use q: or c_^F to show a history of searches, and repeat a search
+
 COMMANDS                                        *rgflow-commands*
 
                                                 *rgflow-:Cfind*
@@ -88,6 +90,9 @@ example links
 -uuu = like -uu but also search binary files
 
 
+if g:rgflow_default_keymaps
+qf.vim hotkeys disabled
+ripgrep search hotkeys disabled
 
 
 

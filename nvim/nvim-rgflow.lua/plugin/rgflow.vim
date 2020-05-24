@@ -1,4 +1,3 @@
-let g:rgflow_mark_str = ""
 let testing = 1
 
 " When not testing, dont use cached setup
@@ -34,11 +33,16 @@ endif
 " DEFAULT SETTINGS
 if testing
     " When testing, wish to reload lua files, and reset global values
-    let g:rgflow_flags = "--smart-case"
+    let g:rgflow_default_keymaps = 1
+    let g:rgflow_flags = '--smart-case'
     let g:rgflow_set_incsearch = 1
     let g:rgflow_mark_str = "▌"
 else
     " Applied only if not already set
+
+    " Use default keymaps is by default true (including those in ftplugin/qf.vim)
+    let g:rgflow_default_keymaps = get(g:, 'rgflow_default_keymaps', 1)
+
     " For some reason --no-messages makes it stop working
     let g:rgflow_flags = get(g:, 'rgflow_flags', '--smart-case')
 
@@ -67,10 +71,12 @@ vnoremap <Plug>RgflowMarkQuickfixVisual   :<C-U>call v:lua.rgflow.qf_mark_operat
 nnoremap <Plug>RgflowUnmarkQuickfixLine   :<C-U>call v:lua.rgflow.qf_mark_operator(v:false, 'line')<CR>
 vnoremap <Plug>RgflowUnmarkQuickfixVisual :<C-U>call v:lua.rgflow.qf_mark_operator(v:false, visualmode())<CR>
 
-" KEY MAPPINGS
-" Rip grep in files, use <cword> under the cursor as starting point
-nnoremap <leader>rg :<C-U>lua rgflow.search('n')<CR>
-" Rip grep in files, use visual selection as starting point
-xnoremap <leader>rg :<C-U>call v:lua.rgflow.search(visualmode())<Cr>
+if g:rgflow_default_keymaps
+    " KEY MAPPINGS
+    " Rip grep in files, use <cword> under the cursor as starting point
+    nnoremap <leader>rg :<C-U>lua rgflow.start_via_hotkey('n')<CR>
+    " Rip grep in files, use visual selection as starting point
+    xnoremap <leader>rg :<C-U>call v:lua.rgflow.start_via_hotkey(visualmode())<Cr>
+endif
 
 let g:loaded_rgflow = 1

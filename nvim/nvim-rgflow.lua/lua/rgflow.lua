@@ -1,29 +1,33 @@
 --[[
 
 PROGRAM EXECUTION:
-- Hotkey calls rgflow.search() -> create_input_dialogue -> wait for <CR> or <ESC>
-- If <ESC> then rgflow.abort_start()
-- If <CR>  then -> rgflow.start -> rgflow.spawn_job -> on_stdout()
--> on_stderr()
--> on_exit()
+  rgflow.start_via_hotkey()
+    or
+  rgflow.start_via_history()
+    then -> start_ui() -> wait for <CR> or <ESC>
 
-Comming arguments:
-@param mode - The vim mode, eg. "n", "v", "V", "^V", recommend calling this
-function with visualmode() as this argument.
-@param err and data - refer to https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
+  If <ESC> then -> rgflow.abort()
+  If <CR>  then -> rgflow.start() -> get_config()
+                                  -> spawn_job -> on_stdout()
+                                               -> on_stderr()
+                                               -> on_exit()
+
+COMMON ARGUMENTS
+  @param mode - The vim mode, eg. "n", "v", "V", "^V", recommend calling this
+                function with visualmode() as this argument.
+  @param err and data - refer to https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
 
 
 TODO
-docs
+cdo / cfdo update
+https://github.com/thinca/vim-qfreplace/blob/master/autoload/qfreplace.vim
 
-search history with ctrl-f?
-  call histadd("cmd", "e $MYVIMRC")
-  See :help histadd().
+docs
 
 Mark preview hints appear to left on window, at moment its next to the
 suggested word, refer to:
-  :h previewheight
-  :h completeopt
+:h previewheight
+:h completeopt
 
 --]]
 
@@ -109,6 +113,20 @@ function get_visual_selection(mode)
     return table.concat(lines, "\n")
 end
 
+
+--- For a given mode, get default pattern to use in a search
+-- @mode - Refer to module doc string at top of this file.
+-- @return - The guessed default pattern to use.
+function get_pattern(mode)
+    local visual_modes = {v=true, V=true, ['\22']=true}
+    local default_pattern
+    if visual_modes[mode] then
+        default_pattern = get_visual_selection(mode)
+    else
+        default_pattern = vim.fn.expand('<cword>')
+    end
+    return default_pattern
+end
 
 --- An operator to delete linewise from the quickfix window.
 -- @mode - Refer to module doc string at top of this file.
@@ -320,7 +338,7 @@ end
 
 
 --- Starts the async ripgrep job
-function rgflow.spawn_job()
+function spawn_job()
     term = "function"
     local stdin  = loop.new_pipe(false)
     local stdout = loop.new_pipe(false)
@@ -348,26 +366,8 @@ function rgflow.spawn_job()
 end
 
 
---- Closes the input dialogue when <ESC> is pressed
-function rgflow.abort_start()
-    api.nvim_win_close(wini, true)
-end
-
-
---- Reads the data from the input dialogue and then to be passed onto the
 --  function which spawns the job start..
-function rgflow.start()
-    local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
-
-    if pattern == "" then
-        print_error("PATTERN must not be blank.")
-        return
-    end
-    if path == "" then
-        print_error("PATH must not be blank.")
-        return
-    end
-
+function get_config(flags, pattern, path)
     -- Update the g:rgflow_flags so it retains its value for the session.
     api.nvim_set_var('rgflow_flags', flags)
 
@@ -392,11 +392,7 @@ function rgflow.start()
     -- 3. Add the search path
     table.insert(rg_args, path)
 
-    -- api.nvim_win_close(wini, true)
-    -- Closing the input window triggers an Autocmd to close the heading window
-    api.nvim_win_close(wini, true)
-
-    config = {
+    local config = {
         rg_args=rg_args,
         demo_cmd=flags.." "..pattern.." "..path,
         pattern=pattern,
@@ -406,16 +402,49 @@ function rgflow.start()
         title="  "..pattern.."    "..path,
         results={},
     }
-    rgflow.spawn_job()
-    -- api.nvim_win_close(winh, true)
+    return config
+end
+
+
+--- Closes the input dialogue when <ESC> is pressed
+function rgflow.abort()
+    api.nvim_win_close(rgflow.wini, true)
+end
+
+
+--- Reads the data from the input dialogue and then to be passed onto the
+function rgflow.search()
+    local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
+
+    if pattern == "" then
+        print_error("PATTERN must not be blank.")
+        return
+    end
+    if path == "" then
+        print_error("PATH must not be blank. To use the current dir try ./")
+        return
+    end
+
+    -- api.nvim_win_close(wini, true)
+    -- Closing the input window triggers an Autocmd to close the heading window
+    api.nvim_win_close(rgflow.wini, true)
+    -- api.nvim_win_close(rgflow.winh, true)
+
+    -- Add a command to the history which can be invoked to repeat this search
+    local rg_cmd = ':lua rgflow.start_via_history([['..flags..']], [['..pattern..']], [['..path..']])'
+    vim.fn.histadd('cmd', rg_cmd)
+
+    -- Global config used by the async job
+    config = get_config(flags, pattern, path)
+    spawn_job()
 end
 
 
 --- Creates the input dialogue and waits for input
 -- If <CR> is pressed in normal mode, the search starts, <ESC> aborts.
--- @param default_pattern - The initial pattern to place in the pattern field
---                          when the dialogue opens.
-function create_input_dialogue(default_pattern)
+-- @param pattern - The initial pattern to place in the pattern field
+--                  when the dialogue opens.
+function start_ui(flags, pattern, path)
     -- bufh / winh / widthh = heading window/buffer/width
     -- bufi / wini / widthi = input dialogue window/buffer/width
 
@@ -432,10 +461,7 @@ function create_input_dialogue(default_pattern)
 
     -- Generate text content for the buffers
     -- REFER TO HERE FOR BORDER: https://www.2n.pl/blog/how-to-write-neovim-plugins-in-lua
-    local flags = api.nvim_get_var('rgflow_flags')
-    default_pattern = default_pattern or ""
-    local cwd = vim.fn.getcwd()
-    local contenti = {flags, default_pattern, cwd}
+    local contenti = {flags, pattern, path}
     local contenth = {string.rep("▄", width), " FLAGS    ", " PATTERN  ", " PATH     "}
 
     -- Add text content to the buffers
@@ -462,7 +488,7 @@ function create_input_dialogue(default_pattern)
     vim.fn.matchaddpos('RgFlowInputPattern', {2}, 0, -1, {window=wini})
     vim.fn.matchaddpos('RgFlowInputPath',    {3}, 0, -1, {window=wini})
     -- Position the cursor after the pattern
-    api.nvim_win_set_cursor(wini, {2, string.len(default_pattern)})
+    api.nvim_win_set_cursor(wini, {2, string.len(pattern)})
 
     -- Setup Heading window
     -----------------------
@@ -484,18 +510,18 @@ function create_input_dialogue(default_pattern)
 end
 
 
---- The entry point for beginning a search
-function rgflow.search(mode)
-    api.nvim_command("messages clear")
-    local visual_modes = {v=true, V=true, ['\22']=true}
-    local default_pattern
-    if visual_modes[mode] then
-        default_pattern = get_visual_selection(mode)
-    else
-        default_pattern = vim.fn.expand('<cword>')
-    end
-    buf, wini, winh = create_input_dialogue(default_pattern)
-    return
+function rgflow.start_via_history(flags, pattern, path)
+    -- If called from the command history, for example by c_^F or q:
+    rgflow.buf, rgflow.wini, rgflow.winh = start_ui(flags, pattern, path)
+end
+
+
+function rgflow.start_via_hotkey(mode)
+    -- If called from the hotkey
+    local flags   = api.nvim_get_var('rgflow_flags')
+    local pattern = get_pattern(mode) or ""
+    local path    = vim.fn.getcwd()
+    rgflow.buf, rgflow.wini, rgflow.winh = start_ui(flags, pattern, path)
 end
 
 return rgflow
