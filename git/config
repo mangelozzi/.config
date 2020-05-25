@@ -58,7 +58,10 @@
     tool = nvim
 [difftool]
     keepBackup = false
+    # Ask whether to modify each file
+    prompt = true
 [difftool "nvim"]
+    # Note the "&" at the end to launch the diff then continue (i.e. not wait) ... doesnt work, $LOCAL seems to be blank
     cmd = nvim-qt -- -d $LOCAL $REMOTE
     
 # -----------------------------------------------------------------------------

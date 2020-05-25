@@ -19,8 +19,12 @@ COMMON ARGUMENTS
 
 
 TODO
+if ccl the quick fix window then show it again, the highlighting is gone.
+Make an autocomd to show it.
+
 cdo / cfdo update
 https://github.com/thinca/vim-qfreplace/blob/master/autoload/qfreplace.vim
+-> not easy in rgflow type window, disable undo passed certain point
 
 docs
 

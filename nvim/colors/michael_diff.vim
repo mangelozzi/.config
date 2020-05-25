@@ -128,8 +128,10 @@ endif
 " This might be for vim diff, notice DiffAdd vs DiffAdded
 hi DiffAdd      guibg=#e6ffed " Added line
 hi DiffDelete   guifg=#ff4254 guibg=#ffeef0 " Delete Line
-hi DiffText     guibg=#ffff00 " Changed text within a changed line
-hi DiffChange   guibg=#ffffe5 " Changed line
+" The following two colours are quite intense so they can be seen when low blue
+" light screen modes are enabled.
+hi DiffText     guibg=#ffB000 " Changed text within a changed line
+hi DiffChange   guibg=#ffff00 " Changed line
 
 " DIFF HEADER
 " Example of diff header:

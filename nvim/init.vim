@@ -1,4 +1,7 @@
 " TODO make it at end of jumplist, then tab opens current fold.
+" Check out:
+" https://bluz71.github.io/2019/03/11/find-replace-helpers-for-vim.html
+"
 " nvim-lsp + completition-nvim is ez too
 "
 " lua: https://ms-jpq.github.io/neovim-async-tutorial/
@@ -265,6 +268,12 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" {{{2 Insert
+
+" Set paste then nopaste automatically when working with system registers
+inoremap <C-R>* <C-O>:set paste<CR><C-R>*<C-O>:set nopaste<cr>
+inoremap <C-R>+ <C-O>:set paste<CR><C-R>+<C-O>:set nopaste<cr>
+
 " {{{2 Function keys
 " <F1> to <F8> COMMON ACTIONS -------------------------------------------------
 " <F1> ESCAPE If I hit <F1> it was a mistake because I was reaching for <ESC>
@@ -348,10 +357,19 @@ xnoremap <Leader>rr :s///g<Left><Left>
 xnoremap <Leader>rc :s///gc<Left><Left><Left>
 
 " {{{2 Popup Menu
-inoremap <expr><C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
-inoremap <expr><C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
-inoremap <expr><Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
+inoremap <expr> <C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
+inoremap <expr> <C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
+inoremap <expr> <Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 
+" With COC, if the pum visible, and press ALT+Nav arrows, doesnt abort normal
+" mode
+" TODO remove these when change to neovim-lsp
+inoremap <expr> <A-h> pumvisible() ? "<ESC>h" : "<ESC>h"
+inoremap <expr> <A-j> pumvisible() ? "<ESC>j" : "<ESC>j"
+inoremap <expr> <A-k> pumvisible() ? "<ESC>k" : "<ESC>k"
+inoremap <expr> <A-l> pumvisible() ? "<ESC>l" : "<ESC>l"
+
+" comm
 " {{{2 Copy & paste
 " Copy to system clipboard
 " xnoremap  <leader>y  "+y
@@ -482,7 +500,8 @@ augroup my_auto_commands
     autocmd FileType javascript,python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 
     " AUTO INDENT
-    autocmd BufWritePre *.vim  call myal#AutoIndentFile()
+    " Redraw prevents having to press enter to continue
+    autocmd BufWritePre *.vim silent exec "call myal#AutoIndentFile()"
 
     " STRIP TRAILING WHITESPACE
     " All file type are trimmed except those in the following list:
@@ -545,7 +564,6 @@ nmap <leader>W :lua temp.make_window()<CR>
 
 " }}}
 
-
 function! MyTabLine()
     return expand("%:h")
     let s = ''
@@ -575,3 +593,4 @@ function! MyTabLine()
     return s
 endfunction
 " set tabline=%!MyTabLine()
+

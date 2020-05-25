@@ -66,7 +66,7 @@ hi SignColumn                         guibg=#000000 " To the left of number line
 
 " {{{1 Built in visual enhancements
 hi NonText              guifg=#555555               " Hidden characters from set list
-hi ColorColumn                        guibg=#333333 " 80 chars wide column
+hi ColorColumn                        guibg=#404040 " 80 chars wide column
 hi CursorColumn         guifg=NONE    guibg=#181818 " A vertical line that follows custor, enable with :set cursorcolumn
 hi IncSearch            guifg=#000000 guibg=#FFFF00 gui=bold " While one is typing search pattern
 hi Search               guifg=#000000 guibg=#CF9F00          " Other search matches
@@ -192,6 +192,7 @@ hi _helpStatusSublte    guifg=#000077 guibg=#0000A0
 
 " {{{1 DIFFs (GIT)
 " This might be for vim diff, notice DiffAdd vs DiffAdded
+" Refer to michael_diff.vim for difftool diffs colour scheme
 hi DiffAdd              guifg=#00CF00 guibg=#005000 gui=bold " Added line
 hi DiffDelete           guifg=#FF0000 guibg=#500000 gui=bold " Delete Line
 hi DiffText             guifg=#FF00FF guibg=#500050 gui=none " Changed text within a changed line

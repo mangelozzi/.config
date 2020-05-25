@@ -74,7 +74,8 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Plug 'neomake/neomake'
 " LSP (Autocomplete)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+let g:coc_enabled = 0
 
 " Always load the vim-devicons as the very last one.
 Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
@@ -368,8 +369,9 @@ let g:coc_filetype_map = {
             \ 'htmldjango': 'html',
             \ }
 " Own vim file for all the coc settings (based on the provided settings file)
-source <sfile>:h/coc.vim
-
+if g:coc_enabled
+    source <sfile>:h/coc.vim
+endif
 
 " ______________________________________________________________________________
 " PLUGIN: AndrewRadev/bufferize.vim
