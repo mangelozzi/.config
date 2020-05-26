@@ -1,27 +1,26 @@
 --[[
 
 PROGRAM EXECUTION:
-  rgflow.start_via_hotkey()
-    or
-  rgflow.start_via_history()
-    then -> start_ui() -> wait for <CR> or <ESC>
+rgflow.start_via_hotkey()
+or
+rgflow.start_via_history()
+then -> start_ui() -> wait for <CR> or <ESC>
 
-  If <ESC> then -> rgflow.abort()
-  If <CR>  then -> rgflow.start() -> get_config()
-                                  -> spawn_job -> on_stdout()
-                                               -> on_stderr()
-                                               -> on_exit()
+If <ESC> then -> rgflow.abort()
+If <CR>  then -> rgflow.start() -> get_config()
+-> spawn_job -> on_stdout()
+-> on_stderr()
+-> on_exit()
 
 COMMON ARGUMENTS
-  @param mode - The vim mode, eg. "n", "v", "V", "^V", recommend calling this
-                function with visualmode() as this argument.
-  @param err and data - refer to https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
+@param mode - The vim mode, eg. "n", "v", "V", "^V", recommend calling this
+function with visualmode() as this argument.
+@param err and data - refer to https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
 
+
+DONE
 
 TODO
-if ccl the quick fix window then show it again, the highlighting is gone.
-Make an autocomd to show it.
-
 cdo / cfdo update
 https://github.com/thinca/vim-qfreplace/blob/master/autoload/qfreplace.vim
 -> not easy in rgflow type window, disable undo passed certain point
@@ -38,11 +37,13 @@ suggested word, refer to:
 
 local api = vim.api
 local loop = vim.loop
+local zs_ze = "\30"  -- The start and end of pattern match invisible marker
 rgflow = {}
+
 
 --- Prints a @msg to the command line with error highlighting.
 -- Does not raise an error.
-function print_error(msg)
+local function print_error(msg)
     api.nvim_command("echohl ErrorMsg")
     api.nvim_command('echom "'..msg..'"')
     api.nvim_command("echohl NONE")
@@ -67,7 +68,7 @@ end
 -- If the mode is normal, then it adds the [count] prefix to the current line.
 -- @mode - Refer to module doc string at top of this file.
 -- @return - The start line, and the end line numbers.
-function get_line_range(mode)
+local function get_line_range(mode)
     -- call with visualmode() as the argument
     -- vnoremap <leader>zz :<C-U>call rgflow#GetVisualSelection(visualmode())<Cr>
     -- nvim_buf_get_mark({buffer}, {name})
@@ -88,7 +89,7 @@ end
 -- @mode - Refer to module doc string at top of this file.
 -- @return - A string containing the visually selected text, where lines are
 --           joined with \n.
-function get_visual_selection(mode)
+local function get_visual_selection(mode)
     -- nvim_buf_get_mark({buffer}, {name})
     local line_start, column_start = unpack(api.nvim_buf_get_mark(0, "<"))
     local line_end,   column_end   = unpack(api.nvim_buf_get_mark(0, ">"))
@@ -121,7 +122,7 @@ end
 --- For a given mode, get default pattern to use in a search
 -- @mode - Refer to module doc string at top of this file.
 -- @return - The guessed default pattern to use.
-function get_pattern(mode)
+local function get_pattern(mode)
     local visual_modes = {v=true, V=true, ['\22']=true}
     local default_pattern
     if visual_modes[mode] then
@@ -181,7 +182,7 @@ end
 --           where flag is like "-A" or "--binary" and menu is extra info added
 --           next to the suggested word.
 -- If add {info=desc} is added to the dict, then makes an ugly window appear
-function get_flag_data(base)
+local function get_flag_data(base)
     local rghelp = vim.fn.systemlist("rg -h")
     local flag_data = {}
     local heading_found = false
@@ -232,6 +233,35 @@ function rgflow.flags_complete(findstart, base)
         local flag_data = get_flag_data(base)
         return flag_data
     end
+end
+
+
+function rgflow.hl_qf_matches()
+    -- Needs to be called whenever quickfix window is opened
+    -- :cclose will clear the following highlighting
+    -- Called via the ftplugin mechanism.
+    local win = vim.fn.getqflist({winid=1}).winid
+
+    -- Get the first qf line and check it has rgflow highlighting markers, if
+    -- not then return immediately.
+    local first_qf_line = vim.fn.getqflist({id=0, items=0}).items[1].text
+    api.nvim_command("messages clear")
+    if not string.find(first_qf_line, zs_ze) then
+        -- First line does not have a zs_ze tag, so quicklist not from rgflow.
+        return
+    end
+
+    -- Clear matches only affects the current window
+    vim.fn.clearmatches(win)
+
+    -- Set char ASCII value 30 (<C-^>),"record separator" as invisible char around the pattern matches
+    -- Conceal options set in ftplugin
+    vim.fn.matchadd("Conceal", zs_ze, 12, -1, {conceal="", window=win})
+
+    -- Highlight the matches between the invisible chars
+    -- \{-n,} means match at least n chars, none greedy version
+    -- priority 0, so that incsearch at priority 1 takes preference
+    vim.fn.matchadd("RgFlowQfPattern", zs_ze..".\\{-1,}"..zs_ze, 0, -1, {window=win})
 end
 
 
@@ -295,7 +325,9 @@ local function on_stdout(err, data)
                 table.insert(config.results, d)
             end
         end
-        schedule_print("Found "..config.match_cnt.." results..")
+        local plural = "s"
+        if config.match_cnt == 1 then plural = "" end
+        schedule_print("Found "..config.match_cnt.." result"..plural.." ... ")
     end
 end
 
@@ -303,32 +335,27 @@ end
 --- The handler for the spawned job exits
 local function on_exit()
     if config.match_cnt > 0 then
-        print("Adding "..config.match_cnt.." results to the quickfix list...")
-        -- schedule_print("Adding "..config.match_cnt.." results to the quickfix list...")
+        local plural = "s"
+        if config.match_cnt == 1 then plural = "" end
+        print("Adding "..config.match_cnt.." result"..plural.." to the quickfix list...")
         api.nvim_command('redraw!')
 
         vim.fn.setqflist({}, 'r', {title=config.title, lines=config.results})
-        api.nvim_command('copen')
-        -- matchadd only works on current window
-        -- local winqf = api.nvim_command("getqflist({'winid':1})")
-        -- local winqf = vim.fn.getqflist({'winid'=1})
-        -- local winqf = api.nvim_call_function("getqflist({'winid':1})")
-        vim.fn.clearmatches()
-        -- Set char ASCII value 30 (<C-^>),"record separator" as invisible char around the pattern matches
-        -- Conceal options set in ftplugin
-        vim.fn.matchadd("Conceal", "\30", 12, -1, {conceal=""})
 
-        -- Highlight the matches between the invisible chars
-        -- \{-n,} means match at least n chars, none greedy version
-        -- priority 0, so that incsearch at priority 1 takes preference
-        vim.fn.matchadd("RgFlowQfPattern", "\30.\\{-1,}\30", 0, -1)
+        if api.nvim_get_var('rgflow_open_qf_list') ~= 0 then
+            api.nvim_command('copen')
+        end
 
-        if api.nvim_get_var('rgflow_set_incsearch') then
+        -- Remember 0 is considered true in lua
+        if api.nvim_get_var('rgflow_set_incsearch') ~= 0 then
             -- Set incremental search to be the same value as pattern
             vim.fn.setreg("/", config.pattern, "c")
             -- Trigger the highlighting of search by turning hl on
             api.nvim_set_option("hlsearch", true)
         end
+
+        -- Note: rgflow.hl_qf_matches() is called via ftplugin when a QF window
+        -- is opened.
     end
     -- Print exit message
     local msg = config.pattern.." ░ "..config.match_cnt.." result"..(config.match_cnt==1 and '' or 's')
@@ -342,7 +369,7 @@ end
 
 
 --- Starts the async ripgrep job
-function spawn_job()
+local function spawn_job()
     term = "function"
     local stdin  = loop.new_pipe(false)
     local stdout = loop.new_pipe(false)
@@ -371,12 +398,12 @@ end
 
 
 --  function which spawns the job start..
-function get_config(flags, pattern, path)
+local function get_config(flags, pattern, path)
     -- Update the g:rgflow_flags so it retains its value for the session.
     api.nvim_set_var('rgflow_flags', flags)
 
     -- Default flags always included
-    local rg_args    = {"--vimgrep", "--no-messages", "--replace",  "\30$0\30"}
+    local rg_args    = {"--vimgrep", "--no-messages", "--replace",  zs_ze.."$0"..zs_ze}
 
     -- 1. Add the flags first to the Ripgrep command
     local flags_list = vim.split(flags, " ")
@@ -448,7 +475,7 @@ end
 -- If <CR> is pressed in normal mode, the search starts, <ESC> aborts.
 -- @param pattern - The initial pattern to place in the pattern field
 --                  when the dialogue opens.
-function start_ui(flags, pattern, path)
+local function start_ui(flags, pattern, path)
     -- bufh / winh / widthh = heading window/buffer/width
     -- bufi / wini / widthi = input dialogue window/buffer/width
 
@@ -457,6 +484,8 @@ function start_ui(flags, pattern, path)
     local height = api.nvim_get_option("lines")
     local widthh = 10
     local widthi = width - widthh
+    -- Height includes status line (1) and cmdline height
+    local bottom = height - 1 - api.nvim_get_option('cmdheight')
 
     -- Create Buffers
     -- nvim_create_buf({listed}, {scratch})
@@ -474,8 +503,8 @@ function start_ui(flags, pattern, path)
     api.nvim_buf_set_lines(bufh, 0, -1, false, contenth)
 
     -- Window config
-    local configi = {relative='editor', anchor='SW', width=widthi, height=3, col=10, row=height-3,  style='minimal'}
-    local configh = {relative='editor', anchor='SW', width=width,  height=4, col=0,  row=height-3,  style='minimal'}
+    local configi = {relative='editor', anchor='SW', width=widthi, height=3, col=10, row=bottom,  style='minimal'}
+    local configh = {relative='editor', anchor='SW', width=width,  height=4, col=0,  row=bottom,  style='minimal'}
 
     -- Create windows
     -- nvim_open_win({buffer}, {enter}, {config})
@@ -522,6 +551,7 @@ end
 
 function rgflow.start_via_hotkey(mode)
     -- If called from the hotkey
+    -- api.nvim_command("messages clear")
     local flags   = api.nvim_get_var('rgflow_flags')
     local pattern = get_pattern(mode) or ""
     local path    = vim.fn.getcwd()

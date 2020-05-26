@@ -27,3 +27,8 @@ if g:rgflow_default_keymaps
     nmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixLine
     vmap <silent> <buffer> <S-Tab>  <Plug>RgflowUnmarkQuickfixVisual
 endif
+
+" Needs to be called whenever quickfix window is opened
+" :cclose will clear the following highlighting
+lua rgflow.hl_qf_matches()
+

@@ -7,7 +7,8 @@ endif
 
 " HILIGHTING GROUPS
 if !hlexists('RgFlowQfPattern') || testing
-    hi RgFlowQfPattern    guifg=#A0FFA0 guibg=#000000 gui=bold ctermfg=15 ctermbg=0, cterm=bold
+    " Recommend not setting a BG so it uses the current lines BG:
+    hi RgFlowQfPattern    guifg=#A0FFA0 guibg=none gui=bold ctermfg=15 ctermbg=none cterm=bold
 endif
 if !hlexists('RgFlowHead') || testing
     hi RgFlowHead         guifg=white   guibg=black gui=bold ctermfg=15 ctermbg=0, cterm=bold
@@ -35,8 +36,9 @@ if testing
     " When testing, wish to reload lua files, and reset global values
     let g:rgflow_default_keymaps = 1
     let g:rgflow_flags = '--smart-case'
-    let g:rgflow_set_incsearch = 1
+    let g:rgflow_set_incsearch = 0
     let g:rgflow_mark_str = "▌"
+    let g:rgflow_open_qf_list = 1
 else
     " Applied only if not already set
 
@@ -51,6 +53,9 @@ else
 
     " String to prepend when marking an entry in the quick fix
     let g:rgflow_mark_str = get(g:, 'rgflow_mark_str', '▌')
+
+    " Open the quickfix window automatically after a serach
+    let g:rgflow_open_qf_list = get(g:, 'rgflow_open_qf_list', 1)
 endif
 
 " SOURCE MODULE
