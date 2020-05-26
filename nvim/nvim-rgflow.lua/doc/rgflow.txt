@@ -68,6 +68,8 @@ hi Normal          guifg=white  guibg=black
 
 hi QuickFixLine    guifg=yellow gui=bold      " The last quick entry browsed to
 
+    let g:rgflow_search_keymaps = 1
+    let g:rgflow_qf_keymaps = 1
 
 
 

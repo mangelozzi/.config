@@ -12,7 +12,7 @@ setlocal colorcolumn=
 set conceallevel=2
 set concealcursor=nvic
 
-if g:rgflow_default_keymaps
+if g:rgflow_qf_keymaps
     "Disable accidental alternate buffer switching in quickfix window
     nnoremap <buffer> <C-^>   <Nop>
     nnoremap <buffer> <C-S-^> <Nop>

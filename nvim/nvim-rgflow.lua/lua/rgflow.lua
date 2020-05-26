@@ -1,25 +1,25 @@
+-- nvim-rgflow.lua Plugin
+--
+-- PROGRAM EXECUTION
+--------------------
+-- rgflow.start_via_hotkey()
+--   or
+-- rgflow.start_via_history()
+--   then -> start_ui() -> wait for <CR> or <ESC>
+--
+-- If <ESC> then -> rgflow.abort()
+-- If <CR>  then -> rgflow.start() -> get_config()
+--                                 -> spawn_job -> on_stdout()
+--                                 -> on_stderr()
+--                                 -> on_exit()
+--
+-- COMMON ARGUMENTS
+-- ----------------
+-- @param mode - The vim mode, eg. "n", "v", "V", "^V", recommend calling this
+-- function with visualmode() as this argument.
+-- @param err and data - refer to https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
+
 --[[
-
-PROGRAM EXECUTION:
-rgflow.start_via_hotkey()
-or
-rgflow.start_via_history()
-then -> start_ui() -> wait for <CR> or <ESC>
-
-If <ESC> then -> rgflow.abort()
-If <CR>  then -> rgflow.start() -> get_config()
--> spawn_job -> on_stdout()
--> on_stderr()
--> on_exit()
-
-COMMON ARGUMENTS
-@param mode - The vim mode, eg. "n", "v", "V", "^V", recommend calling this
-function with visualmode() as this argument.
-@param err and data - refer to https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
-
-
-DONE
-
 TODO
 cdo / cfdo update
 https://github.com/thinca/vim-qfreplace/blob/master/autoload/qfreplace.vim
@@ -133,6 +133,7 @@ local function get_pattern(mode)
     return default_pattern
 end
 
+
 --- An operator to delete linewise from the quickfix window.
 -- @mode - Refer to module doc string at top of this file.
 function rgflow.qf_del_operator(mode)
@@ -174,6 +175,7 @@ function rgflow.qf_mark_operator(add_not_remove, mode)
     vim.fn.setqflist(qf_list, 'r')
     vim.fn.winrestview(win_pos)
 end
+
 
 --- Returns the flag info from the ripgrep help for auto-completion.
 -- @param base - The start of the autocompletion tag to return autocomplete
@@ -236,6 +238,7 @@ function rgflow.flags_complete(findstart, base)
 end
 
 
+--- Highlight the search pattern matches in the quickfix window.
 function rgflow.hl_qf_matches()
     -- Needs to be called whenever quickfix window is opened
     -- :cclose will clear the following highlighting
@@ -332,7 +335,7 @@ local function on_stdout(err, data)
 end
 
 
---- The handler for the spawned job exits
+--- The handler for when the spawned job exits
 local function on_exit()
     if config.match_cnt > 0 then
         local plural = "s"
@@ -375,7 +378,6 @@ local function spawn_job()
     local stdout = loop.new_pipe(false)
     local stderr = loop.new_pipe(false)
 
-    -- print(vim.inspect(config.rg_args))
     print("Rgflow start search for:  "..config.pattern.."  with  "..config.demo_cmd)
 
     -- https://github.com/luvit/luv/blob/master/docs.md#uvspawnpath-options-on_exit
@@ -397,7 +399,8 @@ local function spawn_job()
 end
 
 
---  function which spawns the job start..
+--- Prepares the global config to be used by the search.
+-- @return the global config
 local function get_config(flags, pattern, path)
     -- Update the g:rgflow_flags so it retains its value for the session.
     api.nvim_set_var('rgflow_flags', flags)
@@ -443,7 +446,7 @@ function rgflow.abort()
 end
 
 
---- Reads the data from the input dialogue and then to be passed onto the
+--- From the UI, it starts the ripgrep search.
 function rgflow.search()
     local flags, pattern, path = unpack(api.nvim_buf_get_lines(bufi, 0, 3, true))
 
@@ -543,12 +546,17 @@ local function start_ui(flags, pattern, path)
 end
 
 
+-- Begins Rgflow search via the command search history, ie. q:
+-- @param flags/pattern/path are saved in the command history, and then passed
+--        into this function.
 function rgflow.start_via_history(flags, pattern, path)
     -- If called from the command history, for example by c_^F or q:
     rgflow.buf, rgflow.wini, rgflow.winh = start_ui(flags, pattern, path)
 end
 
 
+-- Begins Rgflow search via a hotkey
+-- @mode - Refer to module doc string at top of this file.
 function rgflow.start_via_hotkey(mode)
     -- If called from the hotkey
     -- api.nvim_command("messages clear")
