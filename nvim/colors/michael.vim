@@ -161,9 +161,9 @@ hi _StatusModified      guifg=#FFFFFF guibg=#FF0000 gui=BOLD
 hi qfError              guifg=#FFFFFF guibg=#FF0000 gui=BOLD
 
 hi StatusLine           guifg=#202020 guibg=#00A000 gui=none " WARNING! By default gui set to reverse, need to overide it with none
-hi _StatusFade1         guifg=#00A800 guibg=#00B000
-hi _StatusFade2         guifg=#00B800 guibg=#00C000
-hi _StatusFade3         guifg=#00C800 guibg=#00D000
+hi _StatusFade1         guifg=#00AD00 guibg=#00BB00
+hi _StatusFade2         guifg=#00C800 guibg=#00D600
+hi _StatusFade3         guifg=#00E300 guibg=#00F100
 hi _StatusFile          guifg=#000000 guibg=#00FF00 gui=bold
 hi _StatusSubtle        guifg=#007700 guibg=#00A000
 
