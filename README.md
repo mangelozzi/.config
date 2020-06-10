@@ -6,7 +6,7 @@ Runtime configuration files for my home directory.
 
 Clone repo:
 
-    git clone https://github.com/michael-angelozzi/.config.git ~/.config
+    git clone git@github.com:michael-angelozzi/.config.git ~/.config
 
 ## Windows
 

@@ -13,7 +13,7 @@ color michael       " Note this resets all highlighting, so much be before other
 " -----------------------------------------------------------------------------
 " Status line
 " -----------------------------------------------------------------------------
-function MyStatusLine(currentWindow) abort
+function! MyStatusLine(currentWindow) abort
     " To see a list of formatting items, e.g. %l), see :h statusline
     " The only thing which can be dynamically checked, is whether it is the
     " active window or not, since the status line is recalculated only when
@@ -112,53 +112,3 @@ augroup update_status_line
     autocmd BufWinLeave * if &buftype == 'quickfix' | set winhighlight=Normal:Normal | endif
 augroup END
 
-"==============================================================================
-"HIGHLIGHTING
-"Color for the below matches is in the michael color scheme
-
-" LEADING SPACES NOT %4
-" From the start of line, look for any number of 4 spaces
-" Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
-"match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-
-" TRAILING WHITESPACE
-" Must escape the plus, match one or more space before the end of line
-" match trailing whitespace, except when typing at the end of a line.
-match _TrailingWhitespace /\s\+\%#\@<!$/
-
-augroup match_whitespace
-    autocmd!
-    autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-augroup END
-
-augroup match_folds
-    autocmd!
-    " VimEnter handles at start up, WinNew for each window created AFTER startup.
-    " Regex matches { { { with an empty group in the middle so that vim does
-    " not create a fold in this code, then either a 1 or 2 then a space. Then
-    " zs is the start of the match which is the rest of the line then ze is
-    " the end of the match. Refer to :help pattern-overview
-    autocmd VimEnter,WinNew * let w:_foldlevel1_id = matchadd('_FoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
-    autocmd VimEnter,WinNew * let w:_foldlevel2_id = matchadd('_FoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
-augroup END
-
-" https://www.youtube.com/watch?v=aHm36-na4-4
-" If a line goes over 80 char wide highlight it
-" This permanently sets a column coloured
-" highlight ColorColumn ctermbg=magentadd
-" set colorcolumn=81
-
-"==============================================================================
-" Colour column
-" This only colour the column if it goes over 80 chars
-set cc=
-set cc=80
-"hi ColorColumn ctermbg=lightgrey guibg=yellow <- Set in color michael
-" -10 here is the priority of the colour vs other things like search
-"  highlighting
-"call matchadd('ColorColumn', '\%81v', -10)
-"call matchadd('ColorColumn', '\%>80v', 100)
-
-" Show white space chars. extends and precedes is for when word wrap is off
-"Get shapes from here https://www.copypastecharacter.com/graphic-shapes
-set listchars=eol:$,tab:▒▒,trail:▪,extends:▶,precedes:◀,space:·

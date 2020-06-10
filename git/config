@@ -10,34 +10,8 @@
 [credential]
 	helper = manager
     # LINUX: Use SSH keys
-    # NOTE!!! HTTPS remotes always ask for password, so must change to SSH repo:
-    #   git remote --verbose
-    #   git remote set-url origin git@github.com:USERNAME/REPOSITORY.git
-    #
-    #   Follow this guide: https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
-    #   0. Check if have ~/.ssh/id_rsa* keys already, if yes goto step 5.
-    #   1. Open a terminal and run:
-    #           ssh-keygen -t rsa -b 4096 -C "michael@gmail.com"
-    #   2. Enter a the standard michael device password
-    #   3. Start the ssh-agent in the background:
-    #           eval "$(ssh-agent -s)"
-    #   4. Add your SSH private key to the ssh-agent:
-    #           ssh-add ~/.ssh/id_rsa
-    #   5. Copy the SSH key to your clipboard.
-    #           cat ~/.ssh/id_rsa.pub
-    #   6. Go to github.com -> Settings -> SSH and GPG keys -> New SSH Key.
-    #   7. Type in description and paste in key.
-    #   8. Check Github.com fingerprint matches you own key:
-    #           ssh-add -l -E md5
-    #
     # WINDOWS: Use manager for the entire machine (system)
     #       git config --system credential.helper manager
-    #
-    # No longer used settings:
-    # helper = mananger
-    # helper = store
-    # Set cache to time out after 1 day 24*60*60=86400
-    # helper = cache --timeout=86400
 [core]
     preloadindex = true
     fscache = true

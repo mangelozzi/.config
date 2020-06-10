@@ -55,7 +55,7 @@ Plug 'christoomey/vim-titlecase'
 Plug 'tpope/vim-unimpaired'
 " Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
 " Plug 'chrisbra/Colorizer' "SUPER SLOW
-"Plug 'norcalli/nvim-colorizer.lua'
+Plug 'norcalli/nvim-colorizer.lua'
 Plug 'AndrewRadev/bufferize.vim'
 
 " GIT
@@ -63,7 +63,9 @@ Plug 'tpope/vim-fugitive'
 
 " FZF
 let fzfdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/fzf"
-Plug 'junegunn/fzf', { 'dir': fzfdir, 'do': './install --all' }
+" Plug 'junegunn/fzf', { 'dir': fzfdir, 'do': './install --all' }
+" Install FZF via scoop
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " TREE BROWSER
@@ -221,6 +223,13 @@ nnoremap <silent> <leader>gs :Git status<cr>
 " ==============================================================================
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
 " To search within a dir `:FZF [dir] <CR>`
+
+" if has('win32') || has('win64')
+"     " If installed using Homebrew
+"     set rtp+=$HOME\scoop\apps\fzf\current
+" else
+"     " set rtp+= I dont know
+" end
 let $FZF_DEFAULT_OPTS='--bind ctrl-a:select-all'
 
 "let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
@@ -386,4 +395,4 @@ endif
 " ______________________________________________________________________________
 " PLUGIN: norcalli/nvim-colorizer.lua
 " Colour background
-" lua require'colorizer'.setup()
+lua require'colorizer'.setup()

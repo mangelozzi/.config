@@ -1,5 +1,8 @@
 " If a patched Nerd font is installed, then NERD Font tree works, doesnt
 " have to be set as the current font
+" If Font seems messed up when changing screens/monitors, is probably windows
+" switching the display scaling, e.g. from 150% to 125%. If it is constant it
+" should be fine.
 
 "GuiFont Consolas:h12
 "! to supresses fixed width error

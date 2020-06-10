@@ -49,12 +49,13 @@ let mapleader = " "
 "==============================================================================
 " COLORS
 set background=dark
-set termguicolors
+set termguicolors   " Uses highlight-guifg and highlight-guibg, hence 24-bit color
 " set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
 " GENERAL
-set nocompatible            " Must be first command. Enter the current millenium
+set nocompatible            " Must be first command. Enter the current millenium. Not required for Neovim.
 set complete=.,w,b,u,t      " Default auto complete
+set colorcolumn=80          " Colour a certain column, helps to see when one goes over 80 chars.
 set autoindent              " When opening a new line keep indentation
 set hidden                  " Allows one to reuse the same window and switch without saving
 set history=10000           " NeoVim 10000. Number of previous commands remembered.
@@ -68,6 +69,7 @@ set showcmd                 " Show partial commands in the last line of the scre
 set showmatch               " When a bracket is inserted, briefly jump to the matching one.
 set matchtime=3             " 1/10ths of a second for which showmatch applies to matching a bracket
 
+" NOT GENERAL (i.e. for Servers)
 set nolist                  " Dont show spaces/tabs/newlines etc
 set nomodeline              " Modelines are vimscript snippets in normal files which vim interprets, e.g. `ex:`
 set undolevels=2000         " Default 1000.
@@ -77,9 +79,14 @@ set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
+set cursorline              " High lights the line number and cusor line
+
+" Show white space chars. extends and precedes is for when word wrap is off
+" Get shapes from here https://www.copypastecharacter.com/graphic-shapes
+set listchars=eol:$,tab:▒▒,trail:▪,extends:▶,precedes:◀,space:·
 
 " UNSET
-"set cmdheight=2            " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
+set cmdheight=2            " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
 "set noswapfiles             " Disable making swap files to indicate file is open.
 "set undofile                " Persistent undo even after you close a file and re-open it
 "set noshowmode              " Do not show mode on command line since vim-airline can show it
@@ -140,7 +147,29 @@ exe 'set thesaurus+='.fnamemodify("%", ":p:h").'/thesaurus/english.txt'
 source <sfile>:h/init/env.vim
 source <sfile>:h/init/git.vim
 source <sfile>:h/init/myplugins.vim
-source <sfile>:h/init/visual.vim
+if &diff
+    source <sfile>:h/init/status_diff.vim
+else
+    source <sfile>:h/init/status.vim
+endif
+
+" {{{1 COLOUR SCHEME (after sourcing init files)
+" VISUAL
+" Set Color Scheme (diff color scheme set in diff section
+if !&diff
+    color michael
+endif
+color michael
+
+" {{{1 DIFF MODE
+if &diff
+    " Make all unchanged text by default one standard color
+    " syntax off
+    set norelativenumber
+    color michael_diff
+    " normal <C-w>=
+    normal zR
+endif
 
 " {{{1 COPY PASTE
 "==============================================================================
@@ -293,8 +322,9 @@ map  <F4>      :call myal#DeleteCurBufferNotCloseWindow()<CR>
 map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
-map  <F5>      :!start chrome %<CR>
-map! <F5> <ESC>:!start chrome %<CR>
+" TODO replace spaces with %20 and prefix with file//
+map  <F5>      : !start chrome %<CR>
+map! <F5> <ESC>: !start chrome %<CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/
@@ -545,16 +575,35 @@ augroup prevent_load_in_quickfix_window
     "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
 augroup END
 
-" {{{1 DIFF MODE
-if &diff
-    " Make all unchanged text by default one standard color
-    " syntax off
-    set norelativenumber
-    color michael_diff
-    echom "Diff mode"
-    normal <C-w>=
-    normal zR
-endif
+" {{{1 HIGHLIGHTING (via matches)
+"==============================================================================
+" Colours for the matches below are in the michael colour scheme.
+
+" LEADING SPACES NOT %4
+" From the start of line, look for any number of 4 spaces
+" Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
+"match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+
+" TRAILING WHITESPACE
+" Must escape the plus, match one or more space before the end of line
+" match trailing whitespace, except when typing at the end of a line.
+match _TrailingWhitespace /\s\+\%#\@<!$/
+
+augroup match_whitespace
+    autocmd!
+    autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+augroup END
+
+augroup match_folds
+    autocmd!
+    " VimEnter handles at start up, WinNew for each window created AFTER startup.
+    " Regex matches { { { with an empty group in the middle so that vim does
+    " not create a fold in this code, then either a 1 or 2 then a space. Then
+    " zs is the start of the match which is the rest of the line then ze is
+    " the end of the match. Refer to :help pattern-overview
+    autocmd VimEnter,WinNew * let w:_foldlevel1_id = matchadd('_FoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
+    autocmd VimEnter,WinNew * let w:_foldlevel2_id = matchadd('_FoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+augroup END
 
 " {{{1 LUA
 " load lua functions

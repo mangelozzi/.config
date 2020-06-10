@@ -64,7 +64,7 @@ hi SignColumn                         guibg=#000000 " To the left of number line
 
 " {{{1 Built in visual enhancements
 hi NonText              guifg=#555555               " Hidden characters from set list
-hi ColorColumn                        guibg=#333333 " 80 chars wide column
+hi ColorColumn                        guibg=#f0f0f0 " 80 chars wide column
 hi CursorColumn         guifg=NONE    guibg=#181818 " A vertical line that follows custor, enable with :set cursorcolumn
 hi IncSearch            guifg=#000000 guibg=#FFFF00 gui=bold " While one is typing search pattern
 hi Search               guifg=#000000 guibg=#CF9F00          " Other search matches
@@ -93,34 +93,18 @@ hi _StatusModified      guifg=#FFFFFF guibg=#FF0000 gui=BOLD
 hi qfError              guifg=#FFFFFF guibg=#FF0000 gui=BOLD
 
 hi StatusLine           guifg=#202020 guibg=#00A000 gui=none " WARNING! By default gui set to reverse, need to overide it with none
-hi _StatusFade1         guifg=#00A800 guibg=#00B000
-hi _StatusFade2         guifg=#00B800 guibg=#00C000
-hi _StatusFade3         guifg=#00C800 guibg=#00D000
+hi _StatusFade1         guifg=#00AD00 guibg=#00BB00
+hi _StatusFade2         guifg=#00C800 guibg=#00D600
+hi _StatusFade3         guifg=#00E300 guibg=#00F100
 hi _StatusFile          guifg=#000000 guibg=#00FF00 gui=bold
 hi _StatusSubtle        guifg=#007700 guibg=#00A000
 
-hi StatusLineNC         guifg=#000000 guibg=#777777 gui=none " Status line None current
-hi _StatusFadeNC1       guifg=#7B7B7B guibg=#808080
-hi _StatusFadeNC2       guifg=#888888 guibg=#909090
-hi _StatusFadeNC3       guifg=#989898 guibg=#A0A0A0
-hi _StatusFileNC        guifg=#000000 guibg=#ABABAB gui=bold
-hi _StatusSubtleNC      guifg=#444444 guibg=#777777
-
-hi _qfStatusLine        guifg=#000000 guibg=#C0C000 gui=none " WARNING! By default gui set to reverse, need to overide it with none
-hi _qfStatusFade1       guifg=#C8C800 guibg=#D0D000
-hi _qfStatusFade2       guifg=#D8D800 guibg=#E0E000
-hi _qfStatusFade3       guifg=#E8E800 guibg=#F0F000
-hi _qfStatusFile        guifg=#000000 guibg=#FFFF00 gui=bold
-hi _qfStatusLineNC      guifg=#ffff00 guibg=#777700
-hi _qfStatusSublte      guifg=#007700 guibg=#00A000
-
-hi _helpStatusLine      guifg=#000000 guibg=#A000E0
-hi _helpStatusFade1     guifg=#A800E4 guibg=#B000E8
-hi _helpStatusFade2     guifg=#B800EA guibg=#C000F0
-hi _helpStatusFade3     guifg=#D000F4 guibg=#E000F8
-hi _helpStatusFile      guifg=#000000 guibg=#FF00FF gui=bold
-hi _helpStatusLineNC    guifg=#ff00ff guibg=#770077
-hi _helpStatusSublte    guifg=#000077 guibg=#0000A0
+hi StatusLineNC         guifg=#000000 guibg=#A0A0A0 gui=none " Status line None current
+hi _StatusFadeNC1       guifg=#A8A8A8 guibg=#B0B0B0
+hi _StatusFadeNC2       guifg=#b8b8b8 guibg=#b8b8b8
+hi _StatusFadeNC3       guifg=#c0c0c0 guibg=#c8c8c8
+hi _StatusFileNC        guifg=#000000 guibg=#d0d0d0 gui=bold
+hi _StatusSubtleNC      guifg=#707070 guibg=#A0A0A0
 
 " {{{1 DIFFs (GIT)
 if &diff
