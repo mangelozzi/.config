@@ -1,0 +1,11 @@
+# Extension to .bashrc profile
+# Source this file from the end of ~/.bashrc
+
+# Change BASH dir colour to something more readable
+LS_COLORS=$LS_COLORS:'di=0;35:' ; export LS_COLORS
+
+# Disable Flow control in terminal (Ctrl-S & Ctrl-Q)
+stty -ixon
+
+# `fd` already taken, create a convenient alias for the search tool:
+alias fd=fdfind
