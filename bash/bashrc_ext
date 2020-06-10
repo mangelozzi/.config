@@ -42,5 +42,6 @@ set bell-style none
 # Change BASH dir colour to something more readable
 # To use 256 colors use 38;5;FG;48;5;BG
 #   where FG = foreground 256 color number, and similarly for BG.
-DI='di=38;5;0;48;5;185' 
+# LS_COLORS=$LS_COLORS':di=38;5;255;48;5;58:' ; export LS_COLORS
+DI='di=38;5;255;48;5;58'
 LS_COLORS=$LS_COLORS:$DI: ; export LS_COLORS
