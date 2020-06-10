@@ -2,6 +2,7 @@
 /*
 /*/
 !/emacs/
+!/bash/
 !/git/
 !/misc/
 !/nvim/

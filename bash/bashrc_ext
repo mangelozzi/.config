@@ -1,11 +1,46 @@
 # Extension to .bashrc profile
 # Source this file from the end of ~/.bashrc
 
-# Change BASH dir colour to something more readable
-LS_COLORS=$LS_COLORS:'di=0;35:' ; export LS_COLORS
-
 # Disable Flow control in terminal (Ctrl-S & Ctrl-Q)
 stty -ixon
 
 # `fd` already taken, create a convenient alias for the search tool:
 alias fd=fdfind
+
+# Disable bell sound
+set bell-style none
+
+# LS COLORS
+# ---------
+# dircolors --help
+#
+# Print a list listing of what the colours mean:
+#     dircolors -p
+#
+# Manual:
+#     man dir_colors
+#
+# Item prefixes
+# -------------
+# no:global default
+# fi:normal file
+# di:directory
+# ln:symbolic link
+# pi:named pipe
+# so:socket
+# do:door
+# bd:block device
+# cd:character device
+# or:orphan symlink
+# mi:missing file
+# su:set uid
+# sg:set gid
+# tw:sticky other writable
+# ow:other writable
+# st:sticky
+# ex:executable
+# Change BASH dir colour to something more readable
+# To use 256 colors use 38;5;FG;48;5;BG
+#   where FG = foreground 256 color number, and similarly for BG.
+DI='di=38;5;0;48;5;185' 
+LS_COLORS=$LS_COLORS:$DI: ; export LS_COLORS
