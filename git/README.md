@@ -40,19 +40,20 @@ git config --global mergetool.nvim.cmd $'nvim -d $LOCAL $REMOTE $MERGED -c \'$wi
   ```
 
 Follow GitHub's [Connecting to GitHub with SSH](https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh) guide:
-  1. Check if have `~/.ssh/id_rsa*` keys already, if yes go to step 4.
+  1. Check if have `~/.ssh/id_rsa*` keys already, if yes go to step 5.
   2. Open a terminal and run:
           ssh-keygen -t rsa -b 4096 -C "mangelozzi@gmail.com"
-  3. Enter a the standard michael device password
-  4. Start the ssh-agent in the background:
+  3. Press `<ENTER>` to use the default location.
+  4. Enter a the standard michael device password
+  5. Start the ssh-agent in the background:
           eval "$(ssh-agent -s)"
-  5. Add your SSH private key to the ssh-agent:
+  6. Add your SSH private key to the ssh-agent:
           ssh-add ~/.ssh/id_rsa
-  6. Copy the SSH key to your clipboard.
+  7. Copy the SSH key to your clipboard.
           cat ~/.ssh/id_rsa.pub
-  7. Go to [`github.com` &rarr; `Settings` &rarr; `SSH and GPG keys` &rarr; `New SSH Key`](https://github.com/settings/keys)
-  8. Type in description and paste in key.
-  9. Check Github.com fingerprint matches you own key:
+  8. Go to [`github.com` &rarr; `Settings` &rarr; `SSH and GPG keys` &rarr; `New SSH Key`](https://github.com/settings/keys)
+  9. Type in description and paste in key.
+  10. Check Github.com fingerprint matches you own key:
           ssh-add -l -E md5
 
 ### Windows

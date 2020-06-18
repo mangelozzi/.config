@@ -2,7 +2,7 @@
 
 ## INSTALLATION
 
-### Ubuntu Installation
+### Ubuntu (Stable) Installation
 
 ```bash
 sudo add-apt-repository ppa:Neovim-ppa/stable
@@ -14,6 +14,18 @@ Create alias for nvim to be vim (still need to test this)
 
 ```bash
 echo "alias vim=nvim" >> ~/.bashrc
+```
+
+### Ubuntu (Nightly) Installation
+
+To use appimage stable, just replace `nightly` &rarr; `stable`
+
+```bash
+NVIM_FILE=nvim.appimage;NVIM_PATH=~/appimages/;
+mkdir -p NVIM_PATH
+sudo curl -L https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -o $NVIM_PATH$NVIM_FILE
+sudo chmod +x $NVIM_PATH$NVIM_FILE
+sudo ln -s $NVIM_PATH$NVIM_FILE /usr/bin/nvim
 ```
 
 ### Windows Installation
@@ -34,6 +46,11 @@ or
 4. Double click on it to launch it, right click on the icon and select `Pin to taskbar`
 5. Right click on the task bar link, right click on the name and select properties,
 Set the start in location to a common dir, e.g. `C:\code\project`
+
+
+#### WARNING!!! If Neovim-qt takes 30 seconds to close
+
+Under `Windows Security` -> `Reputation-based protection` -> `Check apps and files` ensure it is turned off.
 
 ## CONFIG
 
