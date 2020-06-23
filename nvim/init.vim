@@ -78,8 +78,10 @@ set shiftround              " Round indent to multiple of 'shiftwidth'. Applies 
 set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
-set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
 set cursorline              " High lights the line number and cusor line
+
+set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
+set nobackup
 
 " Show white space chars. extends and precedes is for when word wrap is off
 " Get shapes from here https://www.copypastecharacter.com/graphic-shapes
@@ -242,6 +244,13 @@ map <C-s> :w<CR>
 " map! <C-s> <C-o>:w<CR>
 map! <C-s> <ESC>:w<CR>
 
+" Make x/X not change the registers, i.e. uses the black hole register
+" Note: Use d/D to change the register
+noremap x "_x
+noremap X "_X
+vnoremap x "_x
+vnoremap X "_X
+
 " {{{2 Escape
 " Map other forms of escape to true <ESC>, e.g. useful for multiline editing
 " DONT SEE THIS BEHAVIOUR ANYMORE - deprecated.
@@ -264,10 +273,6 @@ map! <C-s> <ESC>:w<CR>
 " quickfix window
 nmap <BS> <C-^>
 nmap <BS> <C-^>
-
-" Make x/X not change the registers, i.e. uses the black hole register
-noremap x "_x
-noremap X "_X
 
 " Use Magic version of REGEX searching, i.e. all char expect 0-9a-zA-Z_ are
 " considered regex special chars "very magic".
@@ -323,8 +328,8 @@ map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
 " TODO replace spaces with %20 and prefix with file//
-map  <F5>      : !start chrome %<CR>
-map! <F5> <ESC>: !start chrome %<CR>
+map  <F5>      : !start chrome --profile-directory="Profile 2" % <CR>
+map! <F5> <ESC>: !start chrome --profile-directory="Profile 2" % <CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/

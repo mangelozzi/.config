@@ -48,6 +48,7 @@ Plug rgflow_local
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-repeat'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'christoomey/vim-titlecase'
 
@@ -124,6 +125,12 @@ call plug#end()
 " :Wall:      Write every open window. Handy for kicking off tools like guard.
 " :SudoWrite: Write a privileged file with sudo.
 " :SudoEdit:  Edit a privileged file with sudo.
+
+" ______________________________________________________________________________
+" PLUGIN: vim-repeat
+" using the . will repeat plugin maps for vim surround, and vim unimpaired
+" Normally the . just repeats the last operators that fired within the plugin.
+" https://github.com/tpope/vim-repeat
 
 " ______________________________________________________________________________
 " PLUGIN: REPLACE WITH REGISTER
