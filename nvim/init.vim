@@ -139,8 +139,9 @@ set wildmenu                " Display all matching files when we tab complete
 " :set spell` is set in ftplugin to enable spell checking
 set spelllang=en_gb
 
+
 " i_CTRL-X_CTRL-T for thesaurus completion
-exe 'set thesaurus+='.fnamemodify("%", ":p:h").'/thesaurus/english.txt'
+exe 'set thesaurus+='.expand("<sfile>:h").'/thesaurus/english.txt'
 
 " {{{1 SOURCE INIT FILES
 "==============================================================================
@@ -288,6 +289,16 @@ nmap <silent> # yiw<ESC>: let @/ = @""<CR>
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
 
+" Swap to single or double quotes with <leader>' or <leader>" respectively.
+noremap <leader>' :s/"/'/g<CR>
+noremap <leader>" :s/'/"/g<CR>
+
+" Easier split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 " {{{2 Map! (noremap!)
 
 " Left/Right arrow backspace and delete
@@ -296,11 +307,8 @@ nmap <silent> # yiw<ESC>: let @/ = @""<CR>
 noremap! <C-l> <Del>
 noremap! <C-a> <Home>
 
-" Easier split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+" Easier insert mode paste
+noremap! <C-R>; <C-R>"
 
 " {{{2 Insert
 
@@ -557,6 +565,9 @@ augroup my_auto_commands
     " Automatically set the PWD when creating a path to be that of the dir, or
     " the head of the file
     autocmd TabNewEntered * call myal#OnTabEnter(expand("<amatch>"))
+
+    " Ignore spell check for HEX colour codes
+    autocmd Syntax * syntax match quoteblock /#[0-9a-fA-F]\{6}/ contains=@NoSpell
 
 augroup END
 
