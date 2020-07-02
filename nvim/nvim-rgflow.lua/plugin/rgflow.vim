@@ -68,8 +68,11 @@ endif
 
 " SOURCE MODULE
 if testing
-    lua rgflow = dofile("C:/Users/Michael/.config/nvim/nvim-rgflow.lua/lua/rgflow.lua")
-    " lua rgflow = dofile("/home/michael/.config/nvim/nvim-rgflow.lua/lua/rgflow.lua")
+    if has('unix')
+        lua rgflow = dofile("/home/michael/.config/nvim/nvim-rgflow.lua/lua/rgflow.lua")
+    else
+        lua rgflow = dofile("C:/Users/Michael/.config/nvim/nvim-rgflow.lua/lua/rgflow.lua")
+    endif
 else
     lua rgflow = require('rgflow')
 endif
