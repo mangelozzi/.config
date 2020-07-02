@@ -48,9 +48,14 @@ or
 Set the start in location to a common dir, e.g. `C:\code\project`
 
 
-#### WARNING!!! If Neovim-qt takes 30 seconds to close
+#### <span style="color: red;">WARNING!!! If `neovim-qt.exe` takes 30 seconds to close</span>
 
-Under `Windows Security` -> `Reputation-based protection` -> `Check apps and files` ensure it is turned off.
+A recent Windows update seems to of changed things.  
+**DO NOT** pin to the task bar:  
+`C:\Users\Michael\scoop\apps\neovim-nightly\current\bin\nvim-qt.exe`
+
+Use the none current version, e.g.:  
+`C:\Users\Michael\scoop\apps\neovim-nightly\nightly-20200618\bin\nvim-qt.exe`
 
 ## CONFIG
 

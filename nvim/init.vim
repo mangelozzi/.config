@@ -78,8 +78,10 @@ set shiftround              " Round indent to multiple of 'shiftwidth'. Applies 
 set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
-set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
 set cursorline              " High lights the line number and cusor line
+
+set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
+set nobackup
 
 " Show white space chars. extends and precedes is for when word wrap is off
 " Get shapes from here https://www.copypastecharacter.com/graphic-shapes
@@ -137,8 +139,9 @@ set wildmenu                " Display all matching files when we tab complete
 " :set spell` is set in ftplugin to enable spell checking
 set spelllang=en_gb
 
+
 " i_CTRL-X_CTRL-T for thesaurus completion
-exe 'set thesaurus+='.fnamemodify("%", ":p:h").'/thesaurus/english.txt'
+exe 'set thesaurus+='.expand("<sfile>:h").'/thesaurus/english.txt'
 
 " {{{1 SOURCE INIT FILES
 "==============================================================================
@@ -242,6 +245,13 @@ map <C-s> :w<CR>
 " map! <C-s> <C-o>:w<CR>
 map! <C-s> <ESC>:w<CR>
 
+" Make x/X not change the registers, i.e. uses the black hole register
+" Note: Use d/D to change the register
+noremap x "_x
+noremap X "_X
+vnoremap x "_x
+vnoremap X "_X
+
 " {{{2 Escape
 " Map other forms of escape to true <ESC>, e.g. useful for multiline editing
 " DONT SEE THIS BEHAVIOUR ANYMORE - deprecated.
@@ -265,10 +275,6 @@ map! <C-s> <ESC>:w<CR>
 nmap <BS> <C-^>
 nmap <BS> <C-^>
 
-" Make x/X not change the registers, i.e. uses the black hole register
-noremap x "_x
-noremap X "_X
-
 " Use Magic version of REGEX searching, i.e. all char expect 0-9a-zA-Z_ are
 " considered regex special chars "very magic".
 " http://vimdoc.sourceforge.net/htmldoc/pattern.html#pattern (scroll down a page to magic)
@@ -283,6 +289,16 @@ nmap <silent> # yiw<ESC>: let @/ = @""<CR>
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
 
+" Swap to single or double quotes with <leader>' or <leader>" respectively.
+noremap <leader>' :s/"/'/g<CR>
+noremap <leader>" :s/'/"/g<CR>
+
+" Easier split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 " {{{2 Map! (noremap!)
 
 " Left/Right arrow backspace and delete
@@ -291,11 +307,8 @@ nmap <silent> # yiw<ESC>: let @/ = @""<CR>
 noremap! <C-l> <Del>
 noremap! <C-a> <Home>
 
-" Easier split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+" Easier insert mode paste
+noremap! <C-R>; <C-R>"
 
 " {{{2 Insert
 
@@ -323,8 +336,8 @@ map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
 " TODO replace spaces with %20 and prefix with file//
-map  <F5>      : !start chrome %<CR>
-map! <F5> <ESC>: !start chrome %<CR>
+map  <F5>      : !start chrome --profile-directory="Profile 2" % <CR>
+map! <F5> <ESC>: !start chrome --profile-directory="Profile 2" % <CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/
@@ -552,6 +565,9 @@ augroup my_auto_commands
     " Automatically set the PWD when creating a path to be that of the dir, or
     " the head of the file
     autocmd TabNewEntered * call myal#OnTabEnter(expand("<amatch>"))
+
+    " Ignore spell check for HEX colour codes
+    autocmd Syntax * syntax match quoteblock /#[0-9a-fA-F]\{6}/ contains=@NoSpell
 
 augroup END
 
