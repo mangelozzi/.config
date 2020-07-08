@@ -1,6 +1,9 @@
 # Extension to .bashrc profile
 # Source this file from the end of ~/.bashrc
 
+# Test this has been sourced
+alias dottest='echo "bashrc_ext was sourced"'
+
 # Disable Flow control in terminal (Ctrl-S & Ctrl-Q)
 stty -ixon
 

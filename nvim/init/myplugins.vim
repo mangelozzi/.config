@@ -159,9 +159,10 @@ call plug#end()
 " gT used for switching buffers, disable default hotkeys with:
 let g:titlecase_map_keys = 0
 " Menomic h = heading
-nmap gh <Plug>Titlecase
+map gh <Plug>Titlecase
+map gH <Plug>TitlecaseLine
 vmap gh <Plug>Titlecase
-nmap gH <Plug>TitlecaseLine
+vmap gH <Plug>Titlecase
 
 " ==============================================================================
 " SMALL MISC
