@@ -120,6 +120,13 @@ Refer to [Software setup docs](https://github.com/michael-angelozzi/software_set
 - Node via NPM
 - ripgrep
 - fzf
+- If using the nightly, may need to Install LuaJIT 2.1.0beta3 manually (to get colorizer to work):
+  1. First install checkinstall
+  2. Then download it `curl https://luajit.org/download/LuaJIT-2.1.0-beta3.tar.gz -o luajit210beta3`
+  3. `tar -xf luajit210beta3.tar.gz`
+  4. `cd ...`
+  5. `make`
+  6. `sudo checkinstall`
 
 ## PLUGIN DEPENDENCIES
 

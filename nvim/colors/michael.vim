@@ -255,6 +255,21 @@ hi MatchParen           guifg=#00FF00 guibg=#550000           gui=bold
 hi Directory            guifg=#FFFF00 guibg=NONE guisp=NONE gui=bold
 hi WildMenu             guifg=#000000 guibg=#00FF00 " Current match in 'wildmenu' completion
 
+" {{{1 MARKDOWN
+hi markdownHeadingDelimiter guifg=#00E000 guibg=NONE guisp=NONE gui=bold
+hi markdownH1           guifg=#00ff00 guibg=NONE guisp=NONE gui=bold,underline
+hi markdownH2           guifg=#00e000 guibg=NONE guisp=NONE gui=bold
+hi markdownH3           guifg=#00d000 guibg=NONE guisp=NONE gui=bold
+hi markdownH4           guifg=#00c000 guibg=NONE guisp=NONE gui=bold
+hi markdownH5           guifg=#00b000 guibg=NONE guisp=NONE gui=bold
+hi markdownH6           guifg=#00a000 guibg=NONE guisp=NONE gui=bold
+hi markdownListMarker   guifg=#ffff00 guibg=NONE guisp=NONE gui=bold
+hi markdownOrderedMarker guifg=#ffff00 guibg=NONE guisp=NONE gui=bold
+"hi markdownCodeBlock    guifg=#ff0000 guibg=NONE guisp=NONE gui=NONE
+hi markdownBlockquote   guifg=#ffff00 guibg=NONE guisp=NONE gui=NONE
+hi markdownCode         guifg=#d0f0d0 guibg=#505050 guisp=NONE gui=NONE
+
+
 " {{{1 DEFAULT LANGUAGE HI ITEMS
 hi Structure            guifg=#FFF991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 

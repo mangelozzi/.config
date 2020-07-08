@@ -59,6 +59,10 @@ Plug 'tpope/vim-unimpaired'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'AndrewRadev/bufferize.vim'
 
+" First plug the lib dependency
+Plug 'inkarkat/vim-ingo-library'
+Plug 'inkarkat/vim-SpellCheck'
+
 " GIT
 Plug 'tpope/vim-fugitive'
 
@@ -403,3 +407,7 @@ endif
 " PLUGIN: norcalli/nvim-colorizer.lua
 " Colour background
 lua require'colorizer'.setup()
+
+" ______________________________________________________________________________
+" PLUGIN: Plug 'inkarkat/vim-SpellCheck'
+" Can see a list of mispelt word with: :[range]SpellCheck

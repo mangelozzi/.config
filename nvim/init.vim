@@ -283,8 +283,10 @@ noremap <leader>/ /\v
 "noremap <leader>sf :lvimgrep // %<left><left><left>
 
 " When pressing star, don't jump to the next match
-nmap <silent> * yiw<ESC>: let @/ = @""<CR>
-nmap <silent> # yiw<ESC>: let @/ = @""<CR>
+" Set highlight search to trigger the highlighting which sometimes doesnt
+" appear otherwise.
+nmap <silent> * yiw<esc>: let @/ = @""<cr>:set hlsearch<cr>
+nmap <silent> # yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>
 
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
