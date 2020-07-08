@@ -335,9 +335,12 @@ map  <F4>      :call myal#DeleteCurBufferNotCloseWindow()<CR>
 map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
-" TODO replace spaces with %20 and prefix with file//
-map  <F5>      : !start chrome --profile-directory="Profile 2" % <CR>
-map! <F5> <ESC>: !start chrome --profile-directory="Profile 2" % <CR>
+" Quote the filepath incase it has spaces
+" Redraw to bypass messages about path converions
+" Note a simple command with % doesnt always expand to full path (depending on pwd), e.g.:
+"     map  <F5>      : !start chrome --profile-directory="Profile 2" % <CR>
+map  <F5>      : exe '!start chrome --profile-directory="Profile 2" "'.expand("%:p").'"' <CR> :redraw <CR>
+map! <F5> <ESC>: exe '!start chrome --profile-directory="Profile 2" "'.expand("%:p").'"' <CR> :redraw <CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/
