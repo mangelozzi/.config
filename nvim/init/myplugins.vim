@@ -35,14 +35,13 @@ call plug#begin(plugdir)
 "call plug#begin('$VIM\vim-plug')
 " Only place plug items within here or else can get weird errors with some packages
 
-" let temprg = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
-" Plug temprg
-let rgflow_local = fnamemodify($MYVIMRC, ":p:h")."/nvim-rgflow.lua"
+" Plug own plugin at nvim/tmp/nvim-rgflow.lua
+let rgflow_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/nvim-rgflow.lua"
 Plug rgflow_local
-" Plug 'michael-angelozzi/nvim-rgflow.lua'
 
-" let temp = fnamemodify($MYVIMRC, ":p:h")."/lua/nvim-demo-plugin.lua"
-" Plug temp
+" Plug own plugin at nvim/tmp/vim-wsl
+let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-wsl"
+Plug wsl_local
 
 " OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'tpope/vim-surround'
@@ -54,8 +53,6 @@ Plug 'christoomey/vim-titlecase'
 
 " SMALL MISC
 Plug 'tpope/vim-unimpaired'
-" Plug 'ap/vim-css-color' " Buggy, when save michael.vim theme, looses the coloring
-" Plug 'chrisbra/Colorizer' "SUPER SLOW
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'AndrewRadev/bufferize.vim'
 
@@ -293,10 +290,10 @@ nnoremap <leader>zr :Rg<Space>HighlightSearchTerm<CR>
 nnoremap <silent> <leader>zh :FZF ~<cr>
 
 " FZF in Lines in loaded buffers
-nnoremap <silent> <leader>zl :Lines<cr>
+nnoremap <silent> <leader>l :Lines<cr>
 
 " FZF in Lines in the current buffer
-nnoremap <silent> <leader>zb :BLines<cr>
+nnoremap <silent> <leader>b :BLines<cr>
 
 " Normal mode mappings
 nnoremap <silent> <leader>zm :Maps<cr>

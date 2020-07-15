@@ -1,1 +1,1 @@
-source $MYVIMRC/../ftplugin/txt.vim
+source <sfile>:h/txt.vim

@@ -119,7 +119,8 @@ Works without it.
 Use [VimPlug](https://github.com/junegunn/vim-plug)
 
 1. Already in the config, so no need to install.
-2. Run the command `:PlugInstall` upon first start up
+2. Install my own plugins `vim-wsl` and `nvim-rgflow.lua` to `tmp/`
+3. Run the command `:PlugInstall` upon first start up
 
 ## DEPENDENCIES
 

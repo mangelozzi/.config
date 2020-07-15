@@ -1,7 +1,7 @@
 " TODO make it at end of jumplist, then tab opens current fold.
 " Check out:
 " https://bluz71.github.io/2019/03/11/find-replace-helpers-for-vim.html
-"
+" a
 " nvim-lsp + completition-nvim is ez too
 "
 " lua: https://ms-jpq.github.io/neovim-async-tutorial/
@@ -337,12 +337,8 @@ map  <F4>      :call myal#DeleteCurBufferNotCloseWindow()<CR>
 map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
-" Quote the filepath incase it has spaces
-" Redraw to bypass messages about path converions
-" Note a simple command with % doesnt always expand to full path (depending on pwd), e.g.:
-"     map  <F5>      : !start chrome --profile-directory="Profile 2" % <CR>
-map  <F5>      : exe '!start chrome --profile-directory="Profile 2" "'.expand("%:p").'"' <CR> :redraw <CR>
-map! <F5> <ESC>: exe '!start chrome --profile-directory="Profile 2" "'.expand("%:p").'"' <CR> :redraw <CR>
+map  <F5>       :WslBrowse chrome tab 2<CR>
+map! <F5> <ESC> :WslBrowse chrome tab 2<CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/
@@ -574,6 +570,9 @@ augroup my_auto_commands
     " Ignore spell check for HEX colour codes
     autocmd Syntax * syntax match quoteblock /#[0-9a-fA-F]\{6}/ contains=@NoSpell
 
+    "To read a skeleton (template) file when opening a new file: >
+    " :autocmd BufNewFile  *.c	0r ~/vim/skeleton.c
+
 augroup END
 
 
@@ -663,4 +662,3 @@ function! MyTabLine()
     return s
 endfunction
 " set tabline=%!MyTabLine()
-
