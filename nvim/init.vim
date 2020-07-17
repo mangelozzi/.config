@@ -74,6 +74,7 @@ set nolist                  " Dont show spaces/tabs/newlines etc
 set nomodeline              " Modelines are vimscript snippets in normal files which vim interprets, e.g. `ex:`
 set undolevels=2000         " Default 1000.
 set shortmess+=c            " Do not show "match xx of xx" and other messages during auto-completion
+set shortmess-=F            " Do show echom messages during file manipulation and autocmd (like default Vim, see Neovim FAQ)
 set shiftround              " Round indent to multiple of 'shiftwidth'. Applies to > and < commands. CTRL-T and CTRL-D in insert mode always round to a multiple of shiftwidths.
 set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
