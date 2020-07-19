@@ -1,6 +1,16 @@
 # Using Meld: https://stackoverflow.com/a/34119867/5506400
 
 # -----------------------------------------------------------------------------
+# COLOURS
+[color "status"]
+    ; added = green
+    changed = yellow bold
+    untracked = cyan bold
+
+; [color "branch"]
+;   remote = yellow
+
+# -----------------------------------------------------------------------------
 # CORE
 [user]
     name = Michael Angelozzi

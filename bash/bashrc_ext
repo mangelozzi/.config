@@ -14,16 +14,51 @@ alias fd=fdfind
 # Disable bell sound
 set bell-style none
 
-# Set Colors
+# SET COLORS
+# https://misc.flogisoft.com/bash/tip_colors_and_formatting
 # Note the definition of basic colors, e.g. what kind of blue blue is, is
 # dependant on the terminal, not on the shell! See windows terminal explanation
 # for more details.
 
 # Prompt Color
+# \u               = username
+# \h               = hostname short
+# \H               = hostname long
+# \w               = directory
+# \033 = \x1B = \e = escape character
+# \e[ ... m        = colour escape sequence
+
+Foreground (text)
+Code	Color	     
+39	Default      
+30	Black	     
+31	Red	     
+32	Green	     
+33	Yellow	     
+34	Blue	     
+35	Magenta	     
+36	Cyan	     
+37	Lightgray    
+90	Darkgray     
+91	Lightred     
+92	Lightgreen   
+93	Lightyellow  
+94	Lightblue    
+95	Lightmagenta 
+96	Lightcyan    
+97	White
 # Default (refer to .bashrc)
 # PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
- PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
-
+# PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
+  PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;33m\]\w\[\033[00m\]\$ '
+  PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;33m\]\w\[\e[00m\]\$ '
+  BG='\e[48;5;242m'
+  BG='\e[38;5;242m'
+  PS1="$BG"'\u'
+# Created with http://bashrcgenerator.com/
+#  PS1="\[\033[38;5;3m\]\u\[$(tput sgr0)\]\[\033[38;5;7m\]@\[$(tput sgr0)\]\[\033[38;5;3m\]\h\[$(tput sgr0)\]\[\033[38;5;7m\]:\[$(tput sgr0)\]\[\033[38;5;11m\]\w\[$(tput sgr0)\]\[\033[38;5;7m\]\\$\[$(tput sgr0)\]"
+#  PS1="\[\033[38;5;0m\]\[\033[48;5;15m\]\u\[$(tput sgr0)\]\[\033[38;5;8m\]@\[$(tput sgr0)\]\[\033[38;5;0m\]\h\[$(tput sgr0)\]\[\033[38;5;8m\]:\[$(tput sgr0)\]\[\033[38;5;2m\]\w\[$(tput sgr0)\]\[\033[38;5;8m\]\\$\[$(tput sgr0)\]"
+#  PS1="\[\033[38;5;0m\]\[\033[48;5;8m\]\u\[$(tput sgr0)\]\[\033[38;5;8m\]\[\033[48;5;15m\]@\[$(tput sgr0)\]\[\033[38;5;1m\]\[\033[48;5;8m\]\h\[$(tput sgr0)\]\[\033[38;5;8m\]\[\033[48;5;15m\]:\[$(tput sgr0)\]\[\033[38;5;2m\]\w\[$(tput sgr0)\]\[\033[38;5;8m\]\\$\[$(tput sgr0)\]"
 # LS COLORS
 # ---------
 # dircolors --help

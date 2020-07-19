@@ -13,4 +13,4 @@ Clone repo:
 Clone repo:
 
     git clone https://github.com/michael-angelozzi/.config.git C:\Users\Michael\.config
-
+ 
