@@ -2,15 +2,25 @@
 """A class for colorizing the terminal colors
 Refer to : https://misc.flogisoft.com/bash/tip_colors_and_formatting
 
-Example Uwsage:
+The commands gnerally return the required color code to print, however if the
+optionaly argument echo is set to True, then it also prints the color escape
+code.
+
+Example Usage - With echo=False (default way returns the code to be printed):
     import Colorize
-    Colorize.set_fg("red")
-    Colorize.set_bg("white")
+    print(f"{Colorize.fg('red')}{Colorize.bg('white')}Warning!")
+    print(f"{Colorize.fg_255(77)}{Colorize.bg_255(253)}That was bad")
+    print(Colorize.reset(), end="")
+
+Example Usage - With echo=True to print the escape codes:
+    import Colorize
+    Colorize.fg("red", echo=True)
+    Colorize.bg("white", echo=True)
     print("Warning!")
-    Colorize.set_fg_255(77)
-    Colorize.set_bg_255(253)
+    Colorize.fg_255(77, echo=True)
+    Colorize.bg_255(253, echo=True)
     print("That was bad")
-    Colorize.reset()
+    Colorize.reset(echo=True)
 """
 
 class Colorize:
@@ -37,36 +47,49 @@ class Colorize:
     BASE_BG = { color_name:code+10 for (color_name, code) in BASE_FG.items() }
 
     @classmethod
-    def set_color_n(cls, n):
-        print(f"{cls.ESC}{n}m", end="")
+    def esc_code_n(cls, n, echo=False):
+        code = f"{cls.ESC}{n}m"
+        echo and print(code, end="")
+        return code
 
     @classmethod
-    def reset(cls):
-        cls.set_color_n(0)
+    def reset(cls, echo=False):
+        code = cls.esc_code_n(0)
+        echo and print(code, end="")
+        return code
 
     @classmethod
-    def invert(cls):
-        cls.set_color_n(7)
+    def invert(cls, echo=False):
+        cls.esc_code_n(7)
+        echo and print(code, end="")
+        return code
 
     @classmethod
-    def set_fg(cls, color_name):
+    def fg(cls, color_name, echo=False):
         "color_name, a value in BASE_FG & BASE_BG"
         n = cls.BASE_FG[color_name.lower()]
-        cls.set_color_n(n)
-        print(f"{cls.ESC}{n}m", end="")
+        code = cls.esc_code_n(n)
+        echo and print(code, end="")
+        return code
 
     @classmethod
-    def set_bg(cls, color_name):
+    def bg(cls, color_name, echo=False):
         n = cls.BASE_BG[color_name.lower()]
-        cls.set_color_n(n)
+        code = cls.esc_code_n(n)
+        echo and print(code, end="")
+        return code
 
     @classmethod
-    def set_fg_255(cls, n):
-        print(f"{cls.ESC}30;38;5;{n}m", end="")
+    def fg_255(cls, n, echo=False):
+        code = f"{cls.ESC}30;38;5;{n}m"
+        echo and print(code, end="")
+        return code
 
     @classmethod
-    def set_bg_255(cls, n):
-        print(f"{cls.ESC}30;48;5;{n}m", end="")
+    def bg_255(cls, n, echo=False):
+        code = f"{cls.ESC}30;48;5;{n}m"
+        echo and print(code, end="")
+        return code
 
     @classmethod
     def print_intro(cls):
@@ -98,15 +121,15 @@ FG to 255 color x:              \\e[48;5;xm
         print(f"\nTerminal Colors  FG#  BG#  Test Pattern")
         print(f"---------------------------------------")
         for color_name, code in cls.BASE_FG.items():
-                cls.reset()
+                cls.reset(echo=True)
                 print(f"{color_name.title():15}  {code:3}  {code+10:3} ", end="")
-                cls.set_bg(color_name)
-                cls.set_fg("white"); print(" ABCDefgh 01234 ", end="")
-                cls.set_fg("black"); print(" ABCDefgh 01234 ", end="")
-                cls.set_fg(color_name)
-                cls.set_bg("white"); print(" ABCDefgh 01234 ", end="")
-                cls.set_bg("black"); print(" ABCDefgh 01234 ", end="")
-                cls.reset()
+                cls.bg(color_name, echo=True)
+                cls.fg("white", echo=True); print(" ABCDefgh 01234 ", end="")
+                cls.fg("black", echo=True); print(" ABCDefgh 01234 ", end="")
+                cls.fg(color_name, echo=True)
+                cls.bg("white", echo=True); print(" ABCDefgh 01234 ", end="")
+                cls.bg("black", echo=True); print(" ABCDefgh 01234 ", end="")
+                cls.reset(echo=True)
                 print()
 
     @classmethod
@@ -116,17 +139,17 @@ FG to 255 color x:              \\e[48;5;xm
         print(f"\n255 TERMINAL COLORS")
         print(f"=======================================")
         for i in range(0, 255):
-            cls.set_bg_255(i)
-            cls.set_fg("white"); print_n(i)
-            cls.set_fg("black"); print_n(i)
+            cls.bg_255(i, echo=True)
+            cls.fg("white", echo=True); print_n(i)
+            cls.fg("black", echo=True); print_n(i)
 
-            cls.set_fg_255(i)
-            cls.set_bg("white"); print_n(i)
-            cls.set_bg("black"); print_n(i)
-            cls.reset()
+            cls.fg_255(i, echo=True)
+            cls.bg("white", echo=True); print_n(i)
+            cls.bg("black", echo=True); print_n(i)
+            cls.reset(echo=True)
 
-            set1 = (i <= 15) and ( i % 4 == 0 )
-            set2 = (i  > 15) and ( (i - 16) % 6 == 0 )
+            set1 = ( i > 0 ) and (i <= 15) and ( (i + 1) % 4 == 0 )
+            set2 = (i  > 15) and ( (i - 15) % 6 == 0 )
             if set1 or set2:
                 print("")
         print("")

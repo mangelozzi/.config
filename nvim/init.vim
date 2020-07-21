@@ -540,10 +540,6 @@ augroup my_auto_commands
     " Clear existing autocmds for this group
     autocmd!
 
-    " HIGHLIGHT
-    " Highlight groups of leading whitespace which is not a mutliple of 4
-    autocmd FileType javascript,python match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-
     " AUTO INDENT
     " Redraw prevents having to press enter to continue
     autocmd BufWritePre *.vim silent exec "call myal#AutoIndentFile()"
@@ -612,7 +608,10 @@ match _TrailingWhitespace /\s\+\%#\@<!$/
 
 augroup match_whitespace
     autocmd!
-    autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+    " HIGHLIGHT
+    " Highlight groups of leading whitespace which is not a mutliple of 4
+    " autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+    autocmd FileType javascript,python setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 augroup END
 
 augroup match_folds
