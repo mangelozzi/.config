@@ -68,6 +68,7 @@ set nowrap                  " Disable word wrapping
 set showcmd                 " Show partial commands in the last line of the screen
 set showmatch               " When a bracket is inserted, briefly jump to the matching one.
 set matchtime=3             " 1/10ths of a second for which showmatch applies to matching a bracket
+"set foldlevelstart=99      " How many level to show before folding. 99=zR, 0=zM
 
 " NOT GENERAL (i.e. for Servers)
 set nolist                  " Dont show spaces/tabs/newlines etc
@@ -611,7 +612,7 @@ augroup match_whitespace
     " HIGHLIGHT
     " Highlight groups of leading whitespace which is not a mutliple of 4
     " autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-    autocmd FileType javascript,python setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+    autocmd FileType javascript,python :setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
 augroup END
 
 augroup match_folds

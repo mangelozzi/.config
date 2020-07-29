@@ -4,6 +4,7 @@
 " https://github.com/EinfachToll/DidYouMean
 " https://github.com/justinmk/vim-sneak
 " https://github.com/tpope/vim-repeat
+" https://github.com/simnalamburt/vim-mundo
 
 " Indicator for what was yanked
 " Plug 'machakann/vim-highlightedyank'
