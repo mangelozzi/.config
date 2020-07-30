@@ -53,10 +53,16 @@ set t_Co=256
 
 " {{{1 Normal
 "hi Normal guifg=#ffffff guibg=#192224 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
-hi! link Normal _Normal
 hi _Normal              guifg=#ffffff guibg=#000000 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE " Used when using links to restore back to Normal
 hi NormalNC             guifg=#AAAAAA guibg=#333333 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
 hi _NormalReversed      guifg=#000000 guibg=#FFFFFF
+hi! link Normal _Normal
+
+" {{{1 Cursor
+" Windows terminal overrides these settings
+hi Cursor               guifg=red guibg=pink
+hi! link cursorim Cursor                            " Dont know what cursor IME mode is
+hi! link lCursor Cursor                            " Dont know what cursor IME mode is
 
 " {{{1 Line Numbers
 hi LineNr               guifg=#00CC00 guibg=#3F3F3F " Line number colour
@@ -136,15 +142,15 @@ hi _FzfHeader  ctermfg=1                            " The most bottom Item
 hi _FzfStatusChevron    guifg=#440000 guibg=#FF0000 " The status line has a little Chevron in front of it
 hi _FzfStatus           guifg=#ffffff guibg=#FF0000
 
-" {{{1 Whitespace
-hi _WrongSpacing                      guibg=#FF0000 " If not a multiple of 4 spaces
-hi _TrailingWhitespace                guibg=#880000 " Highlight trailing whitespace
+" {{{1 MatchAdd
+hi _MatchWrongSpacing                      guibg=#FF0000 " If not a multiple of 4 spaces
+hi _MatchTrailingWhitespace                guibg=#880000 " Highlight trailing whitespace
 
 " {{{1 Folds
 hi Folded               guifg=#FF9999 guibg=#005050 gui=bold,italic
 hi FoldColumn           guifg=#FF9999 guibg=#005050 gui=bold
-hi _FoldLevel1          guifg=#000000 guibg=#FFFFFF guisp=#FFFFFF gui=bold,italic,underline
-hi _FoldLevel2          guifg=#003030 guibg=#C0C0C0 guisp=#FFFFFF gui=bold,italic,underline
+hi _MatchFoldLevel1          guifg=#000000 guibg=#FFFFFF guisp=#FFFFFF gui=bold,italic,underline
+hi _MatchFoldLevel2          guifg=#003030 guibg=#C0C0C0 guisp=#FFFFFF gui=bold,italic,underline
 
 " {{{1 NERDTree
 hi treeDir              guifg=#FF0000 guibg=#00ff00
@@ -329,6 +335,4 @@ hi PMenuThumb           guifg=#ffffff guibg=#d9d9d9 guisp=#d9d9d9 gui=NONE cterm
 hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 ctermbg=NONE cterm=bold
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Underlined           guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
-hi cursorim             guifg=#192224 guibg=#536991 guisp=#536991 gui=NONE ctermfg=235 ctermbg=60 cterm=NONE
-hi Cursor               guifg=#192224 guibg=#F9F9F9 guisp=#F9F9F9 gui=NONE ctermfg=235 ctermbg=15 cterm=NONE
 hi VisualNOS            guifg=#192224 guibg=#19F9FF guisp=#F9F9FF gui=underline ctermfg=235 ctermbg=189 cterm=underline

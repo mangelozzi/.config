@@ -164,7 +164,7 @@ endif
 if !&diff
     color michael
 endif
-color michael
+" color michael
 
 " {{{1 DIFF MODE
 if &diff
@@ -597,33 +597,12 @@ augroup END
 "==============================================================================
 " Colours for the matches below are in the michael colour scheme.
 
-" LEADING SPACES NOT %4
-" From the start of line, look for any number of 4 spaces
-" Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
-"match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-
-" TRAILING WHITESPACE
-" Must escape the plus, match one or more space before the end of line
-" match trailing whitespace, except when typing at the end of a line.
-match _TrailingWhitespace /\s\+\%#\@<!$/
-
-augroup match_whitespace
+augroup add_window_matches
     autocmd!
-    " HIGHLIGHT
-    " Highlight groups of leading whitespace which is not a mutliple of 4
-    " autocmd FileType *.py,*.js setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-    autocmd FileType javascript,python :setlocal match _WrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-augroup END
-
-augroup match_folds
-    autocmd!
-    " VimEnter handles at start up, WinNew for each window created AFTER startup.
-    " Regex matches { { { with an empty group in the middle so that vim does
-    " not create a fold in this code, then either a 1 or 2 then a space. Then
-    " zs is the start of the match which is the rest of the line then ze is
-    " the end of the match. Refer to :help pattern-overview
-    autocmd VimEnter,WinNew * let w:_foldlevel1_id = matchadd('_FoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
-    autocmd VimEnter,WinNew * let w:_foldlevel2_id = matchadd('_FoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+    " match is WINDOW LOCAL ONLY, so we have to jump through some hoops to
+    " make it apply to buffers only. i.e. we cant just use :setlocal match!
+    " This myal#AddWindowMatches must be first as it clears matches!
+    autocmd BufWinEnter * :call myal#AddWindowMatches()
 augroup END
 
 " {{{1 LUA

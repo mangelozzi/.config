@@ -6,6 +6,46 @@
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 
+function! myal#AddWindowMatches()
+    " match is WINDOW LOCAL ONLY, so we have to jump through some hoops to
+    " make it apply to buffers only. i.e. we cant just use :setlocal match!
+
+    " First clear all matches on the window, then we will add back the matches
+    " required for each file type
+    call clearmatches()
+
+    " TRAILING WHITESPACE
+    " Must escape the plus, match one or more space before the end of line
+    " match trailing whitespace, except when typing at the end of a line.
+    " Can use the match command or matchadd() function which returns a handle
+    " to the match, so it can easily be cleared with matchdelete(), not used here
+    " match _MatchTrailingWhitespace /\s\+$/
+    if 1
+        let w:match_trailing_space_id = matchadd('_MatchTrailingWhitespace', '\s\+$', -1)
+    endif
+
+    " LEADING SPACES NOT %4
+    " From the start of line, look for any number of 4 spaces
+    " Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
+    if index(['python', 'javascript'], &ft) >= 0
+        " match _MatchWrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+        "match _MatchWrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
+        let w:match_wrong_spacing_id = matchadd('_MatchWrongSpacing', '\(^\(    \)*\)\zs \{1,3}\ze\S', -1)
+    endif
+
+    " MATCH FOLDS
+    " VimEnter handles at start up, WinNew for each window created AFTER startup.
+    " Regex matches { { { with an empty group in the middle so that vim does
+    " not create a fold in this code, then either a 1 or 2 then a space. Then
+    " zs is the start of the match which is the rest of the line then ze is
+    " the end of the match. Refer to :help pattern-overview
+    if index(['vim', ], &ft) >= 0
+        let w:foldlevel1_id = matchadd('_MatchFoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
+        let w:foldlevel2_id = matchadd('_MatchFoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+    endif
+endfunction
+
+
 function! myal#QuitIfLastBuffer()
     let cnt = 0
     for nr in range(1,bufnr("$"))
