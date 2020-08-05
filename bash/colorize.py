@@ -60,7 +60,7 @@ class Colorize:
 
     @classmethod
     def invert(cls, echo=False):
-        cls.esc_code_n(7)
+        code = cls.esc_code_n(7)
         echo and print(code, end="")
         return code
 
@@ -111,15 +111,18 @@ Set base FG or BG to color x:   \\e[xm
 Set multiple colors x, y, z:    \\e[x;y;zm
 
 FG to 255 color x:              \\e[38;5;xm
-FG to 255 color x:              \\e[48;5;xm
+BG to 255 color x:              \\e[48;5;xm
+
+In bash you need to wrap escape codes in \[ ... \] so that it doesnt take the
+escape character into consideration when calculate line wraps.
 """)
 
     @classmethod
     def print_base_colors(cls):
-        print(f"\nBASE 16 COLORS")
-        print(f"==============")
-        print(f"\nTerminal Colors  FG#  BG#  Test Pattern")
-        print(f"---------------------------------------")
+        print("\nBASE 16 COLORS")
+        print("==============")
+        print("\nTerminal Colors  FG#  BG#  Test Pattern")
+        print("---------------------------------------")
         for color_name, code in cls.BASE_FG.items():
                 cls.reset(echo=True)
                 print(f"{color_name.title():15}  {code:3}  {code+10:3} ", end="")
@@ -136,8 +139,8 @@ FG to 255 color x:              \\e[48;5;xm
     def print_255_colors(cls):
         def print_n(n):
             print(f" {n:3} ", end="")
-        print(f"\n255 TERMINAL COLORS")
-        print(f"=======================================")
+        print("\n255 TERMINAL COLORS")
+        print("=======================================")
         for i in range(0, 255):
             cls.bg_255(i, echo=True)
             cls.fg("white", echo=True); print_n(i)
