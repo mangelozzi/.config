@@ -1,3 +1,4 @@
+" 40a<Space><Esc>d40|
 " TODO make it at end of jumplist, then tab opens current fold.
 " Check out:
 " https://bluz71.github.io/2019/03/11/find-replace-helpers-for-vim.html
@@ -50,6 +51,7 @@ let mapleader = " "
 " COLORS
 set background=dark
 set termguicolors   " Uses highlight-guifg and highlight-guibg, hence 24-bit color
+
 " set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
 " GENERAL
@@ -81,7 +83,7 @@ set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
 set cursorline              " High lights the line number and cusor line
-
+set timeoutlen=2000         " Default is 1000ms, set to 2s.
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
 set nobackup
 
@@ -152,26 +154,24 @@ exe 'set thesaurus+='.expand("<sfile>:h").'/thesaurus/english.txt'
 source <sfile>:h/init/env.vim
 source <sfile>:h/init/git.vim
 source <sfile>:h/init/myplugins.vim
-if &diff
-    source <sfile>:h/init/status_diff.vim
-else
+
+" {{{1 COLOUR SCHEME & DIFF MODE
+" Set Color Scheme (diff color scheme set in diff section
+if !&diff
+    " If NOT diff mode
+    let g:capesky_high_contrast = 1 " Default high-contrast mode on or off
+    color capesky       " Note this resets all highlighting
+    " Set status line after color theme
     source <sfile>:h/init/status.vim
 endif
 
-" {{{1 COLOUR SCHEME (after sourcing init files)
-" VISUAL
-" Set Color Scheme (diff color scheme set in diff section
-if !&diff
-    color michael
-endif
-" color michael
-
-" {{{1 DIFF MODE
 if &diff
     " Make all unchanged text by default one standard color
     " syntax off
     set norelativenumber
-    color michael_diff
+    color michael_diff  " Note this resets all highlighting
+    " Set status line after color theme
+    source <sfile>:h/init/status_diff.vim
     " normal <C-w>=
     normal zR
 endif
@@ -186,14 +186,14 @@ endif
 
 " Broken current neovim implementation always copies selection to "* and "+
 " Note Linux clipboard for pasting into gedit uses +
-set clipboard=unnamed      " Use "* for all yank, delete, change and put operations which would normally go to the unnamed register.
-set clipboard+=unnamedplus " Use "+ for all yank, delete, change and put operations which would normally go to the unnamed register.
+" set clipboard=unnamed      " Use "* for all yank, delete, change and put operations which would normally go to the unnamed register.
+set clipboard=unnamedplus " Use "+ for all yank, delete, change and put operations which would normally go to the unnamed register.
 
 " Left click yank selection to *, then re-select selection, then move left one char. Use middle click to paste, see mousemodel. The neovim default only copies the selection if middle click is pressed (this is required to select text then paste in another OS app).
-noremap <LeftRelease> "*ygv
+" noremap <LeftRelease> "*ygv
 
 " Left double clicking on the word visual select inner word, yank to "*, then re-select previous selection, then move left one char
-noremap <2-LeftMouse> viw"*ygv
+" noremap <2-LeftMouse> viw"*ygv
 
 "" CTRL+INS should paste, in neoqt it pastes "<S-Insert>" instead
 inoremap <S-Insert> <C-r>+
@@ -299,10 +299,11 @@ noremap <leader>" :s/'/"/g<CR>
 
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
+nnoremap <C-K> <C-W><C-K> " Careful of conflict with LSP (implemented in LSP section)
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+map <LEADER>c <cmd>call myal#PrintHiGroup()<CR>
 " {{{2 Map! (noremap!)
 
 " Left/Right arrow backspace and delete
@@ -313,6 +314,19 @@ noremap! <C-a> <Home>
 
 " Easier insert mode paste
 noremap! <C-R>; <C-R>"
+
+" {{{2 Meta (Alt) Productivity Enhancement
+" Move line up and down (must be remap, to use VIM unimpaired)
+nmap <M-j> ]e
+nmap <M-k> [e
+xmap <M-j> ]e
+xmap <M-k> [e
+
+" Duplicate line and keep cursor in same column position in the new line
+map <M-S-k> <cmd>call myal#DuplicateLine(1)<CR>
+map <M-S-j> <cmd>call myal#DuplicateLine(0)<CR>
+
+map <expr> <M-c> myal#SetupAlignToColumn(v:count)
 
 " {{{2 Insert
 
@@ -329,35 +343,39 @@ map! <F1> <ESC>
 " <F2> is reseved for auto completion rename
 
 " <F3> Open VIM RC file and change pwd to it
-map  <F3> :e $MYVIMRC<CR> :cd %:p:h<CR>
-map! <F3> <ESC>:e $MYVIMRC<CR> :cd %:p:h<CR>
+map  <F3>      <cmd>e $MYVIMRC<CR> :cd %:p:h<CR>
+map! <F3> <ESC><cmd>e $MYVIMRC<CR> :cd %:p:h<CR>
 
 " <F4> CLOSE BUFFER
 " Same as buffer delete, however if its the last none help or empty buffer,
 " then quit.
-map  <F4>      :call myal#DeleteCurBufferNotCloseWindow()<CR>
-map! <F4> <ESC>:call myal#DeleteCurBufferNotCloseWindow()<CR>
+map  <F4>      <cmd>call myal#DeleteCurBufferNotCloseWindow()<CR>
+map! <F4> <ESC><cmd>call myal#DeleteCurBufferNotCloseWindow()<CR>
 
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
-map  <F5>       :WslBrowse chrome tab 2<CR>
-map! <F5> <ESC> :WslBrowse chrome tab 2<CR>
+map  <F5>      <cmd>WslBrowse chrome tab 2<CR>
+map! <F5> <ESC><cmd>WslBrowse chrome tab 2<CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/
-map  <F6>       :lcd %:h<CR>
-map! <F6> <ESC> :lcd %:h<CR>
+map  <F6>      <cmd>lcd %:h<CR>
+map! <F6> <ESC><cmd>lcd %:h<CR>
 
 " Switch to previous buffer, then open the file that was showing in a new tab
 " and cd into the head of the file
-map  <F7>       :call myal#ConvertBufferToNewTab()<CR>
-map! <F7> <ESC> :call myal#ConvertBufferToNewTab()<CR>
+map  <F7>      <cmd>call myal#ConvertBufferToNewTab()<CR>
+map! <F7> <ESC><cmd>call myal#ConvertBufferToNewTab()<CR>
 
+map <F8> <cmd>ColorizerAttachToBuffer<CR>
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
 
 " DATETIME - Echo it in normal mode, insert it in insert mode.
 map  <F9> :echo 'Current date/time is ' . strftime('%Y-%m-%d %T')<CR>
 map! <F9> <C-R>=strftime('%Y-%m-%d %T')<CR>
+
+" Highlight Test
+map  <F12> :source $VIMRUNTIME/syntax/hitest.vim<CR>
 
 " {{{2 Visual mode
 " v = select and visual mode, x = visual, s = select (mouse)
@@ -407,15 +425,10 @@ inoremap <expr> <C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
 inoremap <expr> <C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
 inoremap <expr> <Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
 
-" With COC, if the pum visible, and press ALT+Nav arrows, doesnt abort normal
-" mode
-" TODO remove these when change to neovim-lsp
-inoremap <expr> <A-h> pumvisible() ? "<ESC>h" : "<ESC>h"
-inoremap <expr> <A-j> pumvisible() ? "<ESC>j" : "<ESC>j"
-inoremap <expr> <A-k> pumvisible() ? "<ESC>k" : "<ESC>k"
-inoremap <expr> <A-l> pumvisible() ? "<ESC>l" : "<ESC>l"
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" comm
 " {{{2 Copy & paste
 " Copy to system clipboard
 " xnoremap  <leader>y  "+y
@@ -543,7 +556,7 @@ augroup my_auto_commands
 
     " AUTO INDENT
     " Redraw prevents having to press enter to continue
-    autocmd BufWritePre *.vim silent exec "call myal#AutoIndentFile()"
+    "autocmd BufWritePre *.vim silent exec "call myal#AutoIndentFile()"
 
     " STRIP TRAILING WHITESPACE
     " All file type are trimmed except those in the following list:
@@ -642,3 +655,4 @@ function! MyTabLine()
     return s
 endfunction
 " set tabline=%!MyTabLine()
+

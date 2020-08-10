@@ -10,6 +10,12 @@ sudo apt-get update
 sudo apt-get install Neovim
 ```
 
+Create alias for nvim to be vim (still need to test this)
+
+```bash
+echo "alias vim=nvim" >> ~/.bashrc
+```
+
 ### Ubuntu (Nightly) Installation
 
 To use appimage stable, just replace `nightly` &rarr; `stable`
@@ -22,16 +28,57 @@ sudo chmod +x $NVIM_PATH$NVIM_FILE
 sudo ln -s $NVIM_PATH$NVIM_FILE /usr/bin/nvim
 ```
 
-### Alias
-Create alias for nvim to be vim
+### Windows Installation
 
-```bash
-echo "alias vim=nvim" >> ~/.bashrc
+1. Install via scoop (recommended), choose one of the following:
+
+```bat
+scoop install neovim
+scoop install neovim-nightly
 ```
+
+or
+
+1. Download X64 release from [Neovim releases](https://github.com/Neovim/Neovim/releases)
+2. Extract zip to say `C:\utils\Neovim`
+    - Should now have `C:\Neovim\bin` and `C:\Neovim\share`
+3. Copy `C:\Neovim\bin\nvim-qt.exe` to `vim.exe` for easy starting
+4. Double click on it to launch it, right click on the icon and select `Pin to taskbar`
+5. Right click on the task bar link, right click on the name and select properties,
+Set the start in location to a common dir, e.g. `C:\code\project`
+
+
+#### <span style="color: red;">WARNING!!! If `neovim-qt.exe` takes 30 seconds to close</span>
+
+A recent Windows update seems to of changed things.  
+**DO NOT** pin to the task bar:  
+`C:\Users\Michael\scoop\apps\neovim-nightly\current\bin\nvim-qt.exe`
+
+Use the none current version, e.g.:  
+`C:\Users\Michael\scoop\apps\neovim-nightly\nightly-20200618\bin\nvim-qt.exe`
+
+## CONFIG
+
+### Ubuntu Config
+
+- N/A
+
+### Windows Config
+
+1. Create environment variable used by Neovim to find config:
+  - Env variable name: `XDG_CONFIG_HOME`
+  - Env variable value: `C:\Users\Michael\.config`
+2. Add the bin to the Env variable path:
+  - Env variable name: PATH
+  - Env variable value to append:
+    - `C:\Users\Michael\scoop\apps\neovim-nightly\current\bin` or
+    - `C:\utils\Neovim\bin`
 
 ## FONT
 
 Requires a NERD FONT for the (NERD TREE icons)[https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/RobotoMono/Bold/complete]  
+Just needs to be installed, not set as the Neovim font for NERDTree to using
+the file browser icons.
 
 ### Ubuntu Font
 
@@ -39,15 +86,10 @@ Install font `font\RobotoMono NF.ttf`
 
 ### Windows Font
 
-Use windows terminal, which is set to use this font:
-```bat
-sudo scoop install inconsolatago-nf
-```
-
-RobotMono doesnt work well with windows terminal:
 ```shell
 sudo scoop install RobotoMono-NF
 ```
+
 or
 Install font `font\RobotoMono NF Windows Compatible.ttf`
 
@@ -67,6 +109,10 @@ unzip -p /tmp/win32yank.zip win32yank.exe > /tmp/win32yank.exe
 chmod +x /tmp/win32yank.exe
 mv /tmp/win32yank.exe /usr/local/bin/win32yank.exe
 ```
+
+### Windows Clipboard
+
+Works without it.
 
 ## PLUGIN MANAGER
 
@@ -100,58 +146,55 @@ Refer to [Software setup docs](https://github.com/michael-angelozzi/software_set
 pip3 install pynvim
 ```
 
-### Neovim-LSP
+### Coc-Python
 
 In default installation (so common to all), with:
 
 - NO SUDO!!!!
 - May require --user if fails
 
-#### Install pyls_ms
-
-More widely used, and performs better than the palantir (questionable company) pyls.
-
-This script from https://github.com/neovim/nvim-lsp#pyls_ms did not work for me
-```
-curl -L https://dot.net/v1/dotnet-install.sh -o ~/dotnet-install.sh
-bash ~/dotnet-install.sh
+```shell
+pip3 install black isort mypy flake8 jedi==0.16
 ```
 
-Microsoft official dos:
-<https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#2004->
-Only need the runtime, not the SDK or ASP.net stuff.
-```bash
-wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-
-sudo apt-get update
-sudo apt-get install -y apt-transport-https
+```none
+- pynvim             # For python hooks into Neovim
+- mypy               # For flake 8 type checking
+- flake8             # Coc Syntax linting, (Pylint is very whiny)
+- jedi               # Coc Autocomplete
+- black              # Coc Autoformatting
+- isort              # Coc Sort imports
 ```
 
 ### Neovim Node.js
 
 For Linux prefix with sudo
 
-`tsserver` language server requires:
 ```shell
-sudo npm install -g typescript
+npm install -g Neovim
 ```
 
-### Neovim-LSP
+### carlitux/deoplete-ternjs
 
-Can't install `pyls` via Neovim (yet). Must install via `pip`.  
-Within vim run:
+```shell
+npm install -g tern
+```
+
+### coc-eslint
+
+```shell
+npm install -g eslint
+```
+
+### Coc
 
 ```viml
-:LspInstall html
-:LspInstall cssls
-:LspInstall jsonls
-:LspInstall tsserver
-:LspInstall vimls
-:LspInstall bashls
+:CocInstall coc-python
+:CocInstall coc-tsserver coc-eslint
+:CocInstall coc-html coc-css
+:CocInstall coc-json coc-svg coc-markdownlint
+To Try: :CocInstall coc-snippets coc-pairs coc-prettier
 ```
-
-Check out `sumneko_lua`
 
 #### FZF
 
@@ -257,38 +300,3 @@ pip install jedi     # For deoplete-jedi - autocomplete
 pip install pylint   # For Neomake - syntax linting
 ```
 
-#### Install Pyls (slower than pyls_ms)
-
-Install python-language-server first, and it will install the right version
-of dependencies it requires.
-```shell
-pip3 install pynvim python-language-server
-```
-
-Check that `pyls` is on the path with `which pyls`. If it prints nothing, search
-for it with: `find / -name pyls`. It's likely to of been installed in:
-```
-/home/michael/.local/lib/python3.8/site-packages/pyls
-/home/michael/.local/bin/pyls
-```
-Normally `~/.profile` adds `/home/michael/.local/bin` to the `$PATH`.
-If its not in your path, log into WSL with `bash.exe ~ -l` (can drop the `.exe` part) or `wsl ~ bash -l`
-Log out the shell and back in. `which pyls` should print the executable and
-Neovim `:checkhealth` should show pyls is OK.
-#### Install Pyls Plugins
-```shell
-pip3 install rope pyls-mypy pyls-isort pyls-black
-```
-
-```none
-- pynvim            # For python hooks into Neovim
-- rope              # For Completions and renaming
-- mypy              # For flake 8 type checking
-- pyls-mypy         # Add mypy type checking to lsp (Install mypy)
-- isort             # Sort imports
-- pyls-isort        # Add isort import sorting to lsp
-- black             # You can have it any colour
-- pyls-black        # Add black code formating to lsp, not compatible with yapf or autopep8
-- pyflakes          # Python linter
-- python-language-server # Will install the right verison of Jedi
-```

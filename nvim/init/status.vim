@@ -1,15 +1,3 @@
-"==============================================================================
-" VISUAL APPEARANCE
-"==============================================================================
-" scheme created using http://bytefluent.com/vivify/
-" NOTE If any colors are changed below, they will not take effect
-" This file sets the colour scheme to only use colours from it.
-" Even if the colours are defined in the file.
-
-set cursorline      " High lights the line number and cusro line
-set termguicolors   " Uses highlight-guifg and highlight-guibg, hence 24-bit color
-color michael       " Note this resets all highlighting, so much be before others
-
 " -----------------------------------------------------------------------------
 " Status line
 " -----------------------------------------------------------------------------
@@ -66,10 +54,11 @@ function! MyStatusLine(currentWindow) abort
     let s .= "%#_StatusModified#%{&modified?' +++ ':''}"
     let s .= col_fade3."%{!&modified?'▐':''}".col_fade2."%{!&modified?'▐':''}".col_fade1."%{!&modified?'▐':''}"
     let s .= col_line
-    let s .= "%<"                                        " Where to truncate long lines
+    " anything to the left of %< will be retained
+    " let s .= "%<"                                        " Where to truncate long lines
     let s .= "%{exists('w:quickfix_title')? ' '.w:quickfix_title : ''}"
     let s .= "%="                                     " Left/Right separator
-    if g:coc_enabled
+    if get(g:, 'coc_enabled', 0)
         let s .= " %{coc#status()}%{get(b:,'coc_current_function','')} "
     endif
     if exists('g:loaded_fugitive')

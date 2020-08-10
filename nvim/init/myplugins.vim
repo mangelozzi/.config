@@ -1,4 +1,8 @@
+" {{{1 DOCSTRING
+" If get error ould not read Username for ... probably type the plugin name wrong
+
 " TO TRY
+" LOOK AWESOME!!! https://github.com/iamcco/markdown-preview.nvim
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
 " https://github.com/janko/vim-test
 " https://github.com/EinfachToll/DidYouMean
@@ -19,10 +23,11 @@
 " Plug 'carlitux/deoplete-ternjs'
 " Plug 'davidhalter/jedi-vim'
 " Plug 'scrooloose/nerdcommenter'
+" Plug 'neomake/neomake'
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" let g:coc_enabled = 0
 
-"===============================================================================
-" PLUG INS
-"===============================================================================
+" {{{1 PLUGINS
 " Vim-plug installation
 "   Step 1. Download https://github.com/junegunn/vim-plug -> plug.vim
 "   Step 2. Place vim.plug in C:\Users\Michael\AppData\Local\nvim\autoload\
@@ -44,7 +49,7 @@ Plug rgflow_local
 let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-wsl"
 Plug wsl_local
 
-" OPERATOR + MOTION + TEXT-OBJECT = AWESOME
+" {{{2 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
@@ -52,50 +57,53 @@ Plug 'tpope/vim-repeat'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'christoomey/vim-titlecase'
 
-" SMALL MISC
+" {{{2 SMALL MISC
 Plug 'tpope/vim-unimpaired'
-Plug 'norcalli/nvim-colorizer.lua'
 Plug 'AndrewRadev/bufferize.vim'
 
-" First plug the lib dependency
+" {{{2 CCOLOR RELATED
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'pangloss/vim-javascript'
+" Plug 'zefei/vim-colortuner'
+
+" {{{2 SPELLCHECK EXTRAS
 Plug 'inkarkat/vim-ingo-library'
 Plug 'inkarkat/vim-SpellCheck'
 
-" GIT
+" {{{2 GIT
 Plug 'tpope/vim-fugitive'
 
-" FZF
+" {{{2 FZF
 let fzfdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/fzf"
 " Plug 'junegunn/fzf', { 'dir': fzfdir, 'do': './install --all' }
 " Install FZF via scoop
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-" TREE BROWSER
+" {{{2 TREE BROWSER
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'kshenoy/vim-signature', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
-" Plug 'neomake/neomake'
-" LSP (Autocomplete)
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_enabled = 0
-
-" Always load the vim-devicons as the very last one.
-Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
-
-" Python
+" {{{2 Python
 Plug 'tmhedberg/SimpylFold'
+
+" {{{2 LSP
+"Plug 'Shougo/deoplete.nvim'
+Plug 'neovim/nvim-lsp'
+Plug 'nvim-lua/diagnostic-nvim'
+Plug 'nvim-lua/completion-nvim'
+
+" {{{2 Always load the vim-devicons as the very last one.
+Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 
 call plug#end()
 
 
-" ==============================================================================
-" OPERATOR + MOTION + TEXT-OBJECT = AWESOME
-" ==============================================================================
-" ______________________________________________________________________________
-" PLUGIN: SURROUND
+" {{{1 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
+
+" {{{2 SURROUND
 " https://github.com/tpope/vim-surround
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=24m42
 " s = (surrounding) Creates a text-object
@@ -105,15 +113,14 @@ call plug#end()
 " e.g. ysiw" = Add surround - inner word - double quote
 " e.g. cst<div> = Change surround <span> to <div>
 
-" ______________________________________________________________________________
-" PLUGIN: COMMENTARY
+" {{{2 COMMENTARY
 " https://github.com/tpope/vim-commentary
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=26m02
 " gc = comment
 " gcc = comment out a line
 " gcgc = Uncomment above, else below line
-" ______________________________________________________________________________
-" PLUGIN: vim-eunuch
+
+" {{{2 vim-eunuch
 " Vim sugar for the UNIX shell commands that need it the most:
 " :Delete:    Delete a buffer and the file on disk simultaneously.
 " :Unlink:    Like :Delete, but keeps the now empty buffer.
@@ -128,14 +135,12 @@ call plug#end()
 " :SudoWrite: Write a privileged file with sudo.
 " :SudoEdit:  Edit a privileged file with sudo.
 
-" ______________________________________________________________________________
-" PLUGIN: vim-repeat
+" {{{2 vim-repeat
 " using the . will repeat plugin maps for vim surround, and vim unimpaired
 " Normally the . just repeats the last operators that fired within the plugin.
 " https://github.com/tpope/vim-repeat
 
-" ______________________________________________________________________________
-" PLUGIN: REPLACE WITH REGISTER
+" {{{2 REPLACE WITH REGISTER
 " https://github.com/vim-scripts/ReplaceWithRegister
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=26m49
 " [count]["x]gr{motion} = Replace {motion} text with the contents of register x.
@@ -146,8 +151,7 @@ call plug#end()
 "                         line use ["x]gr$
 " {Visual}["x]gr        = Replace the selection with the contents of register x.
 
-" ______________________________________________________________________________
-" PLUGIN: TITLECASE
+" {{{2 TITLECASE
 " https://github.com/christoomey/vim-titlecase
 " https://www.youtube.com/watch?v=wlR5gYd6um0#t=27m40
 " Create operator to title case over a range
@@ -162,27 +166,9 @@ map gH <Plug>TitlecaseLine
 vmap gh <Plug>Titlecase
 vmap gH <Plug>Titlecase
 
-" ==============================================================================
-" SMALL MISC
-" ==============================================================================
-" ______________________________________________________________________________
-" PLUGIN: VIM-UNIMPAIRED
-" https://github.com/tpope/vim-unimpaired
-" [q ]q               cprevious / cnext
-" [f ]f               previous/next file in the current dir
-" [n ]n               previous/next SCM conflict marker or diff/patch hunk. Try d[n inside a conflict.
-" [l ]l               previous/next line error (e.g. CoC completion error.
-" [<space> ]<space>   Add [count] blank lines above/below the cursor.
-" [x{motion}          XML encode, e.g. <foo bar="baz"> => &lt;foo bar=&quot;baz&quot;&gt;
-" ]x{motion}          XML decode
-" [e ]e = Exchange the current line with [count] lines above/below it.
-" and many more, e.g. url, c string encode, and many other options toggle
+" {{{1 TREE BROWSER
 
-" ==============================================================================
-" TREE BROWSER
-" ==============================================================================
-" ______________________________________________________________________________
-" PLUGIN: NERDTRee
+" {{{2 NERDTRee
 "   https://github.com/scrooloose/nerdtree
 "   https://jdhao.github.io/2018/09/10/nerdtree_usage/
 "   Hotkeys:
@@ -222,14 +208,12 @@ let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
 
-" ==============================================================================
-" GIT
-" ==============================================================================
-" Git status
+" {{{1 GIT
+
+" {{{2 Git status (own unfishined attempt)
 nnoremap <silent> <leader>gs :Git status<cr>
 
-" ==============================================================================
-" FZF
+" {{{1 FZF
 " ==============================================================================
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=20m10s
 " To search within a dir `:FZF [dir] <CR>`
@@ -320,16 +304,26 @@ augroup Fzf_Status_Line
     autocmd User FzfStatusLine setlocal statusline=%#_FzfStatusChevron#\ >\ %#_fzfStatus#fzf
 augroup END
 
+" {{{1 SMALL MISC
 
-" ______________________________________________________________________________
-" PLUGIN: 'tmhedberg/SimpylFold'
+" {{{2 VIM-UNIMPAIRED
+" https://github.com/tpope/vim-unimpaired
+" [q ]q               cprevious / cnext
+" [f ]f               previous/next file in the current dir
+" [n ]n               previous/next SCM conflict marker or diff/patch hunk. Try d[n inside a conflict.
+" [l ]l               previous/next line error (e.g. CoC completion error.
+" [<space> ]<space>   Add [count] blank lines above/below the cursor.
+" [x{motion}          XML encode, e.g. <foo bar="baz"> => &lt;foo bar=&quot;baz&quot;&gt;
+" ]x{motion}          XML decode
+" [e ]e = Exchange the current line with [count] lines above/below it.
+" and many more, e.g. url, c string encode, and many other options toggle
+
+" {{{2 'tmhedberg/SimpylFold'
 let g:SimpylFold_docstring_preview = 0 " Preview docstring in fold text  0
 let g:SimpylFold_fold_docstring    = 0 " Fold docstrings 1
 let g:SimpylFold_fold_import       = 0 " Fold imports    1
 
-
-" ______________________________________________________________________________
-" PLUGIN: 'Xuyuanp/nerdtree-git-plugin'
+" {{{2 'Xuyuanp/nerdtree-git-plugin'
 " ●✗
 let g:NERDTreeIndicatorMapCustom = {
             \ "Modified"  : "⚠",
@@ -344,8 +338,7 @@ let g:NERDTreeIndicatorMapCustom = {
             \ "Unknown"   : "?"
             \ }
 
-" ______________________________________________________________________________
-" PLUGIN: vim-multiple-cursors
+" {{{2 vim-multiple-cursors
 "   https://github.com/terryma/vim-multiple-cursors
 "   Multicursor support
 let g:multi_cursor_use_default_mapping=0
@@ -360,8 +353,29 @@ let g:multi_cursor_prev_key            = '<C-p>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
 
-" ______________________________________________________________________________
-" PLUGIN: CoC
+" {{{2 AndrewRadev/bufferize.vim
+" Pipe the output of commands into a buffer, e.g.
+" :Bufferize messages
+" :Bufferize hi
+" :Bufferize messages
+" :Bufferize digraphs
+" :Bufferize map
+" :Bufferize command
+
+" {{{2 norcalli/nvim-colorizer.lua
+" Colour background
+" mode = foreground or background
+lua << EOF
+    require 'colorizer'.setup({}, {
+        mode = 'foreground';
+    })
+EOF
+" {{{2 Plug 'inkarkat/vim-SpellCheck'
+" Can see a list of mispelt word with: :[range]SpellCheck
+
+" {{{1 LSP
+
+" {{{2 CoC
 " To Edit Config File: :CocConfig, save then :CocRestart
 " CocList extensions
 
@@ -388,25 +402,144 @@ let g:coc_filetype_map = {
             \ 'htmldjango': 'html',
             \ }
 " Own vim file for all the coc settings (based on the provided settings file)
-if g:coc_enabled
+if get(g:, 'coc_enabled', 0)
     source <sfile>:h/coc.vim
 endif
 
-" ______________________________________________________________________________
-" PLUGIN: AndrewRadev/bufferize.vim
-" Pipe the output of commands into a buffer, e.g.
-" :Bufferize messages
-" :Bufferize hi
-" :Bufferize messages
-" :Bufferize digraphs
-" :Bufferize map
-" :Bufferize command
+" {{{2 DEOPLETE (better autocomplete popup)
+let g:deoplete#enable_at_startup = 1
 
-" ______________________________________________________________________________
-" PLUGIN: norcalli/nvim-colorizer.lua
-" Colour background
-lua require'colorizer'.setup()
+" {{{2 NVIM-LSP (Configuration)
+" Install
+"
+" tsserver requires: sudo npm install -g typescript
+" Configurations: https://github.com/neovim/nvim-lsp#configurations
+"
+if &runtimepath =~? 'nvim-lsp'
+    " Note, require needs no .lua ext. doFile requies it
+lua << EOF
+  local on_attach = function()
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    require'completion'.on_attach()
+    require'diagnostic'.on_attach()
+  end
+require('nvim_lsp').html.setup {on_attach = on_attach}
+require('nvim_lsp').cssls.setup {on_attach = on_attach}
+require('nvim_lsp').jsonls.setup {on_attach = on_attach}
+require('nvim_lsp').bashls.setup {on_attach = on_attach}
+require('nvim_lsp').tsserver.setup {on_attach = on_attach}
+require('nvim_lsp').vimls.setup {on_attach = on_attach}
+require('nvim_lsp').pyls_ms.setup {on_attach = on_attach}
 
-" ______________________________________________________________________________
-" PLUGIN: Plug 'inkarkat/vim-SpellCheck'
-" Can see a list of mispelt word with: :[range]SpellCheck
+-- {'pyflakes','rope','mccabe','black','flake8','pycodestyle',autopep8','yapf'}
+-- configurationSources kiad sources files
+-- require'nvim_lsp'.pyls.setup {
+--     on_attach = on_attach,
+--     settings = {
+--       pyls = {
+--         configurationSources = {},
+--         plugins = {
+--           pyflakes = {enabled = true},
+--           rope     = {enabled = true},
+--           mccabe   = {enabled = true},
+--           black    = {enabled = true},
+--           -- jedi_signature_help = {enabled = false}, -- stupid slow
+--           flake8   = {enabled = false},
+--           pycodestyle = {enabled = false, maxLineLength = 88},
+--           autopep8    = {enabled = false},
+--           yapf        = {enabled = false}
+--         }
+--       }
+--     }
+--   }
+EOF
+
+    " from ":help lsp
+    " gl is free! Mnemonic: Go Lsp
+    " gr conflicts with Go Register
+    " <C-k> conflights with
+    nnoremap <silent> <LEADER>ld  <cmd>lua vim.lsp.buf.declaration()<CR>
+    nnoremap <silent> <LEADER>le  <cmd>lua vim.lsp.buf.definition()<CR>
+    nnoremap <silent> <LEADER>lh  <cmd>lua vim.lsp.buf.hover()<CR>
+    nnoremap <silent> <LEADER>li  <cmd>lua vim.lsp.buf.implementation()<CR>
+    nnoremap <silent> <LEADER>ls  <cmd>lua vim.lsp.buf.signature_help()<CR>
+    " ASCII 23 = CTRL+W
+    "or vim.api.nvim_input('\23k'))<CR>
+    nnoremap <silent> <LEADER>lt  <cmd>lua vim.lsp.buf.type_definition()<CR>
+    nnoremap <silent> <LEADER>lr  <cmd>lua vim.lsp.buf.references()<CR>
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    " List symbols in the current document matching the query string.
+    " nnoremap <silent> <LEADER>l?  <cmd>lua vim.lsp.buf.document_symbol()<CR>
+    " List project-wide symbols matching the query string.
+    " nnoremap <silent> <LEADER>lw  <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+    nnoremap <silent> <LEADER>lf  <cmd>lua vim.lsp.buf.formatting()<CR>
+
+    " From https://github.com/mjlbach/nix-dotfiles/blob/master/nixpkgs/configs/neovim/init.vim
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'wl', '<cmd>lua vim.lsp.buf.list_workspace_folders()<CR>', opts)
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>e', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
+
+    function! SetLspFtSettings()
+        " setlocal omnifunc=v:lua.vim.lsp.omnifunc
+        setlocal signcolumn=yes:1
+        echom "Setting nvim-lsp ...set"
+    endfun
+    augroup my_lsp_autocmds
+        " Defaut omni-complete hotkey: i_^x^o
+        autocmd!
+        autocmd FileType html,css,scss,less,json,
+                    \javascript,javascriptreact,javascript.jsx,typescript,typescriptreact,typescript,
+                    \vim,sh,python,
+                    \ call SetLspFtSettings()
+    augroup END
+endif
+
+" {{{2 NVIM-LSP / COMPLETITON
+if &runtimepath =~? 'nvim-lsp'
+    " Set completeopt to have a better completion experience
+    set completeopt=menuone,noinsert,noselect
+    " possible value: "length", "alphabet", "none"
+    let g:completion_sorting = "length"
+    let g:completion_trigger_keyword_length = 3 " default = 1
+    let g:completion_items_priority = {
+          \ 'Field': 5,
+          \ 'Function': 7,
+          \ 'Variables': 7,
+          \ 'Method': 10,
+          \ 'Interfaces': 5,
+          \ 'Constant': 5,
+          \ 'Class': 5,
+          \ 'Keyword': 4,
+          \ 'UltiSnips' : 1,
+          \ 'vim-vsnip' : 0,
+          \ 'Buffers' : 1,
+          \ 'TabNine' : 0,
+          \ 'File' : 0,
+          \}
+endif
+
+" {{{2 NVIM-LSP / DIAGONOSTIC
+" If 0, then diagnostic information only shown when you go Next/PrevDiagnostic
+" If 1, then diagnostic information will be shown after the line.
+let g:diagnostic_enable_virtual_text = 1 "default 0
+" let g:diagnostic_trimmed_virtual_text = '20'
+" let g:diagnostic_show_sign = 1 " default 1
+" let g:diagnostic_sign_priority = 20 " default 20
+" call sign_define("LspDiagnosticsErrorSign",         {"text" : "E", "texthl" : "LspDiagnosticsError"})
+" call sign_define("LspDiagnosticsWarningSign",       {"text" : "W", "texthl" : "LspDiagnosticsWarning"})
+" call sign_define("LspDiagnosticsInformationSign",   {"text" : "I", "texthl" : "LspDiagnosticsInformation"})
+" call sign_define("LspDiagnosticsHintSign",          {"text" : "H", "texthl" : "LspDiagnosticsHint"})
+let g:diagnostic_enable_underline = 1 " default 1
+let g:diagnostic_insert_delay = 1
+" PrevDiagnostic
+" NextDiagnostic
+nnoremap <LEADER>dn    <cmd>NextDiagnosticCycle<CR>
+nnoremap <LEADER>dj    <cmd>NextDiagnosticCycle<CR>
+nnoremap <LEADER>dp    <cmd>PrevDiagnosticCycle<CR>
+nnoremap <LEADER>dk    <cmd>PrevDiagnosticCycle<CR>
+nnoremap <LEADER>do    <cmd>OpenDiagnostic<CR>
+" Mnemonic Diagnostic List
+nnoremap <LEADER>dl    <cmd>OpenDiagnostic<CR>

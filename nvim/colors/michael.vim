@@ -40,6 +40,9 @@
 "
 " Can link one group to another with:
 "     hi link my_custom_hi Normal
+"
+" If one uses color names, e.g. "blue", they are not the terminal colours,
+" rather Vim's own shade of default colours.
 
 " {{{1 THEME SETTINGS
 hi clear
@@ -51,11 +54,13 @@ let g:colors_name = "michael"
 set background=dark
 set t_Co=256
 
+
 " {{{1 Normal
 "hi Normal guifg=#ffffff guibg=#192224 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
 hi _Normal              guifg=#ffffff guibg=#000000 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE " Used when using links to restore back to Normal
 hi NormalNC             guifg=#AAAAAA guibg=#333333 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
 hi _NormalReversed      guifg=#000000 guibg=#FFFFFF
+hi EndOfBuffer          guibg=#c0c0c0
 hi! link Normal _Normal
 
 " {{{1 Cursor
@@ -65,9 +70,9 @@ hi! link cursorim Cursor                            " Dont know what cursor IME 
 hi! link lCursor Cursor                            " Dont know what cursor IME mode is
 
 " {{{1 Line Numbers
-hi LineNr               guifg=#00CC00 guibg=#3F3F3F " Line number colour
+hi LineNr               guifg=#00b000 guibg=#3F3F3F " Line number colour
 "hi LineNrNC             guifg=#FFCC00 guibg=#3F3F3F " Line number colour
-hi CursorLineNr         guifg=#4F4F4F guibg=#00CC00 gui=bold " Cursor line number colour
+hi CursorLineNr         guifg=#4F4F4F guibg=#00b000 gui=bold " Cursor line number colour
 hi SignColumn                         guibg=#000000 " To the left of number line
 
 " {{{1 Built in visual enhancements
@@ -147,10 +152,17 @@ hi _MatchWrongSpacing                      guibg=#FF0000 " If not a multiple of 
 hi _MatchTrailingWhitespace                guibg=#880000 " Highlight trailing whitespace
 
 " {{{1 Folds
-hi Folded               guifg=#FF9999 guibg=#005050 gui=bold,italic
-hi FoldColumn           guifg=#FF9999 guibg=#005050 gui=bold
-hi _MatchFoldLevel1          guifg=#000000 guibg=#FFFFFF guisp=#FFFFFF gui=bold,italic,underline
-hi _MatchFoldLevel2          guifg=#003030 guibg=#C0C0C0 guisp=#FFFFFF gui=bold,italic,underline
+hi Folded               guifg=#ff9999 guibg=#005050 gui=bold,italic
+hi FoldColumn           guifg=#FF9999 guibg=NONE gui=bold
+hi _FoldedLevel1        guifg=lime guibg=red gui=bold,italic
+" Currently vim does not support matching text in a folded group yet!
+" see https://github.com/neovim/neovim/issues/12649
+hi _FoldedLevel1        guifg=#FF9999 guibg=#005050 gui=bold,italic
+hi _FoldedLevel2        guifg=#ffcccc guibg=#005050 gui=bold,italic
+hi _FoldedLevel3        guifg=#FFeeee guibg=#005050 gui=bold,italic
+hi _UnfoldedLevel1      guifg=#004040 guibg=#ff9999 guisp=#FFFFFF gui=bold,italic
+hi _UnfoldedLevel2      guifg=#004040 guibg=#cc7070 guisp=#FFFFFF gui=bold,italic
+hi _UnfoldedLevel3      guifg=#004040 guibg=#aa3030 guisp=#FFFFFF gui=bold,italic
 
 " {{{1 NERDTree
 hi treeDir              guifg=#FF0000 guibg=#00ff00
@@ -276,6 +288,7 @@ hi markdownBlockquote   guifg=#ffff00 guibg=NONE guisp=NONE gui=NONE
 hi markdownCode         guifg=#d0f0d0 guibg=#505050 guisp=NONE gui=NONE
 
 
+
 " {{{1 DEFAULT LANGUAGE HI ITEMS
 hi Structure            guifg=#FFF991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 
@@ -293,6 +306,26 @@ hi Structure            guifg=#FFF991 guibg=NONE guisp=NONE gui=bold ctermfg=60 
 "hi CTagsClass -- no settings --
 "hi clear -- no settings --
 
+" {{{1 LSP
+hi LspDiagnosticsError                      guifg=#ffffff guibg=#ff0000 gui=NONE
+hi link LspDiagnosticsErrorSign             LspDiagnosticsError
+hi link LspDiagnosticsErrorFloating         LspDiagnosticsErrorguifg
+
+hi LspDiagnosticsWarning                    guifg=#000000 guibg=#d0d000 gui=NONE,italic
+hi link LspDiagnosticsWarningSign           LspDiagnosticsWarning
+hi link LspDiagnosticsWarningFloating       LspDiagnosticsWarning
+
+hi LspDiagnosticsInformation                guifg=#ffffff guibg=#0000ff gui=NONE
+hi link LspDiagnosticsInformationSign       LspDiagnosticsInformation
+hi link LspDiagnosticsInformationFloating   LspDiagnosticsInformation
+
+hi LspDiagnosticsHint                       guifg=#ffffff guibg=#008800 gui=NONE
+hi link LspDiagnosticsHintSign              LspDiagnosticsHint
+hi link LspDiagnosticsHintFloating          LspDiagnosticsHint
+
+hi LspReferenceText                         guifg=#ff0000 guibg=#888888 gui=NONE
+hi LspReferenceRead                         guifg=#00ff00 guibg=#888888 gui=NONE
+hi LspReferenceWrite                        guifg=#0000ff guibg=#888888 gui=NONE
 " {{{1 Theme generator highlight groups
 hi Typedef              guifg=#536991 guibg=NONE guisp=NONE gui=bold ctermfg=60 ctermbg=NONE cterm=bold
 hi SpecialComment       guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
@@ -336,3 +369,5 @@ hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 c
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Underlined           guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi VisualNOS            guifg=#192224 guibg=#19F9FF guisp=#F9F9FF gui=underline ctermfg=235 ctermbg=189 cterm=underline
+
+so <sfile>:h/capesky.vim

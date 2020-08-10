@@ -6,6 +6,57 @@
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 
+" This function sets up the opfunc so it can be repeated with a dot.
+" Align to Column works by moving the next none whitespace character to the
+" desired columned. e.g. 32<hotkey> will align the next none whitespace
+" character to column 32. Then press dot to repeat the operation.
+function! myal#SetupAlignToColumn(col)
+    if v:count != 0
+        let g:myal_align_col = v:count
+    endif
+    set opfunc=myal#AlignToColumn
+    return 'g@l'
+endfunction
+function! myal#AlignToColumn(motion)
+    " Get cursor to just before next none space
+    let reg_backup_value = getreg('z')    " Backup the contents of the unnamed register
+    let reg_backup_type = getregtype('z')      " Save the type of the register as well
+    let l:winview = winsaveview()
+    let cmd = 'normal wh'.g:myal_align_col.'a'."\<SPACE>\<ESC>".'"zd'.(g:myal_align_col - 1).'|'
+    exe cmd
+    call winrestview(l:winview)
+    call setreg('z', reg_backup_value, reg_backup_value) " Restore register
+    normal j
+endfunction
+
+function! myal#DuplicateLine(pasteAbove)
+    let l:winview = winsaveview()
+    let reg_backup_value = getreg('z')    " Backup the contents of the unnamed register
+    let reg_backup_type = getregtype('z')      " Save the type of the register as well
+    let cmd = 'normal "zyy"z'
+    let cmd .= (a:pasteAbove) ? 'P' : 'p'
+    exe cmd
+    call setreg('z', reg_backup_value, reg_backup_value) " Restore register
+    call winrestview(l:winview)
+    let cmd = 'normal '
+    if !a:pasteAbove
+        normal j
+    endif
+endfunction
+
+function! myal#PrintHiGroup()
+    if len(synstack(line("."), col("."))) == 0
+        echo "Normal"
+    endif
+    for i1 in synstack(line("."), col("."))
+        let i2 = synIDtrans(i1)
+        let n1 = synIDattr(i1, "name")
+        let n2 = synIDattr(i2, "name")
+        echo n1 "->" n2
+        exe "hi ".n1
+    endfor
+endfunction
+
 function! myal#AddWindowMatches()
     " match is WINDOW LOCAL ONLY, so we have to jump through some hoops to
     " make it apply to buffers only. i.e. we cant just use :setlocal match!
@@ -39,11 +90,19 @@ function! myal#AddWindowMatches()
     " not create a fold in this code, then either a 1 or 2 then a space. Then
     " zs is the start of the match which is the rest of the line then ze is
     " the end of the match. Refer to :help pattern-overview
-    if index(['vim', ], &ft) >= 0
-        let w:foldlevel1_id = matchadd('_MatchFoldLevel1', '{{\(\){1\ \zs.\+\ze', -1)
-        let w:foldlevel2_id = matchadd('_MatchFoldLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+    if 1 " index(['vim', 'python', 'javascript'], &ft) >= 0
+        " Matching folded header currently not supported yet!
+        let w:foldedlevel1_id = matchadd('_FoldedLevel1', '^+--\d\+\ lines:\ \zs[^.]\+\ze', -1)
+        let w:foldedlevel2_id = matchadd('_FoldedLevel2', '^+---\d\+\ lines:\ \zs[^.]\+\ze', -1)
+        let w:foldedlevel3_id = matchadd('_FoldedLevel3', '^+----\d\+\ lines:\ \zs[^.]\+\ze', -1)
+        let w:unfoldedlevel1_id = matchadd('_UnfoldedLevel1', '{{\(\){1\ \zs.\+\ze', -1)
+        let w:unfoldedlevel2_id = matchadd('_UnfoldedLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+        let w:unfoldedlevel3_id = matchadd('_UnfoldedLevel3', '{{\(\){3\ \zs.\+\ze', -1)
     endif
 endfunction
+" {{{1 ONE
+" {{{2 HELLO
+" {{{3 THREE
 
 
 function! myal#QuitIfLastBuffer()
@@ -96,7 +155,7 @@ endfunction
 
 function! myal#StripTrailingWhitespace()
     let l:winview = winsaveview()
-    :%s/\s\+$//e
+    :%s/\s\+$/dsfdsf/e
     call winrestview(l:winview)
     echom "Trailing whitespace stripped."
 endfun
