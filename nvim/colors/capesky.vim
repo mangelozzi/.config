@@ -62,6 +62,14 @@ set t_co=256
 let s:term_colours = ['black', 'blue', 'brown', 'cyan', 'darkblue', 'darkcyan', 'darkgray', 'darkgreen', 'darkgrey', 'darkmagenta', 'darkred', 'darkyellow', 'gray', 'green', 'grey', 'lightblue', 'lightcyan', 'lightgray', 'lightgreen', 'lightgrey', 'lightmagenta', 'lightred', 'lightyellow', 'magenta', 'red', 'white', 'yellow']
 let s:c = {} " so can place the definition below the functions
 
+if !exists(':Contrast')
+    function! s:ToggleContrast()
+        let g:capesky_high_contrast = !g:capesky_high_contrast
+        color capesky
+    endfunction
+    command Contrast call s:ToggleContrast()
+endif
+
 let g:capesky_high_contrast = get(g:, 'capesky_high_contrast', 0)
 echom 'Loading CapeSky with high-contrast '.(g:capesky_high_contrast ? 'enabled' : 'disabled')
 
@@ -182,15 +190,15 @@ let s:c = {
     \'main1'            :['#df5821', 166, '#ff4434', 1],
     \'main2'            :['#df9515', 172, '#ff8300', 1],
     \'main3'            :['#dbb94e', 178, '#ffb300', 1],
-    \'main1_bg'         :['#df5821', 166, '#571712', 1],
-    \'main2_bg'         :['#df5821', 166, '#633300', 1],
+    \'main1_bg'         :['#571712', 166, '#571712', 1],
+    \'main2_bg'         :['#633300', 166, '#633300', 1],
     \'nb1'              :['#d8e020', 184, '#ffed00', 1],
     \'nb2'              :['#d8e020', 184, '#ffe000', 1],
     \'nb3'              :['#d8e080', 184, '#d0d000', 1],
     \'specialh'         :['#d8edff', 112, '#9edaff', 1],
     \'special'          :['#c3d9f1', 112, '#7eceff', 1],
     \'speciall'         :['#888888', 112, '#70b7e3', 1],
-    \'special_bg'       :['#c3d9f1', 112, '#2f4d5f', 1],
+    \'special_bg'       :['#2f4d5f', 112, '#2f4d5f', 1],
     \'bushgreen'        :['#92be68', 107, '#c0c000', 1],
     \'stringh'          :['#888888', 112, '#88ff18', 1],
     \'string'           :['#888888', 112, '#86e929', 1],
@@ -1371,4 +1379,3 @@ hi LspReferenceText                         guifg=#ff0000 guibg=#888888 gui=NONE
 hi LspReferenceRead                         guifg=#00ff00 guibg=#888888 gui=NONE
 hi LspReferenceWrite                        guifg=#0000ff guibg=#888888 gui=NONE
 
-echom 'CapeSky Loaded'
