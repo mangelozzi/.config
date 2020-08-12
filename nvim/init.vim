@@ -367,6 +367,8 @@ map  <F7>      <cmd>call myal#ConvertBufferToNewTab()<CR>
 map! <F7> <ESC><cmd>call myal#ConvertBufferToNewTab()<CR>
 
 map <F8> <cmd>ColorizerAttachToBuffer<CR>
+map <S-F8> <cmd>:lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR>:e<CR>
+
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
 

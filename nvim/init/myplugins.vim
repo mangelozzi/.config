@@ -193,7 +193,7 @@ nnoremap <leader>nf :NERDTreeFind<CR>
 nnoremap <leader>nd :NERDTreeToggle %:p:h<CR>
 
 " Automatically close NerdTree when you open a file
-let NERDTreeQuitOnOpen = 1
+let NERDTreeQuitOnOpen = 0
 " Automatically close a tab if the only remaining window is NerdTree
 " autocmd bufenter * if (winnr(“$”) == 1 && exists(“b:NERDTreeType”) && b:NERDTreeType == “primary”) | q | endif
 " Automatically delete the buffer of the file you just deleted with NerdTree
@@ -253,15 +253,15 @@ tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<c-\><c-n>"
 "   Example: :Rg foo -g '*.py'
 command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case " . <q-args>, 1, <bang>0)
 
-" FZF in Open buffers
-nnoremap <silent> <leader><leader> :Buffers<cr>
-
 " Files
 " FZF in Open buffers
 nnoremap <silent> <leader><leader> :Buffers<cr>
 
 " FZF Search for Files
 nnoremap <silent> <leader>f :Files<cr>
+
+" FZF Search for Files in home dir
+nnoremap <silent> <leader>~ :Files ~<cr>
 
 " FZF Search for previous opened Files
 nnoremap <silent> <leader>zh :History<cr>
@@ -270,13 +270,10 @@ nnoremap <silent> <leader>zh :History<cr>
 nnoremap <silent> <leader>zg :GFiles<cr>
 
 " Map to FZF command, so one can type commands interactively before enter.
-" nnoremap <leader>zz :FZF<Space>
+nnoremap <leader>zz :FZF<Space>
 
 " Map to Rg command, so one can type commands interactively before enter.
 nnoremap <leader>zr :Rg<Space>HighlightSearchTerm<CR>
-
-" Files under current home
-nnoremap <silent> <leader>zh :FZF ~<cr>
 
 " FZF in Lines in loaded buffers
 nnoremap <silent> <leader>l :Lines<cr>
@@ -434,6 +431,8 @@ require('nvim_lsp').bashls.setup {on_attach = on_attach}
 require('nvim_lsp').tsserver.setup {on_attach = on_attach}
 require('nvim_lsp').vimls.setup {on_attach = on_attach}
 require('nvim_lsp').pyls_ms.setup {on_attach = on_attach}
+-- Jedi LS Only provides syntax errors, not powerful diagnostics
+-- require('nvim_lsp').jedi_language_server.setup {on_attach = on_attach}
 
 -- {'pyflakes','rope','mccabe','black','flake8','pycodestyle',autopep8','yapf'}
 -- configurationSources kiad sources files
@@ -504,7 +503,8 @@ endif
 " {{{2 NVIM-LSP / COMPLETITON
 if &runtimepath =~? 'nvim-lsp'
     " Set completeopt to have a better completion experience
-    set completeopt=menuone,noinsert,noselect
+    " set completeopt=menuone,noinsert,noselect
+    set completeopt=menuone,noinsert
     " possible value: "length", "alphabet", "none"
     let g:completion_sorting = "length"
     let g:completion_trigger_keyword_length = 3 " default = 1
@@ -529,7 +529,7 @@ endif
 
 " If 0, then diagnostic information only shown when you go Next/PrevDiagnostic
 " If 1, then diagnostic information will be shown after the line.
-let g:diagnostic_enable_virtual_text = 1 "default 1
+let g:diagnostic_enable_virtual_text = 1 "default 1, 1 for py, 0 for vim?
 
 " let g:diagnostic_trimmed_virtual_text = '20'
 " let g:diagnostic_show_sign = 1 " default 1

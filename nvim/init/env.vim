@@ -27,6 +27,9 @@ let g:python3_host_skip_check=1
 " venv before starting NeoVim.
 if has('unix')
     " echo "Linux Env"
+    " let p = system('which python3')
+    " let p = substitute(p, '\n', '', 'g')
+    " let g:python3_host_prog = p
     let g:python3_host_prog = '/usr/bin/python3'
 endif
 

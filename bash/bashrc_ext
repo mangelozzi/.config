@@ -11,6 +11,15 @@ stty -ixon
 # `fd` already taken, create a convenient alias for the search tool:
 alias fd=fdfind
 
+# Commons dirs
+# Linkcube
+alias cdl='cd ~/linkcube'
+# Neovim
+alias cdn='cd ~/.config/nvim'
+# Neovim Tmp/ or Plugin dir
+alias cdt='cd ~/.config/nvim/tmp'
+alias cdp='cd ~/.config/nvim/tmp'
+
 # Disable bell sound
 set bell-style none
 
@@ -131,3 +140,4 @@ function copy_temp_file   {
     }
 }
 copy_temp_file ~/.ssh/config ~/.config/ssh/config
+source ~/linkcube/venv/bin/activate
