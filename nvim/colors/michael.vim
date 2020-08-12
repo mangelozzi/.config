@@ -60,7 +60,7 @@ set t_Co=256
 hi _Normal              guifg=#ffffff guibg=#000000 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE " Used when using links to restore back to Normal
 hi NormalNC             guifg=#AAAAAA guibg=#333333 guisp=#192224 gui=NONE ctermfg=15 ctermbg=235 cterm=NONE
 hi _NormalReversed      guifg=#000000 guibg=#FFFFFF
-hi EndOfBuffer          guibg=#c0c0c0
+hi EndOfBuffer          guibg=#200000
 hi! link Normal _Normal
 
 " {{{1 Cursor
@@ -369,5 +369,3 @@ hi Repeat               guifg=#BD9800 guibg=NONE guisp=NONE gui=bold ctermfg=1 c
 hi Macro                guifg=#BD9800 guibg=NONE guisp=NONE gui=NONE ctermfg=1 ctermbg=NONE cterm=NONE
 hi Underlined           guifg=#F9F9FF guibg=#192224 guisp=#192224 gui=underline ctermfg=189 ctermbg=235 cterm=underline
 hi VisualNOS            guifg=#192224 guibg=#19F9FF guisp=#F9F9FF gui=underline ctermfg=235 ctermbg=189 cterm=underline
-
-so <sfile>:h/capesky.vim

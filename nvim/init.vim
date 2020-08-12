@@ -16,7 +16,9 @@
 " nested fold mappings
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
 " testing git access tokens
-
+"
+" :help function-list
+"
 " Add hot key to exe set env etc:
 " function! ExecuteManagerCheck(file)
 "     execute ':!start cmd /k "C:\Users\xyz\Documents\checker\manager check '.a:file.'"'
@@ -154,12 +156,10 @@ exe 'set thesaurus+='.expand("<sfile>:h").'/thesaurus/english.txt'
 source <sfile>:h/init/env.vim
 source <sfile>:h/init/git.vim
 source <sfile>:h/init/myplugins.vim
-
 " {{{1 COLOUR SCHEME & DIFF MODE
 " Set Color Scheme (diff color scheme set in diff section
 if !&diff
     " If NOT diff mode
-    let g:capesky_high_contrast = 1 " Default high-contrast mode on or off
     color capesky       " Note this resets all highlighting
     " Set status line after color theme
     source <sfile>:h/init/status.vim

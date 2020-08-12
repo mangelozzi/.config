@@ -49,6 +49,10 @@ Plug rgflow_local
 let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-wsl"
 Plug wsl_local
 
+" Plug own plugin at nvim/tmp/vim-capesky
+let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-capesky"
+Plug wsl_local
+
 " {{{2 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
@@ -367,7 +371,7 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " mode = foreground or background
 lua << EOF
     require 'colorizer'.setup({}, {
-        mode = 'foreground';
+        mode = 'background';
     })
 EOF
 " {{{2 Plug 'inkarkat/vim-SpellCheck'
@@ -522,9 +526,11 @@ if &runtimepath =~? 'nvim-lsp'
 endif
 
 " {{{2 NVIM-LSP / DIAGONOSTIC
+
 " If 0, then diagnostic information only shown when you go Next/PrevDiagnostic
 " If 1, then diagnostic information will be shown after the line.
-let g:diagnostic_enable_virtual_text = 1 "default 0
+let g:diagnostic_enable_virtual_text = 1 "default 1
+
 " let g:diagnostic_trimmed_virtual_text = '20'
 " let g:diagnostic_show_sign = 1 " default 1
 " let g:diagnostic_sign_priority = 20 " default 20
@@ -532,8 +538,8 @@ let g:diagnostic_enable_virtual_text = 1 "default 0
 " call sign_define("LspDiagnosticsWarningSign",       {"text" : "W", "texthl" : "LspDiagnosticsWarning"})
 " call sign_define("LspDiagnosticsInformationSign",   {"text" : "I", "texthl" : "LspDiagnosticsInformation"})
 " call sign_define("LspDiagnosticsHintSign",          {"text" : "H", "texthl" : "LspDiagnosticsHint"})
-let g:diagnostic_enable_underline = 1 " default 1
-let g:diagnostic_insert_delay = 1
+" let g:diagnostic_enable_underline = 1 " default 1
+let g:diagnostic_insert_delay = 1 " default 0, 1 = don't want to show diagnostics while in insert mode
 " PrevDiagnostic
 " NextDiagnostic
 nnoremap <LEADER>dn    <cmd>NextDiagnosticCycle<CR>

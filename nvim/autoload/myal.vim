@@ -155,7 +155,7 @@ endfunction
 
 function! myal#StripTrailingWhitespace()
     let l:winview = winsaveview()
-    :%s/\s\+$/dsfdsf/e
+    :%s/\s\+$//e
     call winrestview(l:winview)
     echom "Trailing whitespace stripped."
 endfun
