@@ -86,6 +86,8 @@ Plug 'junegunn/fzf.vim'
 
 " {{{2 TREE BROWSER
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+" TODO: Could replace syntax tree highligthing with this:
+" https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'kshenoy/vim-signature', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -169,6 +171,19 @@ map gh <Plug>Titlecase
 map gH <Plug>TitlecaseLine
 vmap gh <Plug>Titlecase
 vmap gH <Plug>Titlecase
+
+" {{{1 OWN PLUGINS
+" {{{2 CAPESKY
+let g:capesky_profiles = [
+            \[  5, -30, -15, -30],
+            \[  5, -28, -12, -20],
+            \[  5, -25,  -5, -15],
+            \[  5, -15,  -8,  -8],
+            \[  5,  -8,   0,  -5],
+            \[  0,   0,   0,   0],
+            \[  0, +10, +10, +10],
+            \]
+let g:capesky_index = get(g:, 'capesky_index', 4)
 
 " {{{1 TREE BROWSER
 
@@ -420,6 +435,7 @@ if &runtimepath =~? 'nvim-lsp'
     " Note, require needs no .lua ext. doFile requies it
 lua << EOF
   local on_attach = function()
+    vim.api.nvim_command('setlocal signcolumn=auto:1')
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     require'completion'.on_attach()
     require'diagnostic'.on_attach()
@@ -484,27 +500,13 @@ EOF
     " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
     " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>e', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
-
-    function! SetLspFtSettings()
-        " setlocal omnifunc=v:lua.vim.lsp.omnifunc
-        setlocal signcolumn=yes:1
-        echom "Setting nvim-lsp ...set"
-    endfun
-    augroup my_lsp_autocmds
-        " Defaut omni-complete hotkey: i_^x^o
-        autocmd!
-        autocmd FileType html,css,scss,less,json,
-                    \javascript,javascriptreact,javascript.jsx,typescript,typescriptreact,typescript,
-                    \vim,sh,python,
-                    \ call SetLspFtSettings()
-    augroup END
 endif
 
 " {{{2 NVIM-LSP / COMPLETITON
 if &runtimepath =~? 'nvim-lsp'
     " Set completeopt to have a better completion experience
-    " set completeopt=menuone,noinsert,noselect
-    set completeopt=menuone,noinsert
+    set completeopt=menuone,noinsert,noselect
+    " set completeopt=menuone,noinsert
     " possible value: "length", "alphabet", "none"
     let g:completion_sorting = "length"
     let g:completion_trigger_keyword_length = 3 " default = 1
@@ -529,7 +531,6 @@ endif
 
 " If 0, then diagnostic information only shown when you go Next/PrevDiagnostic
 " If 1, then diagnostic information will be shown after the line.
-let g:diagnostic_enable_virtual_text = 1 "default 1, 1 for py, 0 for vim?
 
 " let g:diagnostic_trimmed_virtual_text = '20'
 " let g:diagnostic_show_sign = 1 " default 1
@@ -539,7 +540,6 @@ let g:diagnostic_enable_virtual_text = 1 "default 1, 1 for py, 0 for vim?
 " call sign_define("LspDiagnosticsInformationSign",   {"text" : "I", "texthl" : "LspDiagnosticsInformation"})
 " call sign_define("LspDiagnosticsHintSign",          {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 " let g:diagnostic_enable_underline = 1 " default 1
-let g:diagnostic_insert_delay = 1 " default 0, 1 = don't want to show diagnostics while in insert mode
 " PrevDiagnostic
 " NextDiagnostic
 nnoremap <LEADER>dn    <cmd>NextDiagnosticCycle<CR>
@@ -549,3 +549,23 @@ nnoremap <LEADER>dk    <cmd>PrevDiagnosticCycle<CR>
 nnoremap <LEADER>do    <cmd>OpenDiagnostic<CR>
 " Mnemonic Diagnostic List
 nnoremap <LEADER>dl    <cmd>OpenDiagnostic<CR>
+
+function! SetDiagosticSettings()
+    " setlocal omnifunc=v:lua.vim.lsp.omnifunc
+    redraw
+    if &ft ==? "vim"
+        " In VIM with normal diagonistics settings, its unusable to debug.
+        let g:diagnostic_enable_virtual_text = 0 " default 1, 1 for py, 0 for vim?
+        let g:diagnostic_insert_delay = 1        " default 0, 1 = don't want to show diagnostics while in insert mode
+    else
+        let g:diagnostic_enable_virtual_text = 1 " default 1, 1 for py, 0 for vim?
+        let g:diagnostic_insert_delay = 0        " default 0, 1 = don't want to show diagnostics while in insert mode
+    endif
+endfun
+
+augroup my_diagnostic_autocmds
+    " Defaut omni-complete hotkey: i_^x^o
+    autocmd!
+    autocmd BufEnter * :call SetDiagosticSettings()
+augroup END
+

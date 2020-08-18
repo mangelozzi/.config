@@ -160,7 +160,8 @@ source <sfile>:h/init/myplugins.vim
 " Set Color Scheme (diff color scheme set in diff section
 if !&diff
     " If NOT diff mode
-    color capesky       " Note this resets all highlighting
+    color michael
+    " color capesky       " Note this resets all highlighting
     " Set status line after color theme
     source <sfile>:h/init/status.vim
 endif
@@ -263,6 +264,10 @@ vnoremap X "_X
 " " Line below makes exiting from input dialogue always fail
 " " noremap! <C-[> <ESC>
 " noremap! <C-c> <ESC>
+
+" Keyboard volume up and down and down to no operation
+noremap! <C-Space> <nop>
+noremap  <C-Space> <nop>
 
 " {{{2 Map (noremap)
 "   Normal, Visual+Select, and Operator Pending modes
