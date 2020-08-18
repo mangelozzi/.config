@@ -7,6 +7,11 @@ function! MyStatusLine(currentWindow) abort
     " active window or not, since the status line is recalculated only when
     " switching windows.
 
+    " if &filetype == 'nerdtree'
+    "     echom "nerdtree"
+    "     return "NERDTree ".getcwd()
+    " endif
+
     if a:currentWindow
         if &buftype == 'quickfix'
             let col_line   = "%#_qfStatusLine#"

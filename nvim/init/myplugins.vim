@@ -85,7 +85,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " {{{2 TREE BROWSER
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 " TODO: Could replace syntax tree highligthing with this:
 " https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
@@ -187,8 +187,9 @@ let g:capesky_index = get(g:, 'capesky_index', 4)
 
 " {{{1 TREE BROWSER
 
-" {{{2 NERDTRee
-"   https://github.com/scrooloose/nerdtree
+" {{{2 NERDTree
+"   See :help NERDTree
+"   https://github.com/preservim/nerdtree
 "   https://jdhao.github.io/2018/09/10/nerdtree_usage/
 "   Hotkeys:
 "     ? = show help on commands
@@ -208,11 +209,18 @@ nnoremap <leader>nf :NERDTreeFind<CR>
 nnoremap <leader>nd :NERDTreeToggle %:p:h<CR>
 
 " Automatically close NerdTree when you open a file
-let NERDTreeQuitOnOpen = 0
+" let NERDTreeQuitOnOpen = 1
+" let NERDTreeMapCustomOpen = "<F10>" " Default <CR>
+let NERDTreeCustomOpenArgs = {'file': {'reuse': 'all', 'where': 'p', 'keepopen':0, 'stay':0}}
+" let NERDTreeCustomOpenArgs = {'file':{'where':'p','keepopen':0,'stay':1}}
+
 " Automatically close a tab if the only remaining window is NerdTree
 " autocmd bufenter * if (winnr(“$”) == 1 && exists(“b:NERDTreeType”) && b:NERDTreeType == “primary”) | q | endif
 " Automatically delete the buffer of the file you just deleted with NerdTree
 let NERDTreeAutoDeleteBuffer = 1
+
+" Show hidden/dot files
+" let NERDTreeShowHidden=1
 
 " Just remember to press ? for help
 let NERDTreeMinimalUI = 1

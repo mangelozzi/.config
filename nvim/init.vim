@@ -34,6 +34,20 @@
 " C:\Neovim\bin\vim.exe -- -S
 " Notemap commands cant have comment on same line as them.
 
+" {{{1 DISABLE ALL (Plugins)
+let no_rc = 0
+if no_rc
+    let plugdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/vim-plug"
+    call plug#begin(plugdir)
+    Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
+    call plug#end()
+
+    let NERDTreeMapCustomOpen = "<CR>"
+    let NERDTreeCustomOpenArgs = {'file': {'reuse': 'all', 'where': 'p', 'keepopen':0, 'stay':0}, 'dir':{}}
+    nnoremap <leader>nn :NERDTreeToggle<CR>
+    finish
+endif
+
 " {{{1 VARIABLES
 "==============================================================================
 " System Dependant variables
@@ -85,7 +99,7 @@ set virtualedit=block       " Virtual edit is useful for visual block edit
 set nojoinspaces            " Do not add two space after a period when joining lines or formatting texts, see https://tinyurl.com/y3yy9kov
 set synmaxcol=500           " Text after this column number is not highlighted
 set cursorline              " High lights the line number and cusor line
-set timeoutlen=2000         " Default is 1000ms, set to 2s.
+set timeoutlen=1000         " Default is 1000ms, set to 2s.
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
 set nobackup
 
@@ -160,8 +174,8 @@ source <sfile>:h/init/myplugins.vim
 " Set Color Scheme (diff color scheme set in diff section
 if !&diff
     " If NOT diff mode
-    color michael
-    " color capesky       " Note this resets all highlighting
+    " color michael
+    color capesky       " Note this resets all highlighting
     " Set status line after color theme
     source <sfile>:h/init/status.vim
 endif

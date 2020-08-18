@@ -61,9 +61,15 @@ function! myal#AddWindowMatches()
     " match is WINDOW LOCAL ONLY, so we have to jump through some hoops to
     " make it apply to buffers only. i.e. we cant just use :setlocal match!
 
-    " First clear all matches on the window, then we will add back the matches
-    " required for each file type
-    call clearmatches()
+    " First clear all existing matches on the window, then we will add back the
+    " matches required for each file type
+    " If you use clearmatches() if deletes matches added by other plugins,
+    " e.g. rg-flow, colorizer?
+    let w:my_matches = get(w:, 'my_matches', [])
+    for match_id in w:my_matches
+        call matchdelete(match_id)
+    endfor
+    let w:my_matches = []
 
     " TRAILING WHITESPACE
     " Must escape the plus, match one or more space before the end of line
@@ -72,7 +78,8 @@ function! myal#AddWindowMatches()
     " to the match, so it can easily be cleared with matchdelete(), not used here
     " match _MatchTrailingWhitespace /\s\+$/
     if 1
-        let w:match_trailing_space_id = matchadd('_MatchTrailingWhitespace', '\s\+$', -1)
+        let match_id = matchadd('_MatchTrailingWhitespace', '\s\+$', -1)
+        call add(w:my_matches, match_id)
     endif
 
     " LEADING SPACES NOT %4
@@ -81,7 +88,8 @@ function! myal#AddWindowMatches()
     if index(['python', 'javascript'], &ft) >= 0
         " match _MatchWrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
         "match _MatchWrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
-        let w:match_wrong_spacing_id = matchadd('_MatchWrongSpacing', '\(^\(    \)*\)\zs \{1,3}\ze\S', -1)
+        let match_id = matchadd('_MatchWrongSpacing', '\(^\(    \)*\)\zs \{1,3}\ze\S', -1)
+        call add(w:my_matches, match_id)
     endif
 
     " MATCH FOLDS
@@ -92,12 +100,18 @@ function! myal#AddWindowMatches()
     " the end of the match. Refer to :help pattern-overview
     if 1 " index(['vim', 'python', 'javascript'], &ft) >= 0
         " Matching folded header currently not supported yet!
-        let w:foldedlevel1_id = matchadd('_FoldedLevel1', '^+--\d\+\ lines:\ \zs[^.]\+\ze', -1)
-        let w:foldedlevel2_id = matchadd('_FoldedLevel2', '^+---\d\+\ lines:\ \zs[^.]\+\ze', -1)
-        let w:foldedlevel3_id = matchadd('_FoldedLevel3', '^+----\d\+\ lines:\ \zs[^.]\+\ze', -1)
-        let w:unfoldedlevel1_id = matchadd('_UnfoldedLevel1', '{{\(\){1\ \zs.\+\ze', -1)
-        let w:unfoldedlevel2_id = matchadd('_UnfoldedLevel2', '{{\(\){2\ \zs.\+\ze', -1)
-        let w:unfoldedlevel3_id = matchadd('_UnfoldedLevel3', '{{\(\){3\ \zs.\+\ze', -1)
+        let match_id = matchadd('_FoldedLevel1', '^+--\d\+\ lines:\ \zs[^.]\+\ze', -1)
+        call add(w:my_matches, match_id)
+        let match_id = matchadd('_FoldedLevel2', '^+---\d\+\ lines:\ \zs[^.]\+\ze', -1)
+        call add(w:my_matches, match_id)
+        let match_id = matchadd('_FoldedLevel3', '^+----\d\+\ lines:\ \zs[^.]\+\ze', -1)
+        call add(w:my_matches, match_id)
+        let match_id = matchadd('_UnfoldedLevel1', '{{\(\){1\ \zs.\+\ze', -1)
+        call add(w:my_matches, match_id)
+        let match_id = matchadd('_UnfoldedLevel2', '{{\(\){2\ \zs.\+\ze', -1)
+        call add(w:my_matches, match_id)
+        let match_id = matchadd('_UnfoldedLevel3', '{{\(\){3\ \zs.\+\ze', -1)
+        call add(w:my_matches, match_id)
     endif
 endfunction
 " {{{1 ONE
