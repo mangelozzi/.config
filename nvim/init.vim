@@ -608,25 +608,6 @@ augroup my_auto_commands
 augroup END
 
 
-function! SwitchAwayFromQFWindow()
-    if &filetype=='qf'
-        wincmd k
-        echom "switch 1"
-    endif
-    if &filetype=='qf'
-        wincmd k
-        echom "switch 2"
-    endif
-    if &filetype=='qf'
-        new
-        echom "switch new"
-    endif
-endfun
-augroup prevent_load_in_quickfix_window
-    autocmd!
-    "autocmd BufNewFile,BufReadPre * echom "hello" | call SwitchAwayFromQFWindow()
-augroup END
-
 " {{{1 HIGHLIGHTING (via matches)
 "==============================================================================
 " Colours for the matches below are in the michael colour scheme.

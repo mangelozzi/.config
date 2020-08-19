@@ -2,6 +2,13 @@
 
 Runtime configuration files for my home directory.
 
+## Configs
+
+- [Bash](bash/README.md)
+- [Emacs](emacs/README.md)
+- [Git](git/README.md)
+- [Neovim](nvim/README.md)
+
 ## Linux
 
 Clone repo:
@@ -13,4 +20,3 @@ Clone repo:
 Clone repo:
 
     git clone https://github.com/michael-angelozzi/.config.git C:\Users\Michael\.config
- 

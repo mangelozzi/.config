@@ -174,16 +174,6 @@ vmap gH <Plug>Titlecase
 
 " {{{1 OWN PLUGINS
 " {{{2 CAPESKY
-let g:capesky_profiles = [
-            \[  5, -30, -15, -30],
-            \[  5, -28, -12, -20],
-            \[  5, -25,  -5, -15],
-            \[  5, -15,  -8,  -8],
-            \[  5,  -8,   0,  -5],
-            \[  0,   0,   0,   0],
-            \[  0, +10, +10, +10],
-            \]
-let g:capesky_index = get(g:, 'capesky_index', 4)
 
 " {{{1 TREE BROWSER
 
@@ -210,9 +200,10 @@ nnoremap <leader>nd :NERDTreeToggle %:p:h<CR>
 
 " Automatically close NerdTree when you open a file
 " let NERDTreeQuitOnOpen = 1
-" let NERDTreeMapCustomOpen = "<F10>" " Default <CR>
-let NERDTreeCustomOpenArgs = {'file': {'reuse': 'all', 'where': 'p', 'keepopen':0, 'stay':0}}
-" let NERDTreeCustomOpenArgs = {'file':{'where':'p','keepopen':0,'stay':1}}
+" let NERDTreeMapCustomOpen = "<CR>" " Default <CR>
+" Use `o` to open and keep NERDTree pane present
+" Use `<CR>` to open and close NERDTree pane. Currently no working due to bug: https://github.com/preservim/nerdtree/issues/1168#issuecomment-675668411
+let NERDTreeCustomOpenArgs = {'file': {'keepopen':0, 'stay':0}}
 
 " Automatically close a tab if the only remaining window is NerdTree
 " autocmd bufenter * if (winnr(“$”) == 1 && exists(“b:NERDTreeType”) && b:NERDTreeType == “primary”) | q | endif
