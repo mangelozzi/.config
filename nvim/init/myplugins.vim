@@ -108,6 +108,7 @@ call plug#end()
 
 " {{{1 PLUGLOADED FUNCTION
 function! PlugLoaded(name)
+    " a:name = name of the plugin, excl git author, e.g. 'nvim-lsp'
     return (
         \ has_key(g:plugs, a:name) &&
         \ isdirectory(g:plugs[a:name].dir) &&
@@ -435,20 +436,22 @@ endif
 let g:deoplete#enable_at_startup = 1
 
 " {{{2 NVIM-LSP (Configuration)
-" Install
-"
-" tsserver requires: sudo npm install -g typescript
-" Configurations: https://github.com/neovim/nvim-lsp#configurations
-"
-if &runtimepath =~? 'nvim-lsp'
+if PlugLoaded('nvim-lsp')
+    " Install
+    "
+    " tsserver requires: sudo npm install -g typescript
+    " Configurations: https://github.com/neovim/nvim-lsp#configurations
+    "
     " Note, require needs no .lua ext. doFile requies it
+
 lua << EOF
-  local on_attach = function()
+local on_attach = function()
     vim.api.nvim_command('setlocal signcolumn=auto:1')
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     require'completion'.on_attach()
     require'diagnostic'.on_attach()
-  end
+end
+
 require('nvim_lsp').html.setup {on_attach = on_attach}
 require('nvim_lsp').cssls.setup {on_attach = on_attach}
 require('nvim_lsp').jsonls.setup {on_attach = on_attach}
@@ -509,10 +512,8 @@ EOF
     " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
     " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>e', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
-endif
 
-" {{{2 NVIM-LSP / COMPLETITON
-if &runtimepath =~? 'nvim-lsp'
+    " {{{2 NVIM-LSP / COMPLETITON
     " Set completeopt to have a better completion experience
     set completeopt=menuone,noinsert,noselect
     " set completeopt=menuone,noinsert
@@ -534,47 +535,45 @@ if &runtimepath =~? 'nvim-lsp'
           \ 'TabNine' : 0,
           \ 'File' : 0,
           \}
-endif
+    " {{{2 NVIM-LSP / DIAGONOSTIC
 
-" {{{2 NVIM-LSP / DIAGONOSTIC
+    " If 0, then diagnostic information only shown when you go Next/PrevDiagnostic
+    " If 1, then diagnostic information will be shown after the line.
 
-" If 0, then diagnostic information only shown when you go Next/PrevDiagnostic
-" If 1, then diagnostic information will be shown after the line.
+    " let g:diagnostic_trimmed_virtual_text = '20'
+    " let g:diagnostic_show_sign = 1 " default 1
+    " let g:diagnostic_sign_priority = 20 " default 20
+    " call sign_define("LspDiagnosticsErrorSign",         {"text" : "E", "texthl" : "LspDiagnosticsError"})
+    " call sign_define("LspDiagnosticsWarningSign",       {"text" : "W", "texthl" : "LspDiagnosticsWarning"})
+    " call sign_define("LspDiagnosticsInformationSign",   {"text" : "I", "texthl" : "LspDiagnosticsInformation"})
+    " call sign_define("LspDiagnosticsHintSign",          {"text" : "H", "texthl" : "LspDiagnosticsHint"})
+    " let g:diagnostic_enable_underline = 1 " default 1
+    " PrevDiagnostic
+    " NextDiagnostic
+    nnoremap <LEADER>dn    <cmd>NextDiagnosticCycle<CR>
+    nnoremap <LEADER>dj    <cmd>NextDiagnosticCycle<CR>
+    nnoremap <LEADER>dp    <cmd>PrevDiagnosticCycle<CR>
+    nnoremap <LEADER>dk    <cmd>PrevDiagnosticCycle<CR>
+    nnoremap <LEADER>do    <cmd>OpenDiagnostic<CR>
+    " Mnemonic Diagnostic List
+    nnoremap <LEADER>dl    <cmd>OpenDiagnostic<CR>
 
-" let g:diagnostic_trimmed_virtual_text = '20'
-" let g:diagnostic_show_sign = 1 " default 1
-" let g:diagnostic_sign_priority = 20 " default 20
-" call sign_define("LspDiagnosticsErrorSign",         {"text" : "E", "texthl" : "LspDiagnosticsError"})
-" call sign_define("LspDiagnosticsWarningSign",       {"text" : "W", "texthl" : "LspDiagnosticsWarning"})
-" call sign_define("LspDiagnosticsInformationSign",   {"text" : "I", "texthl" : "LspDiagnosticsInformation"})
-" call sign_define("LspDiagnosticsHintSign",          {"text" : "H", "texthl" : "LspDiagnosticsHint"})
-" let g:diagnostic_enable_underline = 1 " default 1
-" PrevDiagnostic
-" NextDiagnostic
-nnoremap <LEADER>dn    <cmd>NextDiagnosticCycle<CR>
-nnoremap <LEADER>dj    <cmd>NextDiagnosticCycle<CR>
-nnoremap <LEADER>dp    <cmd>PrevDiagnosticCycle<CR>
-nnoremap <LEADER>dk    <cmd>PrevDiagnosticCycle<CR>
-nnoremap <LEADER>do    <cmd>OpenDiagnostic<CR>
-" Mnemonic Diagnostic List
-nnoremap <LEADER>dl    <cmd>OpenDiagnostic<CR>
+    function! SetDiagosticSettings()
+        " setlocal omnifunc=v:lua.vim.lsp.omnifunc
+        redraw
+        if &ft ==? "vim"
+            " In VIM with normal diagonistics settings, its unusable to debug.
+            let g:diagnostic_enable_virtual_text = 0 " default 1, 1 for py, 0 for vim?
+            let g:diagnostic_insert_delay = 1        " default 0, 1 = don't want to show diagnostics while in insert mode
+        else
+            let g:diagnostic_enable_virtual_text = 1 " default 1, 1 for py, 0 for vim?
+            let g:diagnostic_insert_delay = 0        " default 0, 1 = don't want to show diagnostics while in insert mode
+        endif
+    endfun
 
-function! SetDiagosticSettings()
-    " setlocal omnifunc=v:lua.vim.lsp.omnifunc
-    redraw
-    if &ft ==? "vim"
-        " In VIM with normal diagonistics settings, its unusable to debug.
-        let g:diagnostic_enable_virtual_text = 0 " default 1, 1 for py, 0 for vim?
-        let g:diagnostic_insert_delay = 1        " default 0, 1 = don't want to show diagnostics while in insert mode
-    else
-        let g:diagnostic_enable_virtual_text = 1 " default 1, 1 for py, 0 for vim?
-        let g:diagnostic_insert_delay = 0        " default 0, 1 = don't want to show diagnostics while in insert mode
-    endif
-endfun
-
-augroup my_diagnostic_autocmds
-    " Defaut omni-complete hotkey: i_^x^o
-    autocmd!
-    autocmd BufEnter * :call SetDiagosticSettings()
-augroup END
-
+    augroup my_diagnostic_autocmds
+        " Defaut omni-complete hotkey: i_^x^o
+        autocmd!
+        autocmd BufEnter * :call SetDiagosticSettings()
+    augroup END
+endif " If lsp pluigin loaded
