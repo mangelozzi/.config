@@ -106,6 +106,13 @@ Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 
 call plug#end()
 
+" {{{1 PLUGLOADED FUNCTION
+function! PlugLoaded(name)
+    return (
+        \ has_key(g:plugs, a:name) &&
+        \ isdirectory(g:plugs[a:name].dir) &&
+        \ stridx(&rtp, g:plugs[a:name].dir) >= 0)
+endfunction
 
 " {{{1 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 
@@ -378,13 +385,16 @@ let g:multi_cursor_quit_key            = '<Esc>'
 " :Bufferize command
 
 " {{{2 norcalli/nvim-colorizer.lua
-" Colour background
-" mode = foreground or background
+if PlugLoaded('nvim-colorizer.lua')
+    " Colour background
+    " mode = foreground or background
 lua << EOF
     require 'colorizer'.setup({}, {
         mode = 'background';
     })
 EOF
+endif
+
 " {{{2 Plug 'inkarkat/vim-SpellCheck'
 " Can see a list of mispelt word with: :[range]SpellCheck
 
