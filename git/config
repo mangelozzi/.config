@@ -1,5 +1,7 @@
 # Using Meld: https://stackoverflow.com/a/34119867/5506400
 
+# This file corresponds to the --global option
+
 # -----------------------------------------------------------------------------
 # COLOURS
 [color "status"]
@@ -16,12 +18,18 @@
     name = Michael Angelozzi
     email = mangelozzi@gmail.com
 [credential "https://github.com"]
-    username = michael-angelozzi
+    username = mangelozzi
 [credential]
-	helper = manager
-    # LINUX: Use SSH keys
+    # WSL: Use cache (for 1 week)
+    # For Dev only require: 1. PW not stored text, enter in pw once per boot up
+    # Much easier then sharing SSH agents.
+    helper = cache --timeout=604800
+
     # WINDOWS: Use manager for the entire machine (system)
-    #       git config --system credential.helper manager
+    # git config --system credential.helper manager
+
+    # Using linux (Not WSL), use libsecret:
+    # helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 [core]
     preloadindex = true
     fscache = true

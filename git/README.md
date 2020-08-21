@@ -32,8 +32,11 @@ git config --global mergetool.nvim.cmd $'nvim -d $LOCAL $REMOTE $MERGED -c \'$wi
 ## AUTHENTICATION
 
 ### Linux
+
+#### SSH Keys
 - Use SSH keys.
 - HTTPS remotes always ask for password, so must change to SSH repo:
+WSL doesnt support libsecret, so just use SSH.
   ```
   git remote --verbose
   git remote set-url origin git@github.com:USERNAME/REPOSITORY.git
@@ -55,6 +58,13 @@ Follow GitHub's [Connecting to GitHub with SSH](https://help.github.com/en/githu
   9. Type in description and paste in key.
   10. Check Github.com fingerprint matches you own key:
           ssh-add -l -E md5
+
+### WSL
+
+Cache for 1 week:
+```
+    git config --global credential.helper 'cache --timeout=604800'
+```
 
 ### Windows
 

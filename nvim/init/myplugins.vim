@@ -203,7 +203,7 @@ nnoremap <leader>nd :NERDTreeToggle %:p:h<CR>
 " let NERDTreeMapCustomOpen = "<CR>" " Default <CR>
 " Use `o` to open and keep NERDTree pane present
 " Use `<CR>` to open and close NERDTree pane. Currently no working due to bug: https://github.com/preservim/nerdtree/issues/1168#issuecomment-675668411
-let NERDTreeCustomOpenArgs = {'file': {'keepopen':0, 'stay':0}}
+let NERDTreeCustomOpenArgs = {'file': {'where': 'p', 'keepopen':0, 'stay':0}}
 
 " Automatically close a tab if the only remaining window is NerdTree
 " autocmd bufenter * if (winnr(“$”) == 1 && exists(“b:NERDTreeType”) && b:NERDTreeType == “primary”) | q | endif

@@ -70,12 +70,17 @@ set termguicolors   " Uses highlight-guifg and highlight-guibg, hence 24-bit col
 
 " set guicursor=n-v-c-sm:block,i-ci-ve:ver50,r-cr-o:hor20
 
-" GENERAL
+" CRITICAL
 set nocompatible            " Must be first command. Enter the current millenium. Not required for Neovim.
+set hidden                  " Allows one to reuse the same window and switch without saving
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+" GENERAL
 set complete=.,w,b,u,t      " Default auto complete
 set colorcolumn=80          " Colour a certain column, helps to see when one goes over 80 chars.
 set autoindent              " When opening a new line keep indentation
-set hidden                  " Allows one to reuse the same window and switch without saving
 set history=10000           " NeoVim 10000. Number of previous commands remembered.
 set inccommand=split        " Neovim - See a live preview of :substitute as you type.
 set scrolloff=3             " When doing a search etc, always show at least n lines above and below the match
@@ -139,16 +144,10 @@ set hlsearch                " Highlight searches, use :noh to turn off residual 
 set linebreak               " wrap at word breaks
 set showbreak=↪             " show an ellipsis at the start of wrapped lines
 
-syntax on                   " Enable syntax highlighting
 filetype plugin on          " Enable plugins (for newtrw), built in, comes with VIM
 filetype indent plugin on   " Native plugin, intelligent auto indenting based on file type and content
 
 highlight SpecialKey ctermfg=3
-
-" INDENTATION
-set shiftwidth=4
-set softtabstop=4
-set expandtab
 
 " FINDING FILES
 set path+=**
