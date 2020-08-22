@@ -18,20 +18,6 @@ git clone https://github.com/mangelozzi/nvim-rgflow.lua.git
 
 echo "alias vim=nvim" >> ~/.bashrc
 
-sudo apt update
-
-# Ripgrep
-curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.2/ripgrep_11.0.2_amd64.deb
-sudo dpkg -i ripgrep_11.0.2_amd64.deb
-
-# fd
-sudo apt install fd-find
-
-# FZF
-sudo apt-get install fzf
-
-# Install Unzip
-sudo apt-get install unzip
 
 # Clipboard
 curl -sLo/tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.0.4/win32yank-x64.zip
@@ -53,13 +39,15 @@ npm -v
 echo -e "\n\n"
 sudo npm install -g typescript
 
-echo "Start nvim and run:"
-echo ":PlugInstall"
-echo ":LspInstall html"
-echo ":LspInstall cssls"
-echo ":LspInstall jsonls"
-echo ":LspInstall tsserver"
-echo ":LspInstall vimls"
-echo ":LspInstall bashls"
-echo
-echo "COMPLETE."
+echo -e "\nInstalling Plugins:"
+nvim --headless +PlugInstall +qall
+
+echo -e "\nInstalling Language Server Plugins:"
+nvim --headless +"LspInstall html"
+nvim --headless +"LspInstall cssls"
+nvim --headless +"LspInstall jsonls"
+nvim --headless +"LspInstall tsserver"
+nvim --headless +"LspInstall vimls"
+nvim --headless +"LspInstall bashls
+
+echo -e "\nCOMPLETE."

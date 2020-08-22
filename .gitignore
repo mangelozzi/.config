@@ -4,6 +4,7 @@
 !/emacs/
 !/bash/
 !/git/
+!/install/
 !/misc/
 !/nvim/
 !.gitignore

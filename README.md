@@ -2,6 +2,13 @@
 
 Runtime configuration files for my home directory.
 
+## Install Scripts
+
+- Refer to `install/` for scripts to install the various software.
+- `install.sh` will run all the install scripts in order.
+- `install_<APP>.sh` will install only that app.
+- `install_lib.sh` is a lib for helping the installation scripts.
+
 ## Configs
 
 - [Bash](bash/README.md)
@@ -9,14 +16,14 @@ Runtime configuration files for my home directory.
 - [Git](git/README.md)
 - [Neovim](nvim/README.md)
 
-## Linux
+## Clone repo
 
-Clone repo:
+HTTPS:
+```bash
+git clone https://github.com/mangelozzi/.config.git ~/.config
+```
 
-    git clone git@github.com:michael-angelozzi/.config.git ~/.config
-
-## Windows
-
-Clone repo:
-
-    git clone https://github.com/michael-angelozzi/.config.git C:\Users\Michael\.config
+SSH:
+```bash
+git clone git@github.com:mangelozzi/.config.git ~/.config
+```
