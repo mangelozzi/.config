@@ -2,6 +2,7 @@
 " If get error ould not read Username for ... probably type the plugin name wrong
 
 " TO TRY
+" bps/vim-textobj-python
 " LOOK AWESOME!!! https://github.com/iamcco/markdown-preview.nvim
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
 " https://github.com/janko/vim-test
@@ -22,7 +23,7 @@
 " Plug 'zchee/deoplete-jedi', { 'for': 'python' }
 " Plug 'carlitux/deoplete-ternjs'
 " Plug 'davidhalter/jedi-vim'
-" Plug 'scrooloose/nerdcommenter'
+" Plug 'preservim/nerdcommenter'
 " Plug 'neomake/neomake'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " let g:coc_enabled = 0
@@ -54,6 +55,7 @@ let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-capesky"
 Plug wsl_local
 
 " {{{2 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
+Plug 'wellle/targets.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
@@ -64,6 +66,9 @@ Plug 'christoomey/vim-titlecase'
 " {{{2 SMALL MISC
 Plug 'tpope/vim-unimpaired'
 Plug 'AndrewRadev/bufferize.vim'
+Plug 'osyo-manga/vim-brightest'
+Plug 'stefandtw/quickfix-reflector.vim'
+Plug 'junegunn/vim-easy-align'
 
 " {{{2 CCOLOR RELATED
 Plug 'norcalli/nvim-colorizer.lua'
@@ -90,7 +95,7 @@ Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 " https://github.com/preservim/nerdtree/issues/433#issuecomment-92590696
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'kshenoy/vim-signature', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
-Plug 'Xuyuanp/nerdtree-git-plugin'
+" Make NERDtree error Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " {{{2 Python
 Plug 'tmhedberg/SimpylFold'
@@ -116,6 +121,8 @@ function! PlugLoaded(name)
 endfunction
 
 " {{{1 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
+
+" {{{2 TARGETS
 
 " {{{2 SURROUND
 " https://github.com/tpope/vim-surround
@@ -253,7 +260,7 @@ nnoremap <silent> <leader>gs :Git status<cr>
 let $FZF_DEFAULT_OPTS='--bind ctrl-a:select-all'
 
 "let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
-let $FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore'
+let $FZF_DEFAULT_COMMAND='fdfind --type file --hidden --no-ignore'
 
 " Don't abort the function, so if no match is found, its communicates it.
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
@@ -396,8 +403,21 @@ lua << EOF
 EOF
 endif
 
-" {{{2 Plug 'inkarkat/vim-SpellCheck'
+" {{{2 inkarkat/vim-SpellCheck
 " Can see a list of mispelt word with: :[range]SpellCheck
+
+" {{{2 osyo-manga/vim-brightest
+" Highlights the word the cusor currently is on.
+hi _VimBrightest guibg=#404040
+let g:brightest#highlight = {
+\   "group" : "_VimBrightest"
+\}
+
+" {{{2 stefandtw/quickfix-reflector.vim
+" Always one to file changes directly in the quickfix window.
+
+" {{{2 vim-easy-align
+" Allows one to easily align text
 
 " {{{1 LSP
 
@@ -517,8 +537,8 @@ EOF
     " Set completeopt to have a better completion experience
     set completeopt=menuone,noinsert,noselect
     " set completeopt=menuone,noinsert
-    " possible value: "length", "alphabet", "none"
-    let g:completion_sorting = "length"
+    " possible value: "length", "length_desc", "alphabet", "none"
+    let g:completion_sorting = "length_desc"
     let g:completion_trigger_keyword_length = 3 " default = 1
     let g:completion_items_priority = {
           \ 'Field': 5,
@@ -577,3 +597,5 @@ EOF
         autocmd BufEnter * :call SetDiagosticSettings()
     augroup END
 endif " If lsp pluigin loaded
+
+" {{{2 NVIM-LSP / STATUS

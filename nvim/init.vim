@@ -1,3 +1,9 @@
+" WARM
+" $
+" ^
+" {}
+" ()
+" vf{%d
 " 40a<Space><Esc>d40|
 " TODO make it at end of jumplist, then tab opens current fold.
 " Check out:
@@ -305,8 +311,9 @@ noremap <leader>/ /\v
 " When pressing star, don't jump to the next match
 " Set highlight search to trigger the highlighting which sometimes doesnt
 " appear otherwise.
-nmap <silent> * yiw<esc>: let @/ = @""<cr>:set hlsearch<cr>
-nmap <silent> # yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>
+" After highlighting print how many matches there are with a search with 'n'
+nmap <silent> * yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>///gn<CR>
+nmap <silent> # yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>?//gn<CR>
 
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
@@ -413,6 +420,9 @@ xnoremap <S-Right>  pgvloxlo
 xnoremap <S-left>   hPgvhxoho
 xnoremap <S-Down>   jPgvjxojo
 xnoremap <S-Up>     xkPgvkoko
+
+" vv to visual select to end of line without select the $
+vnoremap v $h
 
 " {{{2 Searching & replacing
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m48s
