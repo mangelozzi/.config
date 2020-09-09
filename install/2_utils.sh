@@ -3,7 +3,7 @@
 # Echo commands
 set -x
 
-# sudo apt update
+sudo apt update
 
 # Ripgrep
 # if ! command -v rg &> /dev/null
