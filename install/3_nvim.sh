@@ -1,3 +1,9 @@
+#!/bin/bash
+
+# temp="USER INPUT"
+read -p "Will install Neovim for the current user, press <ENTER> to continue..."
+
+set -x
 NVIM_FILE=nvim.appimage
 NVIM_PATH=~/appimages/
 
@@ -43,11 +49,18 @@ echo -e "\nInstalling Plugins:"
 nvim --headless +PlugInstall +qall
 
 echo -e "\nInstalling Language Server Plugins:"
-nvim --headless +"LspInstall html"
-nvim --headless +"LspInstall cssls"
-nvim --headless +"LspInstall jsonls"
-nvim --headless +"LspInstall tsserver"
-nvim --headless +"LspInstall vimls"
-nvim --headless +"LspInstall bashls
+nvim --headless +"LspInstall html" +"q!"
+echo
+nvim --headless +"LspInstall cssls" +"q!"
+echo
+nvim --headless +"LspInstall jsonls" +"q!"
+echo
+nvim --headless +"LspInstall tsserver" +"q!"
+echo
+nvim --headless +"LspInstall vimls" +"q!"
+echo
+nvim --headless +"LspInstall bashls" +"q!"
 
-echo -e "\nCOMPLETE."
+set +x
+echo
+echo "Install NVIM Complete."

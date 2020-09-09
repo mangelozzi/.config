@@ -83,7 +83,7 @@ Plug 'inkarkat/vim-SpellCheck'
 Plug 'tpope/vim-fugitive'
 
 " {{{2 FZF
-let fzfdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/fzf"
+" let fzfdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/fzf"
 " Plug 'junegunn/fzf', { 'dir': fzfdir, 'do': './install --all' }
 " Install FZF via scoop
 Plug 'junegunn/fzf'

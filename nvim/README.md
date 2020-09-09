@@ -2,6 +2,11 @@
 
 ## INSTALLATION
 
+### Installation Script
+
+- Just run [this script](../install/3_nvim.sh)
+- Note: _Follow the terminal setup for the font._
+
 ### Ubuntu (Stable) Installation
 
 ```bash
