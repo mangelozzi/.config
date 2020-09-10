@@ -19,6 +19,13 @@ alias cdn='cd ~/.config/nvim'
 alias cdt='cd ~/.config/nvim/tmp'
 alias cdp='cd ~/.config/nvim/tmp'
 
+# Git
+alias gs='git status'
+alias gu='git add -u'
+alias ga='git add -A'
+alias gc='git commit -m '
+alias gd='git diff'
+
 # Disable bell sound
 set bell-style none
 
