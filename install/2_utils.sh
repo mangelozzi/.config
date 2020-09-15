@@ -22,7 +22,7 @@ sudo apt install fd-find
 # sudo apt install fzf
 if ! command -v fzf &> /dev/null
 then
-    echo "\nFZF will be installed only for the current user."
+    echo -e "\nFZF will be installed only for the current user."
     read -p "Press <ENTER> to continue..."
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     bash ~/.fzf/install

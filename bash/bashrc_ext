@@ -1,6 +1,9 @@
 # Extension to .bashrc profile
 # Source this file from the end of ~/.bashrc
 
+# Length sudo timeout to one week
+export TMOUT=604800
+
 # Test this has been sourced
 alias dottest='echo "bashrc_ext was sourced"'
 
@@ -148,4 +151,6 @@ function copy_temp_file   {
 
 mkdir -p ~/.ssh
 copy_temp_file ~/.ssh/config ~/.config/ssh/config
-source ~/linkcube/venv/bin/activate
+
+# Placed last incase it fails
+source ~/venv/linkcube/bin/activate
