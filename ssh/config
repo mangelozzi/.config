@@ -1,0 +1,21 @@
+# Install location: ~/.ssh/config
+# This is a skeleton file. Replace file in installation dir with
+# version from Cryptomator which includes all SSH hosts.
+
+# Uses it automatically with git commands
+Host github.com
+    User git
+    Hostname github.com
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/github_dev
+    AddKeysToAgent yes
+
+# Connect with: `ssh vps_slug`
+Host vps_slug
+    HostName myserver.co.za
+    User username
+    Port 123
+    PreferredAuthentications publickey
+    IdentityFile ~/.ssh/vps_slug
+    AddKeysToAgent yes
+

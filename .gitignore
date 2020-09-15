@@ -7,5 +7,6 @@
 !/install/
 !/misc/
 !/nvim/
+!/ssh/
 !.gitignore
 !README.md

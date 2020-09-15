@@ -145,5 +145,7 @@ function copy_temp_file   {
         cp $2 $1
     }
 }
+
+mkdir -p ~/.ssh
 copy_temp_file ~/.ssh/config ~/.config/ssh/config
 source ~/linkcube/venv/bin/activate
