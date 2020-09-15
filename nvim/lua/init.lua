@@ -12,7 +12,7 @@ local api = vim.api
 --            |:map-arguments| as keys excluding |<buffer>| but
 --            including |noremap|. Values are Booleans. Unknown
 --            key is an error.
-api.nvim_set_keymap("", "Y", "y$", {noremap=true,})
+-- api.nvim_set_keymap("", "Y", "y$", {noremap=true,})
 
 test = {}
 function test.make_window()

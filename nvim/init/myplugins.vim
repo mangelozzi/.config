@@ -171,6 +171,11 @@ endfunction
 "                         To replace from the cursor position to the end of the
 "                         line use ["x]gr$
 " {Visual}["x]gr        = Replace the selection with the contents of register x.
+" Use gr for the default go references, used by LSP
+" Far fetch mnemonic, l=lekker!
+nmap gl  <Plug>ReplaceWithRegisterOperator
+nmap gll <Plug>ReplaceWithRegisterLine
+xmap gl  <Plug>ReplaceWithRegisterVisual
 
 " {{{2 TITLECASE
 " https://github.com/christoomey/vim-titlecase
@@ -464,74 +469,8 @@ if PlugLoaded('nvim-lsp')
     "
     " Note, require needs no .lua ext. doFile requies it
 
-lua << EOF
-local on_attach = function()
-    vim.api.nvim_command('setlocal signcolumn=auto:1')
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-    require'completion'.on_attach()
-    require'diagnostic'.on_attach()
-end
+    lua lsp = require("lsp")
 
-require('nvim_lsp').html.setup {on_attach = on_attach}
-require('nvim_lsp').cssls.setup {on_attach = on_attach}
-require('nvim_lsp').jsonls.setup {on_attach = on_attach}
-require('nvim_lsp').bashls.setup {on_attach = on_attach}
-require('nvim_lsp').tsserver.setup {on_attach = on_attach}
-require('nvim_lsp').vimls.setup {on_attach = on_attach}
-require('nvim_lsp').pyls_ms.setup {on_attach = on_attach}
--- Jedi LS Only provides syntax errors, not powerful diagnostics
--- require('nvim_lsp').jedi_language_server.setup {on_attach = on_attach}
-
--- {'pyflakes','rope','mccabe','black','flake8','pycodestyle',autopep8','yapf'}
--- configurationSources kiad sources files
--- require'nvim_lsp'.pyls.setup {
---     on_attach = on_attach,
---     settings = {
---       pyls = {
---         configurationSources = {},
---         plugins = {
---           pyflakes = {enabled = true},
---           rope     = {enabled = true},
---           mccabe   = {enabled = true},
---           black    = {enabled = true},
---           -- jedi_signature_help = {enabled = false}, -- stupid slow
---           flake8   = {enabled = false},
---           pycodestyle = {enabled = false, maxLineLength = 88},
---           autopep8    = {enabled = false},
---           yapf        = {enabled = false}
---         }
---       }
---     }
---   }
-EOF
-
-    " from ":help lsp
-    " gl is free! Mnemonic: Go Lsp
-    " gr conflicts with Go Register
-    " <C-k> conflights with
-    nnoremap <silent> <LEADER>ld  <cmd>lua vim.lsp.buf.declaration()<CR>
-    nnoremap <silent> <LEADER>le  <cmd>lua vim.lsp.buf.definition()<CR>
-    nnoremap <silent> <LEADER>lh  <cmd>lua vim.lsp.buf.hover()<CR>
-    nnoremap <silent> <LEADER>li  <cmd>lua vim.lsp.buf.implementation()<CR>
-    nnoremap <silent> <LEADER>ls  <cmd>lua vim.lsp.buf.signature_help()<CR>
-    " ASCII 23 = CTRL+W
-    "or vim.api.nvim_input('\23k'))<CR>
-    nnoremap <silent> <LEADER>lt  <cmd>lua vim.lsp.buf.type_definition()<CR>
-    nnoremap <silent> <LEADER>lr  <cmd>lua vim.lsp.buf.references()<CR>
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-    " List symbols in the current document matching the query string.
-    " nnoremap <silent> <LEADER>l?  <cmd>lua vim.lsp.buf.document_symbol()<CR>
-    " List project-wide symbols matching the query string.
-    " nnoremap <silent> <LEADER>lw  <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-    nnoremap <silent> <LEADER>lf  <cmd>lua vim.lsp.buf.formatting()<CR>
-
-    " From https://github.com/mjlbach/nix-dotfiles/blob/master/nixpkgs/configs/neovim/init.vim
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'wl', '<cmd>lua vim.lsp.buf.list_workspace_folders()<CR>', opts)
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    " vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>e', '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>', opts)
 
     " {{{2 NVIM-LSP / COMPLETITON
     " Set completeopt to have a better completion experience

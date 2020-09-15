@@ -122,22 +122,26 @@ set listchars=eol:$,tab:←‒→,trail:▪,extends:▶,precedes:◀,space:·
 set cmdheight=2            " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
 "set noswapfiles             " Disable making swap files to indicate file is open.
 "set undofile                " Persistent undo even after you close a file and re-open it
-"set noshowmode              " Do not show mode on command line since vim-airline can show it
+set showmode                 " Do show mode in command window area, e.g. `-- INSERT --`
 "set switchbuf=usetab,newtab " Control how QUICKFIX ONLY window links are opened are handled and :sb
 "set winaltkeys=menu         " Default value, if a ALT+... hotkey is pressed, first let windowing system handle it, if not then vim will try
 "set winblend=30             " Enables pseudo-transparency for a floating window.
+"set splitbelow              " Splitting a window will put the new window below the current one.
+"set splitright              " Splitting a window will put the new window right of the current one
 
 " WILD COMPLETION
 set wildmenu                " Better command-line completion
 " The parts (stages) in completion:
 "     1. longest = Complete until longest common string
-"     2. Next tab list = show a list of possible completions
-"     3. Next tab full = statusline selectable options
-set wildmode=longest,list,full
+"     2. Next tab full = statusline selectable options
+set wildmode=longest,full
+
 " Ignore certain files and folders when globbing
 set wildignore=*.pyc,*.zip,package-lock.json
 set wildignore+=**/spike/**,**/ignore/**,**/temp/static/**
 set wildignore+=**/venv/**,**/node_modules/**,**/.git/**
+set pumblend=10             " Transparency of Pop Up Menu, 0=solid, 100=Fully Transparent
+set completeopt-=preview    " Turn off annoying vsplit top preview window
 
 " SEARCHING
 set ignorecase              " Use case insensitive search...
@@ -636,7 +640,8 @@ augroup END
 
 " {{{1 LUA
 " load lua functions
-lua temp = require("init")
+" lua temp = require("init")
+
 nmap <leader>W :lua temp.make_window()<CR>
 " let g:fzf_layout = { 'window': 'lua NavigationFloatingWin()' }
 
