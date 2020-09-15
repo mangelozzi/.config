@@ -24,7 +24,7 @@ alias gs='git status'
 alias gu='git add -u'
 alias ga='git add -A'
 alias gc='git commit -m '
-alias gd='git diff'
+alias gd='git diff --diff-filter=M'
 
 # Disable bell sound
 set bell-style none

@@ -116,7 +116,7 @@ set nobackup
 
 " Show white space chars. extends and precedes is for when word wrap is off
 " Get shapes from here https://www.copypastecharacter.com/graphic-shapes
-set listchars=eol:$,tab:▒▒,trail:▪,extends:▶,precedes:◀,space:·
+set listchars=eol:$,tab:←‒→,trail:▪,extends:▶,precedes:◀,space:·
 
 " UNSET
 set cmdheight=2            " Set the command bar height to 2 lines, fixed with ginit GuiTabline 0
@@ -613,6 +613,11 @@ augroup my_auto_commands
 
     "To read a skeleton (template) file when opening a new file: >
     " :autocmd BufNewFile  *.c	0r ~/vim/skeleton.c
+
+    " Set fileformat (ff) to unix so if there are DOS line endings, they will
+    " be shown with `:set list`
+    " Note: Can't be placed in ftplugin because it creates recursive loop.
+    autocmd BufReadPost * edit ++fileformat=unix
 
 augroup END
 

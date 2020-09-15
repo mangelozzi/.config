@@ -67,7 +67,7 @@ function! myal#AddWindowMatches()
     " e.g. rg-flow, colorizer?
     let w:my_matches = get(w:, 'my_matches', [])
     for match_id in w:my_matches
-        call matchdelete(match_id)
+        silent call matchdelete(match_id)
     endfor
     let w:my_matches = []
 
