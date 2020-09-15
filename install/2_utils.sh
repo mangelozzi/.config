@@ -26,6 +26,9 @@ then
     read -p "Press <ENTER> to continue..."
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     bash ~/.fzf/install
+    # Make it available for all users, and when activating venv/
+    # By default appends to .bashrc a line to add its dir to the path
+    sudo ln $HOME/.fzf/bin/fzf /usr/local/bin/fzf
     echo
     echo -e "\nIn order to be able to use FZF you will have to log out and into bash again."
     read -p "Press <ENTER> to continue..."
