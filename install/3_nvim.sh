@@ -21,6 +21,7 @@ mkdir -p ~/.config/nvim/tmp/
 cd ~/.config/nvim/tmp/
 git clone https://github.com/mangelozzi/vim-capesky.git
 git clone https://github.com/mangelozzi/nvim-rgflow.lua.git
+git clone https://github.com/mangelozzi/vim-wsl.git
 
 echo "alias vim=nvim" >> ~/.bashrc
 

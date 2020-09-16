@@ -30,8 +30,9 @@ alias gc='git commit -m '
 alias gd='git diff --diff-filter=M'
 
 # Django
-alias dm="python3 ~/linkcube/src/manage.py"
-alias dr="python3 ~/linkcube/src/manage.py runserver"
+alias pm="python3 ~/linkcube/src/manage.py"
+alias pmr="python3 ~/linkcube/src/manage.py runserver"
+alias dev="source ~/linkcube/dev.sh"
 
 # Disable bell sound
 set bell-style none

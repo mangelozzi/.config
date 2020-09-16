@@ -9,6 +9,12 @@
     changed = yellow bold
     untracked = cyan bold
 
+[color "diff"]
+    meta = black ul white
+    frag = yellow
+    old = red bold
+    new = green bold
+
 ; [color "branch"]
 ;   remote = yellow
 
