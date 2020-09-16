@@ -1,7 +1,7 @@
 print("hello from lsp.lua")
 
 local map_key = function(mode, key, func)
-  vim.fn.nvim_buf_set_keymap(0, mode, key, func, {noremap = true, silent = true})
+    vim.fn.nvim_buf_set_keymap(0, mode, key, func, {noremap = true, silent = true})
 end
 
 local on_attach = function()
@@ -79,13 +79,13 @@ require('nvim_lsp').pyls_ms.setup {
     on_attach = on_attach,
     root_dir = function() return '/home/michael/linkcube/src' end,
     init_options = {
-         interpreter = {
-             properties = {
-                 InterpreterPath = "/home/michael/venv/linkcube/bin/python",
-                 Version = "3.8"
-             }
-         }
-     }
+        interpreter = {
+            properties = {
+                InterpreterPath = "/home/michael/venv/linkcube/bin/python",
+                Version = "3.8"
+            }
+        }
+    }
 }
 -- Jedi LS Only provides syntax errors, not powerful diagnostics
 -- require('nvim_lsp').jedi_language_server.setup {on_attach = on_attach}

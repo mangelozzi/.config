@@ -14,8 +14,8 @@ Example Usage - With echo=False (default way returns the code to be printed):
 
 Example Usage - With echo=True to print the escape codes:
     import Colorize
-    Colorize.fg("red", echo=True)
-    Colorize.bg("white", echo=True)
+    Colorize.fg('red', echo=True)
+    Colorize.bg('white', echo=True)
     print("Warning!")
     Colorize.fg_255(77, echo=True)
     Colorize.bg_255(253, echo=True)
