@@ -105,6 +105,7 @@ Plug 'tmhedberg/SimpylFold'
 Plug 'neovim/nvim-lsp'
 Plug 'nvim-lua/diagnostic-nvim'
 Plug 'nvim-lua/completion-nvim'
+Plug 'nvim-lua/lsp-status.nvim'
 
 " {{{2 Always load the vim-devicons as the very last one.
 Plug 'ryanoasis/vim-devicons', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
@@ -538,3 +539,7 @@ if PlugLoaded('nvim-lsp')
 endif " If lsp pluigin loaded
 
 " {{{2 NVIM-LSP / STATUS
+" TODO:
+"   Check out:
+"       https://github.com/tjdevries/config_manager/blob/master/xdg_config/nvim/lua/tj/lsp_status.lua
+"       https://github.com/nvim-lua/lsp-status.nvim
