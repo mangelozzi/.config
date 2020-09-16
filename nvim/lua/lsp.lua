@@ -26,7 +26,9 @@ local on_attach = function()
     -- Yes: pyls_ms, worked if there were multiple references
     map_key('n', '<leader>cr',  '<cmd>lua vim.lsp.buf.rename()<CR>')-- from ":help lsp
     -- Yes: pyls_ms
-    map_key('n', '<leader>sl',  '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>')
+    map_key('n', '<leader>sd',  '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>')
+    -- Yes: pyls_ms
+    map_key('n', '<leader>sh',  '<cmd>lua vim.lsp.buf.signature_help()<CR>')
 
     -- No: pyls_ms
     map_key('n', 'gD',          '<cmd>lua vim.lsp.buf.implementation()<CR>')
@@ -36,8 +38,7 @@ local on_attach = function()
     map_key('n', '<leader>gd',  '<cmd>lua vim.lsp.buf.definition { callbacks = { Location.jump_first, Location.highlight.with { timeout = 300 } } }<CR>')
     -- No: pyls_ms
     map_key('n', '<leader>pd',  '<cmd>lua vim.lsp.buf.definition { callbacks = Location.preview.with { lines_below = 5 } }<CR>')
-    -- No: pyls_ms
-    map_key('i', '<leader>sl',  '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+
 
     -- Not sure: pyls_ms
     map_key('n', '<leader>lf',  '<cmd>lua vim.lsp.buf.formatting()<CR>')

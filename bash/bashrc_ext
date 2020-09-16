@@ -27,7 +27,9 @@ alias gs='git status'
 alias gu='git add -u'
 alias ga='git add -A'
 alias gc='git commit -m '
-alias gd='git diff --diff-filter=M'
+# -R to turn removed lines into added lines, so whitespace can be be highlighted.
+# Makes add and deleted lines unreliable and confusing
+alias gd='git diff --diff-filter=M --ws-error-highlight=all'
 
 # Django
 alias pm="python3 ~/linkcube/src/manage.py"

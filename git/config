@@ -14,6 +14,7 @@
     frag = yellow
     old = red bold
     new = green bold
+    whitespace = cyan reverse
 
 ; [color "branch"]
 ;   remote = yellow

@@ -322,9 +322,10 @@ nmap <silent> # yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>?//gn<CR>
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
 
-" Swap to single or double quotes with <leader>' or <leader>" respectively.
-noremap <leader>' :s/"/'/g<CR>
-noremap <leader>" :s/'/"/g<CR>
+" Swap to single/double/back quotes with <leader>' or <leader>" or <leader>` respectively.
+noremap <leader>' :s/[`"]/'/g<CR>:noh<CR>
+noremap <leader>" :s/['`]/"/g<CR>:noh<CR>
+noremap <leader>` :s/['"]/`/g<CR>:noh<CR>
 
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
@@ -621,22 +622,14 @@ augroup my_auto_commands
     " Set fileformat (ff) to unix so if there are DOS line endings, they will
     " be shown with `:set list`
     " Note: Can't be placed in ftplugin because it creates recursive loop.
-    autocmd BufReadPost * edit ++fileformat=unix
+    autocmd BufReadPost * :call myal#AuSetFfUnix()
 
-augroup END
-
-
-" {{{1 HIGHLIGHTING (via matches)
-"==============================================================================
-" Colours for the matches below are in the michael colour scheme.
-
-augroup add_window_matches
-    autocmd!
     " match is WINDOW LOCAL ONLY, so we have to jump through some hoops to
     " make it apply to buffers only. i.e. we cant just use :setlocal match!
-    " This myal#AddWindowMatches must be first as it clears matches!
-    autocmd BufWinEnter * :call myal#AddWindowMatches()
+    " This myal#AuAddWindowMatches must be first as it clears matches!
+    autocmd BufWinEnter * :call myal#AuAddWindowMatches()
 augroup END
+
 
 " {{{1 LUA
 " load lua functions

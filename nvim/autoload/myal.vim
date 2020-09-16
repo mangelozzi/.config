@@ -57,7 +57,13 @@ function! myal#PrintHiGroup()
     endfor
 endfunction
 
-function! myal#AddWindowMatches()
+function! myal#AuSetFfUnix()
+    if &modifiable
+        :edit ++fileformat=unix
+    endif
+endfunction
+
+function! myal#AuAddWindowMatches()
     " match is WINDOW LOCAL ONLY, so we have to jump through some hoops to
     " make it apply to buffers only. i.e. we cant just use :setlocal match!
 
@@ -67,7 +73,7 @@ function! myal#AddWindowMatches()
     " e.g. rg-flow, colorizer?
     let w:my_matches = get(w:, 'my_matches', [])
     for match_id in w:my_matches
-        silent call matchdelete(match_id)
+        " silent call matchdelete(match_id)
     endfor
     let w:my_matches = []
 
