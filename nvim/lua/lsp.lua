@@ -24,7 +24,7 @@ local on_attach = function()
     -- Yes: pyls_ms
     map_key('n', 'gr',          '<cmd>lua vim.lsp.buf.references()<CR>')
     -- Yes: pyls_ms, worked if there were multiple references
-    map_key('n', '<leader>cr',  '<cmd>lua vim.lsp.buf.rename()<CR>')-- from ":help lsp
+    map_key('n', '<leader>re',  '<cmd>lua vim.lsp.buf.rename()<CR>')-- from ":help lsp
     -- Yes: pyls_ms
     map_key('n', '<leader>sd',  '<cmd>lua vim.lsp.util.show_line_diagnostics()<CR>')
     -- Yes: pyls_ms
