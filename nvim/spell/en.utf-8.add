@@ -136,10 +136,13 @@ JSON
 Cryptomator
 repo
 unicode
-g
 LTS
 DNS
 Nginx
 symlinked
 Spec
 GitHub
+filename
+excl
+independant
+args

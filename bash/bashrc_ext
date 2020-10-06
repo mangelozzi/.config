@@ -9,6 +9,9 @@ alias dottest='echo "bashrc_ext was sourced"'
 
 # Disable Flow control in terminal (Ctrl-S & Ctrl-Q)
 stty -ixon
+# Fix <ENTER> inserting `^M` instead of being enter
+# https://askubuntu.com/questions/441744/pressing-enter-produces-m-instead-of-a-newline
+stty icrnl
 
 # `fd` already taken, create a convenient alias for the search tool:
 alias fd=fdfind
@@ -16,6 +19,8 @@ alias fd=fdfind
 # Commons dirs
 # Linkcube
 alias cdl='cd ~/linkcube'
+# Django
+alias cdd='cd ~/venv/linkcube/lib/python3.8/site-packages/django'
 # Neovim
 alias cdn='cd ~/.config/nvim'
 # Neovim Tmp/ or Plugin dir
@@ -161,3 +166,4 @@ copy_temp_file ~/.ssh/config ~/.config/ssh/config
 
 # Placed last incase it fails
 source ~/venv/linkcube/bin/activate
+cd ~/linkcube/src

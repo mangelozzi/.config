@@ -41,6 +41,13 @@
 " Notemap commands cant have comment on same line as them.
 
 " {{{1 DISABLE ALL (Plugins)
+
+let rtp_only = 0
+if rtp_only
+    let &runtimepath.=',/home/michael/.config/nvim/test/'
+	finish
+endif
+
 let no_rc = 0
 if no_rc
     let plugdir = fnamemodify($MYVIMRC, ":p:h") . "/tmp/vim-plug"
@@ -261,6 +268,14 @@ set relativenumber
 " CTRL (^) maps lower and uppercase to same key (by convention use uppercase)
 " Meta (M-?) can map lower and upper case words)
 
+" Practically available hotkeys
+"   Q (Ex mode) -> MAPPED: ^
+"   Z (First half of quick exit)
+"   ^c (Aborts pending command) (not good when SSH'ing)
+"   ^k -> MAPPED: Switch window
+"   ^l (small L, redraw screen) -> MAPPED: Switch window
+"   ^q (XON)
+"   ^s (XOFF) -> MAPPED: :save
 " {{{2 All modes
 " Map ; to : for speed
 map ; :
@@ -295,9 +310,13 @@ noremap  <C-Space> <nop>
 " {{{2 Map (noremap)
 "   Normal, Visual+Select, and Operator Pending modes
 
+" Disable annoying ex mode (Type "visual" to exit)
+" Change it to the hard to reach ^
+noremap Q ^
+
 " :h yy = If you like "Y" to work from the cursor to the end of line (which is
 " more logical, but not Vi-compatible) use ":map Y y$".
-" noremap Y y$
+noremap Y y$
 
 " Map backspace to other buffer
 " Note!!! Using recursive version so will recurse to <ESC> when in the
@@ -316,8 +335,10 @@ noremap <leader>/ /\v
 " Set highlight search to trigger the highlighting which sometimes doesnt
 " appear otherwise.
 " After highlighting print how many matches there are with a search with 'n'
-nmap <silent> * yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>///gn<CR>
-nmap <silent> # yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>?//gn<CR>
+" m" to mark the current position to " register, then `" to jump back there
+" afterwards.
+nmap <silent> * m"yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>///gn<CR>`"
+nmap <silent> # m"yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>?//gn<CR>`"
 
 " Make it easily to delete to the start of the line
 " slow dd down noremap db d$
@@ -327,13 +348,21 @@ noremap <leader>' :s/[`"]/'/g<CR>:noh<CR>
 noremap <leader>" :s/['`]/"/g<CR>:noh<CR>
 noremap <leader>` :s/['"]/`/g<CR>:noh<CR>
 
+" Swap to forward/backwards slashes with <leader>/ or <leader>\ respectively.
+noremap <leader>/ :s#\\#/#g<CR>:noh<CR>
+noremap <leader>\ :s#/#\\#g<CR>:noh<CR>
+
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K> " Careful of conflict with LSP (implemented in LSP section)
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" Prefer <C-G> to print full path, can see relative path in status bar anyways
+nnoremap <C-G> 3<C-G>
+
 map <LEADER>c <cmd>call myal#PrintHiGroup()<CR>
+
 " {{{2 Map! (noremap!)
 
 " Left/Right arrow backspace and delete
@@ -429,6 +458,10 @@ xnoremap <S-Up>     xkPgvkoko
 " vv to visual select to end of line without select the $
 vnoremap v $h
 
+" swap the words `light` and `dark` in visual range, useful for light/dark
+" theme dev.
+vnoremap <leader>s :s/dark/zzz/ge<CR>gv:s/light/dark/ge<CR>gv:s/zzz/light/ge<CR>
+
 " {{{2 Searching & replacing
 " https://www.youtube.com/watch?v=fP_ckZ30gbs&t=10m48s
 " He uses a plugin to achieve this.
@@ -458,11 +491,17 @@ xnoremap <Leader>rc :s///gc<Left><Left><Left>
 " {{{2 Popup Menu
 inoremap <expr> <C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
 inoremap <expr> <C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
-inoremap <expr> <Cr>  pumvisible() ? "\<C-y>" : "\<Cr>"
+" Allow remap for rgflow <CR> in insert mode.
+imap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<Cr>"
 
 " Use <Tab> and <S-Tab> to navigate through popup menu
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+imap <expr> <M-h>  pumvisible() ? "\<ESC>h" : "\<M-h>"
+imap <expr> <M-j>  pumvisible() ? "\<ESC>j" : "\<M-j>"
+imap <expr> <M-k>  pumvisible() ? "\<ESC>k" : "\<M-k>"
+imap <expr> <M-l>  pumvisible() ? "\<ESC>l" : "\<M-l>"
 
 " {{{2 Copy & paste
 " Copy to system clipboard
@@ -572,6 +611,13 @@ function! SynGroup()
     echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 command! SynGroup call SynGroup()
+
+" Common dirs for quick cd's
+command! Cd :cd %:p:h
+command! Cdc :cd ~/.config
+command! Cdn :cd ~/.config/nvim
+command! Cds :cd ~/linkcube/src
+command! Cdl :cd ~/linkcube
 
 " {{{1 AUTOCOMMAND
 " =============================================================================

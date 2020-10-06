@@ -2,6 +2,7 @@
 " If get error ould not read Username for ... probably type the plugin name wrong
 
 " TO TRY
+" dkarter / bullets.vim (automated bullets in .md etc)
 " bps/vim-textobj-python
 " LOOK AWESOME!!! https://github.com/iamcco/markdown-preview.nvim
 " Plug 'vim-scripts/indentpython.vim'    " https://github.com/vim-scripts/indentpython
@@ -51,8 +52,8 @@ let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-wsl"
 Plug wsl_local
 
 " Plug own plugin at nvim/tmp/vim-capesky
-let wsl_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-capesky"
-Plug wsl_local
+let capesky_local = fnamemodify($MYVIMRC, ":p:h")."/tmp/vim-capesky"
+Plug capesky_local
 
 " {{{2 OPERATOR + MOTION + TEXT-OBJECT = AWESOME
 Plug 'wellle/targets.vim'
@@ -67,14 +68,15 @@ Plug 'christoomey/vim-titlecase'
 Plug 'tpope/vim-unimpaired'
 Plug 'AndrewRadev/bufferize.vim'
 Plug 'osyo-manga/vim-brightest'
-Plug 'stefandtw/quickfix-reflector.vim'
+" Plug 'stefandtw/quickfix-reflector.vim' " BAD!! make qf window modifiable,
+" maybe messes up quickfix colors
 Plug 'junegunn/vim-easy-align'
 
-" {{{2 CCOLOR RELATED
+" {{{2 COLOR RELATED
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'pangloss/vim-javascript'
 " Plug 'zefei/vim-colortuner'
-
+"------------------------------------------------------------------
 " {{{2 SPELLCHECK EXTRAS
 Plug 'inkarkat/vim-ingo-library'
 Plug 'inkarkat/vim-SpellCheck'
@@ -173,10 +175,10 @@ endfunction
 "                         line use ["x]gr$
 " {Visual}["x]gr        = Replace the selection with the contents of register x.
 " Use gr for the default go references, used by LSP
-" Far fetch mnemonic, l=lekker!
-nmap gl  <Plug>ReplaceWithRegisterOperator
-nmap gll <Plug>ReplaceWithRegisterLine
-xmap gl  <Plug>ReplaceWithRegisterVisual
+" Mnemonic: TAB is like switch
+nmap <leader><TAB>  <Plug>ReplaceWithRegisterOperator
+nmap <leader><TAB><TAB> <Plug>ReplaceWithRegisterLine
+xmap <C-k>  <Plug>ReplaceWithRegisterVisual
 
 " {{{2 TITLECASE
 " https://github.com/christoomey/vim-titlecase
@@ -266,7 +268,13 @@ nnoremap <silent> <leader>gs :Git status<cr>
 let $FZF_DEFAULT_OPTS='--bind ctrl-a:select-all'
 
 "let $FZF_DEFAULT_COMMAND='rg --files . 2> nul'
-let $FZF_DEFAULT_COMMAND='fdfind --type file --hidden --no-ignore'
+" by default uses .gitignore files, but sometimes whish to find files in
+" .gitignore
+" let $FZF_DEFAULT_COMMAND='fdfind --type file --hidden'
+" -e = extension, e.g. fd -e 'svg' -e 'html'
+" -E = exclude extension, e.g. fd -E '*.py' -E '*.svg'
+" Refer to: https://github.com/sharkdp/fd#excluding-specific-files-or-directories
+let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E *__pycache__* -E *.jpg -E *.png -E *.zip -E spike -E .git"
 
 " Don't abort the function, so if no match is found, its communicates it.
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
@@ -290,34 +298,36 @@ command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-hea
 
 " Files
 " FZF in Open buffers
-nnoremap <silent> <leader><leader> :Buffers<cr>
+nnoremap <silent> <leader><leader> :call myal#FZFOpen(":Buffers")<CR>
 
 " FZF Search for Files
-nnoremap <silent> <leader>f :Files<cr>
+nnoremap <silent> <leader>f :call myal#FZFOpen(":Files")<CR>
 
 " FZF Search for Files in home dir
-nnoremap <silent> <leader>~ :Files ~<cr>
+nnoremap <silent> <leader>~ :call myal#FZFOpen(":Files ~")<CR>
 
 " FZF Search for previous opened Files
-nnoremap <silent> <leader>zh :History<cr>
+nnoremap <silent> <leader>zh :call myal#FZFOpen(":History")<CR>
 
 " FZF in Git files
-nnoremap <silent> <leader>zg :GFiles<cr>
+nnoremap <silent> <leader>zg :call myal#FZFOpen(":GFiles")<CR>
+
+" FZF in Lines in loaded buffers
+nnoremap <silent> <leader>l :call myal#FZFOpen(":Lines")<CR>
+
+" FZF in Lines in the current buffer
+nnoremap <silent> <leader>b :call myal#FZFOpen(":BLines")<CR>
+
+" Normal mode mappings
+nnoremap <silent> <leader>zm :call myal#FZFOpen(":Maps")<CR>
 
 " Map to FZF command, so one can type commands interactively before enter.
 nnoremap <leader>zz :FZF<Space>
 
 " Map to Rg command, so one can type commands interactively before enter.
+" TODO Dont use this
 nnoremap <leader>zr :Rg<Space>HighlightSearchTerm<CR>
 
-" FZF in Lines in loaded buffers
-nnoremap <silent> <leader>l :Lines<cr>
-
-" FZF in Lines in the current buffer
-nnoremap <silent> <leader>b :BLines<cr>
-
-" Normal mode mappings
-nnoremap <silent> <leader>zm :Maps<cr>
 
 let g:fzf_colors =
             \ { 'fg':    ['fg', '_FzfNormal'],
@@ -439,22 +449,22 @@ let g:brightest#highlight = {
 
 " Specify with extensions to use
 " Can check with :CocList extensions
-let g:coc_global_extensions = [
-            \ 'coc-python',
-            \ 'coc-tsserver',
-            \ 'coc-eslint',
-            \ 'coc-html',
-            \ 'coc-css',
-            \ 'coc-json',
-            \ 'coc-svg',
-            \ 'coc-markdownlint',
-            \ ]
-
-let g:coc_filetype_map = {
-            \ 'htmldjango': 'html',
-            \ }
 " Own vim file for all the coc settings (based on the provided settings file)
 if get(g:, 'coc_enabled', 0)
+    let g:coc_global_extensions = [
+                \ 'coc-python',
+                \ 'coc-tsserver',
+                \ 'coc-eslint',
+                \ 'coc-html',
+                \ 'coc-css',
+                \ 'coc-json',
+                \ 'coc-svg',
+                \ 'coc-markdownlint',
+                \ ]
+
+    let g:coc_filetype_map = {
+                \ 'htmldjango': 'html',
+                \ }
     source <sfile>:h/coc.vim
 endif
 
@@ -481,20 +491,20 @@ if PlugLoaded('nvim-lsp')
     let g:completion_sorting = "length_desc"
     let g:completion_trigger_keyword_length = 3 " default = 1
     let g:completion_items_priority = {
-          \ 'Field': 5,
-          \ 'Function': 7,
-          \ 'Variables': 7,
-          \ 'Method': 10,
-          \ 'Interfaces': 5,
-          \ 'Constant': 5,
-          \ 'Class': 5,
-          \ 'Keyword': 4,
-          \ 'UltiSnips' : 1,
-          \ 'vim-vsnip' : 0,
-          \ 'Buffers' : 1,
-          \ 'TabNine' : 0,
-          \ 'File' : 0,
-          \}
+        \ 'Field': 5,
+        \ 'Function': 7,
+        \ 'Variables': 7,
+        \ 'Method': 10,
+        \ 'Interfaces': 5,
+        \ 'Constant': 5,
+        \ 'Class': 5,
+        \ 'Keyword': 4,
+        \ 'UltiSnips' : 1,
+        \ 'vim-vsnip' : 0,
+        \ 'Buffers' : 1,
+        \ 'TabNine' : 0,
+        \ 'File' : 0,
+        \}
     " {{{2 NVIM-LSP / DIAGONOSTIC
 
     " If 0, then diagnostic information only shown when you go Next/PrevDiagnostic

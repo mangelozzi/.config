@@ -6,6 +6,18 @@
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 
+" Prevent FZF commands from open in none modifiable buffers
+function! myal#FZFOpen(cmd)
+    " If more than 1 window, and buffer is not modifiable, or file type is
+    " NERD tree or Quickfix type
+    if winnr('$') > 1 && (!&modifiable || &ft == 'nerdtree' || &ft == 'qf')
+        " Move one window to the right, then up
+        wincmd l
+        wincmd k
+    endif
+    exe a:cmd
+endfunction
+
 " This function sets up the opfunc so it can be repeated with a dot.
 " Align to Column works by moving the next none whitespace character to the
 " desired columned. e.g. 32<hotkey> will align the next none whitespace
@@ -73,7 +85,7 @@ function! myal#AuAddWindowMatches()
     " e.g. rg-flow, colorizer?
     let w:my_matches = get(w:, 'my_matches', [])
     for match_id in w:my_matches
-        " silent call matchdelete(match_id)
+        silent call matchdelete(match_id)
     endfor
     let w:my_matches = []
 
