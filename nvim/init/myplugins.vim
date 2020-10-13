@@ -26,8 +26,6 @@
 " Plug 'davidhalter/jedi-vim'
 " Plug 'preservim/nerdcommenter'
 " Plug 'neomake/neomake'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" let g:coc_enabled = 0
 
 " {{{1 PLUGINS
 " Vim-plug installation
@@ -103,7 +101,7 @@ Plug 'kshenoy/vim-signature', { 'on': ['NERDTreeToggle', 'NERDTreeFind']}
 Plug 'tmhedberg/SimpylFold'
 
 " {{{2 LSP
-"Plug 'Shougo/deoplete.nvim'
+" Plug 'Shougo/deoplete.nvim'
 Plug 'neovim/nvim-lsp'
 Plug 'nvim-lua/diagnostic-nvim'
 Plug 'nvim-lua/completion-nvim'
@@ -143,6 +141,11 @@ endfunction
 " gc = comment
 " gcc = comment out a line
 " gcgc = Uncomment above, else below line
+nmap <leader>j <Plug>Commentary
+nmap <leader>jj <Plug>CommentaryLine
+" Change a block of comments
+nmap <leader>J <Plug>ChangeCommentary
+xmap <leader>j  <Plug>Commentary
 
 " {{{2 vim-eunuch
 " Vim sugar for the UNIX shell commands that need it the most:
@@ -176,9 +179,10 @@ endfunction
 " {Visual}["x]gr        = Replace the selection with the contents of register x.
 " Use gr for the default go references, used by LSP
 " Mnemonic: TAB is like switch
-nmap <leader><TAB>  <Plug>ReplaceWithRegisterOperator
-nmap <leader><TAB><TAB> <Plug>ReplaceWithRegisterLine
-xmap <C-k>  <Plug>ReplaceWithRegisterVisual
+nmap <leader>k  <Plug>ReplaceWithRegisterOperator
+nmap <leader>kk <Plug>ReplaceWithRegisterLine
+xmap <leader>k  <Plug>ReplaceWithRegisterVisual
+nmap <leader>K  <leader>k$
 
 " {{{2 TITLECASE
 " https://github.com/christoomey/vim-titlecase
@@ -273,8 +277,10 @@ let $FZF_DEFAULT_OPTS='--bind ctrl-a:select-all'
 " let $FZF_DEFAULT_COMMAND='fdfind --type file --hidden'
 " -e = extension, e.g. fd -e 'svg' -e 'html'
 " -E = exclude extension, e.g. fd -E '*.py' -E '*.svg'
+" --hidden = Search hidden files (for dot config files)
 " Refer to: https://github.com/sharkdp/fd#excluding-specific-files-or-directories
-let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E *__pycache__* -E *.jpg -E *.png -E *.zip -E spike -E .git"
+" let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E *__pycache__* -E *.jpg -E *.png -E *.zip -E spike -E *.git"
+let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E '*__pycache__*' -E '*.jpg' -E '*.png' -E '*.zip' -E spike/* -E '*.git' "
 
 " Don't abort the function, so if no match is found, its communicates it.
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
@@ -357,7 +363,6 @@ augroup END
 " [q ]q               cprevious / cnext
 " [f ]f               previous/next file in the current dir
 " [n ]n               previous/next SCM conflict marker or diff/patch hunk. Try d[n inside a conflict.
-" [l ]l               previous/next line error (e.g. CoC completion error.
 " [<space> ]<space>   Add [count] blank lines above/below the cursor.
 " [x{motion}          XML encode, e.g. <foo bar="baz"> => &lt;foo bar=&quot;baz&quot;&gt;
 " ]x{motion}          XML decode
@@ -437,37 +442,6 @@ let g:brightest#highlight = {
 
 " {{{1 LSP
 
-" {{{2 CoC
-" To Edit Config File: :CocConfig, save then :CocRestart
-" CocList extensions
-
-" Python        coc-python
-" JavaScript    coc-tsserver coc-eslint
-" Webcoc-html   coc-html coc-css
-" Misc Formats  coc-json coc-svg coc-markdownlint
-" To try        coc-snippets coc-pairs coc-prettier
-
-" Specify with extensions to use
-" Can check with :CocList extensions
-" Own vim file for all the coc settings (based on the provided settings file)
-if get(g:, 'coc_enabled', 0)
-    let g:coc_global_extensions = [
-                \ 'coc-python',
-                \ 'coc-tsserver',
-                \ 'coc-eslint',
-                \ 'coc-html',
-                \ 'coc-css',
-                \ 'coc-json',
-                \ 'coc-svg',
-                \ 'coc-markdownlint',
-                \ ]
-
-    let g:coc_filetype_map = {
-                \ 'htmldjango': 'html',
-                \ }
-    source <sfile>:h/coc.vim
-endif
-
 " {{{2 DEOPLETE (better autocomplete popup)
 let g:deoplete#enable_at_startup = 1
 
@@ -484,9 +458,10 @@ if PlugLoaded('nvim-lsp')
 
 
     " {{{2 NVIM-LSP / COMPLETITON
-    " Set completeopt to have a better completion experience
+    " Can set 'completeopt' to have a better completion experience
+    " Refer to init file, and waiting for https://github.com/nvim-lua/completion-nvim/issues/235
     set completeopt=menuone,noinsert,noselect
-    " set completeopt=menuone,noinsert
+
     " possible value: "length", "length_desc", "alphabet", "none"
     let g:completion_sorting = "length_desc"
     let g:completion_trigger_keyword_length = 3 " default = 1

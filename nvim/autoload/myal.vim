@@ -6,6 +6,25 @@
 " NOTE mappings cannot be placed here, because they won't be applied
 " Autoload is only loaded on demand (i.e. when a function is called)
 
+function! myal#ScssToSass()
+    " let l:winview = winsaveview()
+    " Trailing ;
+    :%s/;$//e
+    " Replace /* with //
+    :%s/\/\*/\/\//e
+    " Remove */
+    :%s/ \*\///e
+    " replace { then content with new line
+    :%s/\s\+{\s*/\r    /e
+    " Remove `; {`
+    :%s/\s*;\s*}\s*//e
+    " Delete any lines that are just whitespace with a curl brace
+    :g/^\s*[{}]\s*$/de
+    " Delete whitespce then opening curly brace from line endings
+    :%s/\s*{\s*$//e
+    " call winrestview(l:winview)
+endfunction
+
 " Prevent FZF commands from open in none modifiable buffers
 function! myal#FZFOpen(cmd)
     " If more than 1 window, and buffer is not modifiable, or file type is
@@ -24,7 +43,7 @@ endfunction
 " character to column 32. Then press dot to repeat the operation.
 function! myal#SetupAlignToColumn(col)
     if v:count != 0
-        let g:myal_align_col = v:count
+        let w:myal_align_col = v:count
     endif
     set opfunc=myal#AlignToColumn
     return 'g@l'
@@ -34,7 +53,7 @@ function! myal#AlignToColumn(motion)
     let reg_backup_value = getreg('z')    " Backup the contents of the unnamed register
     let reg_backup_type = getregtype('z')      " Save the type of the register as well
     let l:winview = winsaveview()
-    let cmd = 'normal wh'.g:myal_align_col.'a'."\<SPACE>\<ESC>".'"zd'.(g:myal_align_col - 1).'|'
+    let cmd = 'normal wh'.w:myal_align_col.'a'."\<SPACE>\<ESC>".'"zd'.(w:myal_align_col - 1).'|'
     exe cmd
     call winrestview(l:winview)
     call setreg('z', reg_backup_value, reg_backup_value) " Restore register

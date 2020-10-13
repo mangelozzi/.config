@@ -136,19 +136,29 @@ set showmode                 " Do show mode in command window area, e.g. `-- INS
 "set splitbelow              " Splitting a window will put the new window below the current one.
 "set splitright              " Splitting a window will put the new window right of the current one
 
+" FINDING FILES
+" Use with wild menu
+set path+=**
+
 " WILD COMPLETION
 set wildmenu                " Better command-line completion
 " The parts (stages) in completion:
 "     1. longest = Complete until longest common string
 "     2. Next tab full = statusline selectable options
-set wildmode=longest,full
+" set wildmode=longest,full
+" NOTE! This value is OVERRIDDEN in myplugins.vim, see: https://github.com/nvim-lua/completion-nvim/issues/235
+set wildmode=longest:full,full
 
 " Ignore certain files and folders when globbing
 set wildignore=*.pyc,*.zip,package-lock.json
 set wildignore+=**/spike/**,**/ignore/**,**/temp/static/**
 set wildignore+=**/venv/**,**/node_modules/**,**/.git/**
 set pumblend=10             " Transparency of Pop Up Menu, 0=solid, 100=Fully Transparent
-set completeopt-=preview    " Turn off annoying vsplit top preview window
+
+" set completeopt-=preview    " Turn off annoying vsplit top preview window
+" menuone allows one to tab between the autocomplete option and nothing, which
+" is great if the only option not a good match.
+set completeopt=menuone,longest
 
 " SEARCHING
 set ignorecase              " Use case insensitive search...
@@ -165,10 +175,6 @@ filetype plugin on          " Enable plugins (for newtrw), built in, comes with 
 filetype indent plugin on   " Native plugin, intelligent auto indenting based on file type and content
 
 highlight SpecialKey ctermfg=3
-
-" FINDING FILES
-set path+=**
-set wildmenu                " Display all matching files when we tab complete
 
 " WORD TOOLS
 " Specify the spelling language, have to use `:set spell` to enable it.
@@ -268,7 +274,7 @@ set relativenumber
 " CTRL (^) maps lower and uppercase to same key (by convention use uppercase)
 " Meta (M-?) can map lower and upper case words)
 
-" Practically available hotkeys
+" Practically available/free hotkeys
 "   Q (Ex mode) -> MAPPED: ^
 "   Z (First half of quick exit)
 "   ^c (Aborts pending command) (not good when SSH'ing)
@@ -276,6 +282,11 @@ set relativenumber
 "   ^l (small L, redraw screen) -> MAPPED: Switch window
 "   ^q (XON)
 "   ^s (XOFF) -> MAPPED: :save
+" LEADER -> aeghijmqtuvwxy (g for git one day)
+"   j  - Comment, mneomoic (Jargon)
+"   k  - replace with register
+"   kk - replace with register line
+"   K  - replace with regsiter to end of line
 " {{{2 All modes
 " Map ; to : for speed
 map ; :
@@ -324,11 +335,6 @@ noremap Y y$
 nmap <BS> <C-^>
 nmap <BS> <C-^>
 
-" Use Magic version of REGEX searching, i.e. all char expect 0-9a-zA-Z_ are
-" considered regex special chars "very magic".
-" http://vimdoc.sourceforge.net/htmldoc/pattern.html#pattern (scroll down a page to magic)
-noremap <leader>/ /\v
-
 "noremap <leader>sf :lvimgrep // %<left><left><left>
 
 " When pressing star, don't jump to the next match
@@ -348,9 +354,28 @@ noremap <leader>' :s/[`"]/'/g<CR>:noh<CR>
 noremap <leader>" :s/['`]/"/g<CR>:noh<CR>
 noremap <leader>` :s/['"]/`/g<CR>:noh<CR>
 
+" Swap to underscore/dash with <leader>_ or <leader>-
+noremap <leader>_ :s/-/_/g<CR>:noh<CR>
+noremap <leader>- :s/_/-/g<CR>:noh<CR>
+xnoremap <leader>_ :s/-/_/g<CR>:noh<CR>
+xnoremap <leader>- :s/_/-/g<CR>:noh<CR>
+
 " Swap to forward/backwards slashes with <leader>/ or <leader>\ respectively.
-noremap <leader>/ :s#\\#/#g<CR>:noh<CR>
+" noremap <leader>/ :s#\\#/#g<CR>:noh<CR>  !!! Rather use it for file substitue
 noremap <leader>\ :s#/#\\#g<CR>:noh<CR>
+
+" Swap to underscore/dash with <leader>_ or <leader>-
+noremap <leader>1 :s/\d/1/g<CR>:noh<CR>
+noremap <leader>2 :s/\d/2/g<CR>:noh<CR>
+noremap <leader>3 :s/\d/3/g<CR>:noh<CR>
+noremap <leader>4 :s/\d/4/g<CR>:noh<CR>
+noremap <leader>5 :s/\d/5/g<CR>:noh<CR>
+noremap <leader>6 :s/\d/6/g<CR>:noh<CR>
+noremap <leader>7 :s/\d/7/g<CR>:noh<CR>
+noremap <leader>8 :s/\d/8/g<CR>:noh<CR>
+noremap <leader>9 :s/\d/9/g<CR>:noh<CR>
+xnoremap <leader>_ :s/-/_/g<CR>:noh<CR>
+xnoremap <leader>- :s/_/-/g<CR>:noh<CR>
 
 " Easier split navigations
 nnoremap <C-J> <C-W><C-J>
@@ -488,6 +513,16 @@ noremap <Leader>rc :%s///gc<Left><Left><Left>
 xnoremap <Leader>rr :s///g<Left><Left>
 xnoremap <Leader>rc :s///gc<Left><Left><Left>
 
+" Speed substitue whole file
+noremap <leader>/ :%s//g<Left><Left>
+" Speed substitue line
+noremap <leader>? :s//g<Left><Left>
+
+" Speed substitue visual mode
+xnoremap <leader>/ :s//g<Left><Left>
+xnoremap <leader>? :s//g<Left><Left>
+
+
 " {{{2 Popup Menu
 inoremap <expr> <C-J> pumvisible() ? "\<C-n>" : "\<C-J>"
 inoremap <expr> <C-K> pumvisible() ? "\<C-p>" : "\<C-K>"
@@ -582,7 +617,7 @@ endfunction
 onoremap A :<C-U>call TextObjectAll()<CR>
 nnoremap <silent> <Plug>(RestoreView) :call winrestview(g:restore_position)<CR>
 " Disabled A in visual mode, cause use A to append at the end of selection.
-" xnoremap A :<C-U>normal! ggVG<CR>
+xnoremap <leader>A :<C-U>normal! ggVG<CR>
 
 " Line Wise text objects (excludes the ending line char)
 " g_ means move to the last printable char of the line
@@ -618,6 +653,8 @@ command! Cdc :cd ~/.config
 command! Cdn :cd ~/.config/nvim
 command! Cds :cd ~/linkcube/src
 command! Cdl :cd ~/linkcube
+
+command! Sass :call myal#ScssToSass()
 
 " {{{1 AUTOCOMMAND
 " =============================================================================
