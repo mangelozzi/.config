@@ -412,6 +412,8 @@ map <M-S-j> <cmd>call myal#DuplicateLine(0)<CR>
 
 map <expr> <M-c> myal#SetupAlignToColumn(v:count)
 
+noremap <leader><DEL> Obreakpoint()<ESC>
+
 " {{{2 Insert
 
 " Set paste then nopaste automatically when working with system registers
@@ -655,6 +657,7 @@ command! Cds :cd ~/linkcube/src
 command! Cdl :cd ~/linkcube
 
 command! Sass :call myal#ScssToSass()
+command! Json :execute '%!python -m json.tool'
 
 " {{{1 AUTOCOMMAND
 " =============================================================================

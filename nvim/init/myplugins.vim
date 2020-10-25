@@ -279,8 +279,7 @@ let $FZF_DEFAULT_OPTS='--bind ctrl-a:select-all'
 " -E = exclude extension, e.g. fd -E '*.py' -E '*.svg'
 " --hidden = Search hidden files (for dot config files)
 " Refer to: https://github.com/sharkdp/fd#excluding-specific-files-or-directories
-" let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E *__pycache__* -E *.jpg -E *.png -E *.zip -E spike -E *.git"
-let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E '*__pycache__*' -E '*.jpg' -E '*.png' -E '*.zip' -E spike/* -E '*.git' "
+let $FZF_DEFAULT_COMMAND="fdfind --type file --hidden --no-ignore -E '*__pycache__*' -E '*.jpg' -E '*.png' -E '*.zip' -E 'spike/*' -E '*.git' -E '*.svg' "
 
 " Don't abort the function, so if no match is found, its communicates it.
 nnoremap <silent> <leader>zn :copen<CR> :call clearmatches()<CR>
