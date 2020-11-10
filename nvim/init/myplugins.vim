@@ -2,6 +2,7 @@
 " If get error ould not read Username for ... probably type the plugin name wrong
 
 " TO TRY
+" https://github.com/wellle/targets.vim !!!!!!! VERY GOOD!!!
 " dkarter / bullets.vim (automated bullets in .md etc)
 " bps/vim-textobj-python
 " LOOK AWESOME!!! https://github.com/iamcco/markdown-preview.nvim
@@ -11,7 +12,6 @@
 " https://github.com/justinmk/vim-sneak
 " https://github.com/tpope/vim-repeat
 " https://github.com/simnalamburt/vim-mundo
-
 " Indicator for what was yanked
 " Plug 'machakann/vim-highlightedyank'
 
@@ -142,9 +142,9 @@ endfunction
 " gcc = comment out a line
 " gcgc = Uncomment above, else below line
 nmap <leader>j <Plug>Commentary
-nmap <leader>jj <Plug>CommentaryLine
+nmap <leader>J <Plug>CommentaryLine
 " Change a block of comments
-nmap <leader>J <Plug>ChangeCommentary
+" nmap <leader>J <Plug>ChangeCommentary
 xmap <leader>j  <Plug>Commentary
 
 " {{{2 vim-eunuch
@@ -355,6 +355,19 @@ augroup Fzf_Status_Line
     autocmd User FzfStatusLine setlocal statusline=%#_FzfStatusChevron#\ >\ %#_fzfStatus#fzf
 augroup END
 
+" Switch from any fzf mode to :Files on the fly and transfer the search query.
+function! s:FzfFallback()
+    if &filetype != 'FZF'
+        return
+    endif
+    " Extract from first space to cursor position of previous fzf buffer prompt
+    let query = getline('.')[stridx(getline('.'), ' ') : col('.') - 1]
+    close
+    sleep 1m
+    call fzf#vim#files('.', {'options': ['-q', query]})
+endfunction
+tnoremap <c-space> <c-\><c-n>c:call <sid>FzfFallback()<cr>
+
 " {{{1 SMALL MISC
 
 " {{{2 VIM-UNIMPAIRED
@@ -428,13 +441,13 @@ endif
 
 " {{{2 osyo-manga/vim-brightest
 " Highlights the word the cusor currently is on.
-hi _VimBrightest guibg=#404040
+hi _VimBrightest guibg=#500050
 let g:brightest#highlight = {
 \   "group" : "_VimBrightest"
 \}
 
 " {{{2 stefandtw/quickfix-reflector.vim
-" Always one to file changes directly in the quickfix window.
+" Allows one to make changes directly in the quickfix window, also breaks rgflow
 
 " {{{2 vim-easy-align
 " Allows one to easily align text

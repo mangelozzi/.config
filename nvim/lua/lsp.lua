@@ -41,7 +41,7 @@ local on_attach = function()
 
 
     -- Not sure: pyls_ms
-    map_key('n', '<leader>lf',  '<cmd>lua vim.lsp.buf.formatting()<CR>')
+    -- Interfers with FZF lines (makes <leader>l slow) map_key('n', '<leader>lf',  '<cmd>lua vim.lsp.buf.formatting()<CR>')
     map_key('n', '<leader>ca',  '<cmd>lua vim.lsp.buf.code_action()<CR>')
     -- nnoremap <silent> <LEADER>ld  <cmd>lua vim.lsp.buf.declaration()<CR>
 

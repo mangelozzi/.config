@@ -48,7 +48,7 @@ function! GetFileType() abort
     if &filetype == 'nerdtree'
         return ''
     endif
-    return "│ ".&filetype." "
+    return "  ".&filetype." "
 endfunction
 
 function! GetGit() abort

@@ -185,9 +185,6 @@ of the file.
 ## HELPFUL
 
 - `:CheckHealth` - Neovim internal checks
-- `:CocConfig` - To open CocConfig 
-- `CocInfo` - If one gets an error, and Coc informs you to check
-   `ouput channel`, e.g. ESLint output channel
 
 ### LUA
 
@@ -255,6 +252,11 @@ then select append the `Target` with `-- -S` to restore any session files. Will 
 Within CocConfig:
 "eslint.options": {"configFile": "C:/Users/Michael/.config/nvim/coc-eslint.json"},
 
+### CoC Helpful Commands
+
+- `:CocConfig` - To open CocConfig 
+- `CocInfo` - If one gets an error, and Coc informs you to check
+   `ouput channel`, e.g. ESLint output channel
 
 ### deoplete-jedi
 
@@ -281,7 +283,9 @@ Normally `~/.profile` adds `/home/michael/.local/bin` to the `$PATH`.
 If its not in your path, log into WSL with `bash.exe ~ -l` (can drop the `.exe` part) or `wsl ~ bash -l`
 Log out the shell and back in. `which pyls` should print the executable and
 Neovim `:checkhealth` should show pyls is OK.
+
 #### Install Pyls Plugins
+
 ```shell
 pip3 install rope pyls-mypy pyls-isort pyls-black
 ```

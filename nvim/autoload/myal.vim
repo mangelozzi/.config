@@ -37,6 +37,45 @@ function! myal#FZFOpen(cmd)
     exe a:cmd
 endfunction
 
+function! myal#Run()
+    " F5
+    if &filetype == "python"
+        " Such a round about way due to printing
+        call feedkeys(":!python %\<CR>")
+    elseif &filetype == "vim"
+        source %
+    elseif &filetype == "html" || &filetype == "markdown"
+        WslBrowse chrome tab 2
+    else
+        echom "No run command linked for this filetype, using system app..."
+        WslBrowse
+    endif
+endfunction
+
+function! myal#Format()
+    " F6
+    if &filetype == "python"
+        " Such a round about way due to printing
+        !black -S %
+    elseif &filetype == "javascript"
+        !prettier --write --print-width 100 --tab-width 4 %
+    elseif &filetype == "json"
+        execute '%!python -m json.tool'
+    elseif &filetype == "Scss"
+        call myal#ScssToSass()
+    endif
+endfunction
+
+function! myal#Other()
+    " F7
+    if &filetype == "vim"
+        ColorizerAttachToBuffer<CR>
+        :lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR>:e<CR>
+    elseif &filetype == "javascript"
+        !jshint --config ~/.config/nvim/tools/.jshintrc %
+    endif
+endfunction
+
 " This function sets up the opfunc so it can be repeated with a dot.
 " Align to Column works by moving the next none whitespace character to the
 " desired columned. e.g. 32<hotkey> will align the next none whitespace
@@ -122,7 +161,7 @@ function! myal#AuAddWindowMatches()
     " LEADING SPACES NOT %4
     " From the start of line, look for any number of 4 spaces
     " Then match 1 to 3 spaces, selected with \za to \ze, then a none whitespace character
-    if index(['python', 'javascript'], &ft) >= 0
+    if index(['python', ], &ft) >= 0
         " match _MatchWrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
         "match _MatchWrongSpacing /\(^\(    \)*\)\zs \{1,3}\ze\S/
         let match_id = matchadd('_MatchWrongSpacing', '\(^\(    \)*\)\zs \{1,3}\ze\S', -1)

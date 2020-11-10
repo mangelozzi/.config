@@ -1,14 +1,20 @@
-" WARM
+" VIM config file for Michael Angelozzi
+
+" :help user-manual
+" :help function-list
+" :help usr_41 (write a vim script)
+
+" WARM UPS
 " $
 " ^
 " {}
 " ()
-" vf{%d
+" vf{%d  -> visual mode, find {, jump to }, delete ?
+
 " 40a<Space><Esc>d40|
 " TODO make it at end of jumplist, then tab opens current fold.
 " Check out:
 " https://bluz71.github.io/2019/03/11/find-replace-helpers-for-vim.html
-" a
 " nvim-lsp + completition-nvim is ez too
 "
 " lua: https://ms-jpq.github.io/neovim-async-tutorial/
@@ -16,14 +22,8 @@
 " Neovim plugins, the lua API is really nice, and using buffer updates (:h
 " api-buffer-updates-lua) allow you to create async plugins really easily.
 "
-"
-" :help usr_toc
-" :help usr_41 (write a vim script)
 " nested fold mappings
 " https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
-" testing git access tokens
-"
-" :help function-list
 "
 " Add hot key to exe set env etc:
 " function! ExecuteManagerCheck(file)
@@ -97,6 +97,8 @@ set autoindent              " When opening a new line keep indentation
 set history=10000           " NeoVim 10000. Number of previous commands remembered.
 set inccommand=split        " Neovim - See a live preview of :substitute as you type.
 set scrolloff=3             " When doing a search etc, always show at least n lines above and below the match
+set sidescroll=15           " Minimum number of columns to jump when scroll horizontall
+set sidescrolloff=15        " Minimum number of columns to show when going through searches (or else just see the first char on a long line like this)
 set numberwidth=4           " Default number column width
 set mousefocus
 set nostartofline           " Stop certain movements going to start of line (more like modern editors)
@@ -120,6 +122,7 @@ set cursorline              " High lights the line number and cusor line
 set timeoutlen=1000         " Default is 1000ms, set to 2s.
 set noswapfile              " Disable creating swapfiles, see https://goo.gl/FA6m6h
 set nobackup
+" set noshowmode              " Disables showing which mode one is in (does not giveback any more space cause I use 2 lines for the command area)
 
 " Show white space chars. extends and precedes is for when word wrap is off
 " Get shapes from here https://www.copypastecharacter.com/graphic-shapes
@@ -282,6 +285,7 @@ set relativenumber
 "   ^l (small L, redraw screen) -> MAPPED: Switch window
 "   ^q (XON)
 "   ^s (XOFF) -> MAPPED: :save
+"   ,  (repeat last line search, reversing direct)
 " LEADER -> aeghijmqtuvwxy (g for git one day)
 "   j  - Comment, mneomoic (Jargon)
 "   k  - replace with register
@@ -343,11 +347,9 @@ nmap <BS> <C-^>
 " After highlighting print how many matches there are with a search with 'n'
 " m" to mark the current position to " register, then `" to jump back there
 " afterwards.
-nmap <silent> * m"yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>///gn<CR>`"
-nmap <silent> # m"yiw<ESC>: let @/ = @""<CR>:set hlsearch<CR>:%s/<C-R>?//gn<CR>`"
-
-" Make it easily to delete to the start of the line
-" slow dd down noremap db d$
+" Also copy the word to the search register (happens natively, but adds range?)
+nmap <silent> * m""1yiw<ESC>: let @/ = @1<CR>:set hlsearch<CR>:%s/<C-R>///gn<CR>`"
+nmap <silent> # m""1yiw<ESC>: let @/ = @1<CR>:set hlsearch<CR>:%s/<C-R>?//gn<CR>`"
 
 " Swap to single/double/back quotes with <leader>' or <leader>" or <leader>` respectively.
 noremap <leader>' :s/[`"]/'/g<CR>:noh<CR>
@@ -399,6 +401,12 @@ noremap! <C-a> <Home>
 " Easier insert mode paste
 noremap! <C-R>; <C-R>"
 
+" {{{2 Productivity Enhancement
+" First delete space to left, then cut to end of line and paste on line above.
+" Hand for moving commends from aside to above.
+" TODO test if space to left, and if so they delete to the left.
+nmap <leader>D hxDO<c-r>"
+
 " {{{2 Meta (Alt) Productivity Enhancement
 " Move line up and down (must be remap, to use VIM unimpaired)
 nmap <M-j> ]e
@@ -412,7 +420,7 @@ map <M-S-j> <cmd>call myal#DuplicateLine(0)<CR>
 
 map <expr> <M-c> myal#SetupAlignToColumn(v:count)
 
-noremap <leader><DEL> Obreakpoint()<ESC>
+noremap <leader><DEL> <cmd>Lines 'breakpoint()<CR>
 
 " {{{2 Insert
 
@@ -438,22 +446,28 @@ map! <F3> <ESC><cmd>e $MYVIMRC<CR> :cd %:p:h<CR>
 map  <F4>      <cmd>call myal#DeleteCurBufferNotCloseWindow()<CR>
 map! <F4> <ESC><cmd>call myal#DeleteCurBufferNotCloseWindow()<CR>
 
+" Run the current buffer with a sensible app, e.g. python or Chrome etc
 " Mnemonic use F5 in webpage a lot, use F5 to launch current file in chrome
-map  <F5>      <cmd>WslBrowse chrome tab 2<CR>
-map! <F5> <ESC><cmd>WslBrowse chrome tab 2<CR>
+map  <F5>      :call myal#Run()<CR>
+map! <F5> <ESC>:call myal#Run()<CR>
+
+" Run code through an auto formatter
+map  <F6>      :call myal#Format()<CR>
+map! <F6> <ESC>:call myal#Format()<CR>
+
+" Run some other feature related to the file type
+map  <F7>      :call myal#Other()<CR>
+map! <F7> <ESC>:call myal#Other()<CR>
 
 " Change PWD for the current window to that of the current buffer head.
 " https://dmerej.info/blog/post/vim-cwd-and-neovim/
-map  <F6>      <cmd>lcd %:h<CR>
-map! <F6> <ESC><cmd>lcd %:h<CR>
+" map  <F8>      <cmd>lcd %:h<CR>
+" map! <F8> <ESC><cmd>lcd %:h<CR>
 
-" Switch to previous buffer, then open the file that was showing in a new tab
-" and cd into the head of the file
-map  <F7>      <cmd>call myal#ConvertBufferToNewTab()<CR>
-map! <F7> <ESC><cmd>call myal#ConvertBufferToNewTab()<CR>
-
-map <F8> <cmd>ColorizerAttachToBuffer<CR>
-map <S-F8> <cmd>:lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR>:e<CR>
+" " Switch to previous buffer, then open the file that was showing in a new tab
+" " and cd into the head of the file
+" map  <F8>      <cmd>call myal#ConvertBufferToNewTab()<CR>
+" map! <F8> <ESC><cmd>call myal#ConvertBufferToNewTab()<CR>
 
 " <F9> to <F12> QUICK INSERTS -------------------------------------------------
 " To paste the current filename, use "%p
@@ -634,7 +648,8 @@ nnoremap ]t vit<ESC>`>
 " Navigate to the start/end of the <tag>...</tag> set
 nnoremap [T vat<ESC>`<
 nnoremap ]T vat<ESC>`>
-" }}}2 End subsection
+
+" }}}2 End subsectiones
 
 " {{{1 COMMANDS
 "==============================================================================
@@ -655,9 +670,6 @@ command! Cdc :cd ~/.config
 command! Cdn :cd ~/.config/nvim
 command! Cds :cd ~/linkcube/src
 command! Cdl :cd ~/linkcube
-
-command! Sass :call myal#ScssToSass()
-command! Json :execute '%!python -m json.tool'
 
 " {{{1 AUTOCOMMAND
 " =============================================================================

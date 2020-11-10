@@ -44,7 +44,7 @@ echo -e "\n\nTesting Node installation version"
 node -v
 npm -v
 echo -e "\n\n"
-sudo npm install -g typescript
+sudo npm install -g typescript typescript-language-server jshint prettier-miscellaneous
 
 echo -e "\nInstalling Plugins:"
 nvim --headless +PlugInstall +qall
