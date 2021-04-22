@@ -61,8 +61,8 @@ function! myal#Format()
         !prettier --write --print-width 100 --tab-width 4 %
     elseif &filetype == "json"
         execute '%!python -m json.tool'
-    elseif &filetype == "Scss"
-        call myal#ScssToSass()
+    " elseif &filetype == "Scss"
+    "     call myal#ScssToSass()
     endif
 endfunction
 

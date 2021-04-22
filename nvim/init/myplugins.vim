@@ -2,6 +2,8 @@
 " If get error ould not read Username for ... probably type the plugin name wrong
 
 " TO TRY
+" prettier handles js html json css scss etc: https://github.com/prettier/vim-prettier
+" neoformat to replace own formatting: https://github.com/sbdchd/neoformat
 " https://github.com/wellle/targets.vim !!!!!!! VERY GOOD!!!
 " dkarter / bullets.vim (automated bullets in .md etc)
 " bps/vim-textobj-python
