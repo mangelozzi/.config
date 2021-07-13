@@ -664,6 +664,9 @@ function! SynGroup()
 endfun
 command! SynGroup call SynGroup()
 
+" Close buffer but keep window (common problem)
+:command! BD :bn|:bd#
+
 " Common dirs for quick cd's
 command! Cd :cd %:p:h
 command! Cdc :cd ~/.config

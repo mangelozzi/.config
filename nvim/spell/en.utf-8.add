@@ -162,3 +162,10 @@ Woolies
 unfermented
 keyframe
 KEYFRAMES
+punnets
+dict
+CharField
+DateField
+CPT
+MRO
+prepopulated

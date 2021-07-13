@@ -136,6 +136,8 @@ endfunction
 " If changing to a bracket, left brackets means bracket with space, right bracket means just the bracket
 " e.g. ysiw" = Add surround - inner word - double quote
 " e.g. cst<div> = Change surround <span> to <div>
+nmap <leader>y ysiw`
+nmap <leader>Y ysiW`
 
 " {{{2 COMMENTARY
 " https://github.com/tpope/vim-commentary
