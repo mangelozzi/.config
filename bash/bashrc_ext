@@ -14,6 +14,8 @@ stty -ixon
 # This worked for a few months: stty icrnl
 stty sane
 
+alias fix='stty sane'
+
 # `fd` already taken, create a convenient alias for the search tool:
 alias fd=fdfind
 
